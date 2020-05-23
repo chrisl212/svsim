@@ -15,7 +15,7 @@
     sv_int_t    *int_val;
 }
 
-%token LIBRARY INCLUDE MODULE ENDMODULE
+%token LIBRARY INCLUDE MODULE ENDMODULE NEXTTIME
 %token EXTERN MACROMODULE INTERFACE ENDINTERFACE
 %token PROGRAM ENDPROGRAM CHECKER ENDCHECKER
 %token VIRTUAL CLASS ENDCLASS EXTENDS IMPLEMENTS
@@ -36,7 +36,9 @@
 %token TRI TRIAND TRIOR TRIREG TRI0 TRI1 UWIRE WIRE WAND WOR
 %token UNSIGNED VOID TAGGED HIGHZ1 HIGHZ0 STRONG0 PULL0
 %token WEAK0 STRONG1 PULL1 WEAK1 SMALL MEDIUM LARGE 1STEP
-%token PATHPULSE TASK ENDTASK DPIC DPI CONTEXT
+%token PATHPULSE TASK ENDTASK DPIC DPI CONTEXT ASSERT PROPERTY
+%token ASSUME COVER COVERGROUP ENDCOVERGROUP EXPECT SEQUENCE
+%token RESTRICT ENDPROPERTY NOT AND OR CASE ENDCASE
 
 %%
 
@@ -1072,6 +1074,575 @@ dpi_function_proto                      :       function_prototype
                                                 ;
 dpi_task_proto                          :       task_prototype
                                                 ;
+task_declaration                        :       TASK lifetime_optional task_body_declaration
+                                                ;
+task_body_declaration                   :       interface_or_class_scope_optional task_identifier ';' tf_item_declaration_tail statement_or_null_tail ENDTASK endtask_optional
+                                                | interface_or_class_scope_optional task_identifier '(' tf_port_list_optional ')' ';' block_item_declaration_tail statement_or_null_tail ENDTASK endtask_optional
+                                                ;
+endtask_optional                        :       ':' task_identifier
+                                                |
+                                                ;
+tf_item_declaration                     :       block_item_declaration
+                                                | tf_port_declaration
+                                                ;
+tf_port_list                            :       tf_port_item ',' tf_port_list
+                                                | tf_port_item
+                                                ;
+tf_port_item                            :       attribute_instance_tail tf_port_direction_optional var_optional data_type_or_implicit port_identifier_optional
+                                                ;
+tf_port_direction_optional              :       tf_port_direction
+                                                |
+                                                ;
+port_identifier_optional                :       port_identifier variable_dimension_tail expression_equal_optional
+                                                |
+                                                ;
+tf_port_direction                       :       port_direction
+                                                | CONST REF
+                                                ;
+tf_port_declaration                     :       attribute_instance_tail tf_port_direction var_optional data_type_or_implicit list_of_tf_variable_identifiers ';'
+                                                ;
+task_prototype                          :       TASK task_identifier tf_port_list_optional
+                                                ;
+block_item_declaration                  :       attribute_instance_tail data_declaration
+                                                | attribute_instance_tail local_parameter_declaration ';'
+                                                | attribute_instance_tail parameter_declaration ';'
+                                                | attribute_instance_tail let_declaration
+                                                ;
+modport_declaration                     :       MODPORT modport_item_tail ';'
+                                                ;
+modport_item_tail                       :       modport_item ',' modport_item_tail
+                                                | modport_item
+                                                ;
+modport_item                            :       modport_identifier '(' modport_ports_declaration_tail ')'
+                                                ;
+modport_ports_declaration_tail          :       modport_ports_declaration ',' modport_ports_declaration_tail
+                                                | modport_ports_declaration
+                                                ;
+modport_ports_declaration               :       attribute_instance_tail modport_simple_ports_declaration
+                                                | attribute_instance_tail modport_tf_ports_declaration
+                                                | attribute_instance_tail modport_clocking_declaration
+                                                ;
+modport_clocking_declaration            :       CLOCKING clocking_identifier
+                                                ;
+modport_simple_ports_declaration        :       port_direction modport_simple_port_tail
+                                                ;
+modport_simple_port_tail                :       modport_simple_port ',' modport_simple_port_tail
+                                                | modport_simple_port
+                                                ;
+modport_simple_port                     :       port_identifier
+                                                | '.' port_identifier '(' expression_optional ')'
+                                                ;
+modport_tf_ports_declaration            :       import_export modport_tf_port_tail
+                                                ;
+modport_tf_port_tail                    :       modport_tf_port ',' modport_tf_port_tail
+                                                | modport_tf_port
+                                                ;
+modport_tf_port                         :       method_prototype
+                                                | tf_identifier
+                                                ;
+import_export                           :       IMPORT
+                                                | EXPORT
+                                                ;
+concurrent_assertion_item               :       block_identifier_colon_optional concurrent_assertion_statement
+                                                | checker_instantiation
+                                                ;
+block_identifier_colon_optional         :       block_identifier ':'
+                                                |
+                                                ;
+concurrent_assertion_statement          :       assert_property_statement
+                                                | assume_property_statement
+                                                | cover_property_statement
+                                                | cover_sequence_statement
+                                                | restrict_property_statement
+                                                ;
+assert_property_statement               :       ASSERT PROPERTY '(' property_spec ')' action_block
+                                                ;
+assume_property_statement               :       ASSUME PROPERTY '(' property_spec ')' action_block
+                                                ;
+cover_property_statement                :       COVER PROPERTY '(' property_spec ')' statement_or_null
+                                                ;
+expect_property_statement               :       EXPECT '(' property_spec ')' action_block
+                                                ;
+cover_sequence_statement                :       COVER SEQUENCE '(' clocking_event_optional disable_iff_expression_optional sequence_expr ')' statement_or_null
+                                                ;
+clocking_event_optional                 :       clocking_event
+                                                |
+                                                ;
+disable_iff_expression_optional         :       DISABLE IFF '(' expression_or_dist ')'
+                                                |
+                                                ;
+restrict_property_statement             :       RESTRICT PROPERTY '(' property_spec ')' ';'
+                                                ;
+property_instance                       :       ps_or_hierarchical_property_identifier property_list_of_arguments_optional
+                                                ;
+property_list_of_arguments_optional     :       '(' ')'
+                                                | '(' property_list_of_arguments ')'
+                                                |
+                                                ;
+property_list_of_arguments              :       property_actual_arg_optional property_actual_arg_identifier_tail
+                                                | '.' identifier '(' propert_actual_arg_optional ')' identifier_property_actual_arg_tail
+                                                ;
+property_actual_arg_optional            :       property_actual_arg
+                                                |
+                                                ;
+property_actual_arg_identifier_tail     :       ',' property_actual_arg property_actual_arg_identifier_tail
+                                                | ',' '.' identifier '(' property_actual_arg_optional ')' property_actual_arg_identifier_tail
+                                                |
+                                                ;
+identifier_property_actual_arg_tail     :       ',' '.' identifier '(' property_actual_arg ')' identifier_property_actual_arg_tail
+                                                |
+                                                ;
+property_actual_arg                     :       property_expr
+                                                | sequence_actual_arg
+                                                ;
+assertion_item_declaration              :       property_declaration
+                                                | sequence_declaration
+                                                | let_declaration
+                                                ;
+property_declaration                    :       PROPERTY property_identifier property_port_list_optional ';' assertion_variable_declaration_tail property_spec semi_optional ENDPROPERTY endproperty_optional
+                                                ;
+property_port_list_optional             :       '(' ')'
+                                                | '(' property_port_list ')'
+                                                |
+                                                ;
+assertion_variable_declaration_tail     :       assertion_variable_declaration assertion_variable_declaration_tail
+                                                |
+                                                ;
+semi_optional                           :       ';'
+                                                |
+                                                ;
+endproperty_optional                    :       ':' property_identifier
+                                                |
+                                                ;
+property_port_list                      :       property_port_item ',' property_port_list
+                                                | property_port_item
+                                                ;
+property_port_item                      :       attribute_instance_tail  property_lvar_port_direction_optional property_formal_type formal_port_identifier variable_dimension_tail equal_property_actual_arg_optional
+                                                ;
+property_lvar_port_direction_optional   :       LOCAL property_lvar_port_direction
+                                                | LOCAL
+                                                |
+                                                ;
+equal_property_actual_arg_optional      :       '=' property_actual_arg
+                                                |
+                                                ;
+property_lvar_port_direction            :       INPUT
+                                                ;
+property_formal_type                    :       sequence_formal_type
+                                                | PROPERTY
+                                                ;
+property_spec                           :       clocking_event_optional disable_iff_expression_optional property_expr
+                                                ;
+property_expr                           :       sequence_expr
+                                                | STRONG '(' sequence_expr ')'
+                                                | WEAK '(' sequence_expr ')'
+                                                | '(' property_expr ')'
+                                                | NOT property_expr
+                                                | property_expr OR property_expr
+                                                | property_expr AND property_expr
+                                                | sequence_expr '|''-''>' property_expr
+                                                | sequence_expr '|''=''>' property_expr
+                                                | IF '(' expression_or_dist ')' property_expr else_property_expr_optional
+                                                | CASE '(' expression_or_dist ')' property_case_item_tail ENDCASE
+                                                | sequence_expr '#''-''#' property_expr
+                                                | sequence_expr '#''=''#' property_expr
+                                                | NEXTTIME property_expr
+                                                | NEXTTIME '[' constant_expression ']' property_expr
+                                                | S_NEXTTIME property_expr
+                                                | S_NEXTTIME '[' constant_expression ']' property_expr
+                                                | ALWAYS property_expr
+                                                | ALWAYS '[' cycle_delay_const_range_expression ']' property_expr
+                                                | S_ALWAYS '[' constant_range ']' property_expr
+                                                | S_EVENTUALLY property_expr
+                                                | EVENTUALLY '[' constant_range ']' property_expr
+                                                | S_EVENTUALLY '[' cycle_delay_const_range_expression ']' property_expr
+                                                | property_expr UNTIL property_expr
+                                                | property_expr S_UNTIL property_expr
+                                                | property_expr UNTIL_WITH property_expr
+                                                | property_expr S_UNTIL_WITH property_expr
+                                                | property_expr IMPLIES property_expr
+                                                | property_expr IFF property_expr
+                                                | ACCEPT_ON '(' expression_or_dist ')' property_expr
+                                                | REJECT_ON '(' expression_or_dist ')' property_expr
+                                                | SYNC_ACCEPT_ON '(' expression_or_dist ')' property_expr
+                                                | SYNC_REJECT_ON '(' expression_or_dist ')' property_expr
+                                                | property_instance
+                                                | clocking_event property_expr
+                                                ;
+else_property_expr_optional             :       ELSE property_expr
+                                                |
+                                                ;
+property_case_item_tail                 :       property_case_item property_case_item_tail
+                                                | property_case_item
+                                                ;
+property_case_item                      :       expression_or_dist_tail ':' property_expr ';'
+                                                | DEFAULT colon_optional property_expr ';'
+                                                ;
+expression_or_dist_tail                 :       expression_or_dist ',' expression_or_dist_tail
+                                                | expression_or_dist
+                                                ;
+colon_optional                          :       ':'
+                                                |
+                                                ;
+sequence_declaration                    :       SEQUENCE sequence_identifier sequence_port_list_optional ';' assertion_variable_declaration_tail sequence_expr semi_optional ENDSEQUENCE endsequence_optional
+                                                ;
+sequence_port_list_optional             :       '(' sequence_port_list ')'
+                                                | '(' ')'
+                                                |
+                                                ;
+assertion_variable_declaration_tail     :       assertion_variable_declaration assertion_variable_declaration_tail
+                                                |
+                                                ;
+endsequence_optional                    :       ':' sequence_identifier
+                                                |
+                                                ;
+sequence_port_list                      :       sequence_port_item ',' sequence_port_list
+                                                | sequence_port_item
+                                                ;
+sequence_port_item                      :       attribute_instance_tail sequence_lvar_port_direction_optional sequence_formal_type formal_port_identifier variable_dimension_tail equal_sequence_actual_arg_optional
+                                                ;
+sequence_lvar_port_direction_optional   :       LOCAL sequence_lvar_port_direction
+                                                | LOCAL
+                                                |
+                                                ;
+equal_sequence_actual_arg_optional      :       '=' sequence_actual_arg
+                                                |
+                                                ;
+sequence_lvar_port_direction            :       INPUT
+                                                | INOUT
+                                                | OUTPUT
+                                                ;
+sequence_formal_type                    :       data_type_or_implicit
+                                                | SEQUENCE
+                                                | UNTYPED
+                                                ;
+sequence_expr                           :       cycle_delay_range_sequence_expr_tail
+                                                | sequence_expr cycle_delay_range_sequence_expr_tail
+                                                | expression_or_dist boolean_abbrev_optional
+                                                | sequence_instance sequence_abbrev_optional
+                                                | '(' sequence_expr sequence_match_item_tail ')' sequence_abbrev_optional
+                                                | sequence_expr AND sequence_expr
+                                                | sequence_expr INTERSECT sequence_expr
+                                                | sequence_expr OR sequence_expr
+                                                | FIRST_MATCH '(' sequence_expr sequence_match_item_tail ')'
+                                                | expression_or_dist THROUGHOUT sequence_expr
+                                                | sequence_expr WITHIN sequence_expr
+                                                | clocking_event sequence_expr
+                                                ;
+cycle_delay_range_sequence_expr_tail    :       cycle_delay_range sequence_expr cycle_delay_range_sequence_expr_tail
+                                                | cycle_delay_range sequence_expr
+                                                ;
+boolean_abbrev_optional                 :       boolean_abbrev
+                                                |
+                                                ;
+sequence_abbrev_optional                :       sequence_abbrev
+                                                |
+                                                ;
+sequence_match_item_tail                :       ',' sequence_match_item sequence_match_item_tail
+                                                |
+                                                ;
+cycle_delay_range                       :       '#''#' constant_primary
+                                                | '#''#' '[' cycle_delay_const_range_expression ']'
+                                                | '#''#' '[' '*' ']'
+                                                | '#''#' '[' '+' ']'
+                                                ;
+sequence_method_call                    :       sequence_instance '.' method_identifier
+                                                ;
+sequence_match_item                     :       operator_assignment
+                                                | inc_or_dec_expression
+                                                | subroutine_call
+                                                ;
+sequence_instance                       :       ps_or_hierarchical_sequence_identifier sequence_list_of_arguments_optional
+                                                ;
+sequence_list_of_arguments_optional     :       '(' ')'
+                                                | '(' sequence_list_of_arguments ')'
+                                                |
+                                                ;
+sequence_list_of_arguments              :       sequence_actual_arg_optional sequence_actual_arg_identifier_tail
+                                                | '.' identifier '(' sequence_actual_arg_optional ')' identifier_sequence_actual_arg_tail
+                                                ;
+sequence_actual_arg_optional            :       sequence_actual_arg
+                                                |
+                                                ;
+sequence_actual_arg_identifier_tail     :       ',' sequence_actual_arg sequence_actual_arg_identifier_tail
+                                                | ',' '.' identifier '(' sequence_actual_arg_optional ')' sequence_actual_arg_identifier_tail
+                                                |
+                                                ;
+identifier_sequence_actual_arg_tail     :       ',' '.' identifier '(' sequence_actual_arg_optional ')' identifier_sequence_actual_arg_tail
+                                                |
+                                                ;
+sequence_actual_arg                     :       event_expression
+                                                | sequence_expr
+                                                ;
+boolean_abbrev                          :       consecutive_repetition
+                                                | non_consecutive_repetition
+                                                | goto_repetition
+                                                ;
+sequence_abbrev                         :       consecutive_repetition
+                                                ;
+consecutive_repetition                  :       '[' '*' const_or_range_expression ']'
+                                                | '[' '*' ']'
+                                                | '[' '+' ']'
+                                                ;
+non_consecutive_repetition              :       '[' '=' const_or_range_expression ']'
+                                                ;
+goto_repetition                         :       '[' '-''>' const_or_range_expression ']'
+                                                ;
+const_or_range_expression               :       constant_expression
+                                                | cycle_delay_const_range_expression
+                                                ;
+cycle_delay_const_range_expression      :       constant_expression ':' constant_expression
+                                                | constant_expression ':' '$'
+                                                ;
+expression_or_dist                      :       expression dist_list_optional
+                                                ;
+dist_list_optional                      :       DIST '{' dist_list '}'
+                                                |
+                                                ;
+assertion_variable_declaration          :       var_data_type list_of_variable_decl_assignments ';'
+                                                ;
+covergroup_declaration                  :       COVERGROUP covergroup_identifier tf_port_list_optional coverage_event_optional ';' coverage_spec_or_option_tail ENDGROUP endgroup_optional
+                                                ;
+coverage_event_optional                 :       coverage_event
+                                                |
+                                                ;
+coverage_spec_or_option_tail            :       coverage_spec_or_option coverage_spec_or_option_tail
+                                                |
+                                                ;
+endgroup_optional                       :       ':' covergroup_identifier
+                                                |
+                                                ;
+coverage_spec_or_option                 :       attribute_instance_tail coverage_spec
+                                                | attribute_instance_tail coverage_option ';'
+                                                ;
+coverage_option                         :       OPTION '.' member_identifier '=' expression
+                                                | TYPE_OPTION '.' member_identifier '=' constant_expression
+                                                ;
+coverage_spec                           :       cover_point
+                                                | cover_cross
+                                                ;
+coverage_event                          :       clocking_event
+                                                | WITH FUNCTION SAMPLE tf_port_list_optional
+                                                | '@''@' '(' block_event_expression ')'
+                                                ;
+block_event_expression                  :       block_event_expression OR block_event_expression
+                                                | BEGIN hierarchical_btf_identifier
+                                                | END hierarchical_btf_identifier
+                                                ;
+hierarchical_btf_identifier             :       hierarchical_tf_identifier
+                                                | hierarchical_block_identifier
+                                                | hierarchical_class_scope_optional method_identifier
+                                                ;
+hierarchical_class_scope_optional       :       hierarchical_identifier '.'
+                                                | class_scope
+                                                |
+                                                ;
+cover_point                             :       data_type_cover_point_optional COVERPOINT expression iff_expression_optional bins_or_empty
+                                                ;
+data_type_cover_point_optional          :       data_type_or_implicit cover_point_identifier ':'
+                                                | cover_point_identifier ':'
+                                                |
+                                                ;
+iff_expression_optional                 :       IFF '(' expression ')'
+                                                |
+                                                ;
+bins_or_empty                           :       '{' attribute_instance_tail bins_or_options_tail '}'
+                                                | ';'
+                                                ;
+bins_or_options_tail                    :       bins_or_options ';' bins_or_options_tail
+                                                |
+                                                ;
+bins_or_options                         :       coverage_option
+                                                | wildcard_optional bins_keyword bin_identifier covergroup_expression_optional '=' '{' covergroup_range_list '}' with_covergroup_expression_optional iff_expression_optional
+                                                | wildcard_optional bins_keyword bin_identifier covergroup_expression_optional '=' cover_point_identifier WITH '(' with_covergroup_expression ')' iff_expression_optional
+                                                | wildcard_optional bins_keyword bin_identifier covergroup_expression_optional '=' set_covergroup_expression iff_expression_optional
+                                                | wildcard_optional bins_keyword bin_identifier braces_optional '=' trans_list iff_expression_optional
+                                                | bins_keyword bin_identifier covergroup_expression_optional '=' DEFAULT iff_expression_optional
+                                                | bins_keyword bin_identifier '=' DEFAULT_SEQUENCE iff_expression_optional
+                                                ;
+wildcard_optional                       :       WILDCARD
+                                                |
+                                                ;
+covergroup_expression_optional          :       '[' ']'
+                                                | '[' covergroup_expression ']'
+                                                |
+                                                ;
+with_covergroup_expression_optional     :       WITH '(' with_covergroup_expression ')'
+                                                |
+                                                ;
+iff_expression_optional                 :       IFF '(' expression ')'
+                                                |
+                                                ;
+bins_keyword                            :       BINS
+                                                | ILLEGAL_BINS
+                                                | IGNORE_BINS
+                                                ;
+trans_list                              :       '(' trans_set ')' ',' trans_list
+                                                | '(' trans_set ')'
+                                                ;
+trans_set                               :       trans_range_list trans_range_list_tail
+                                                ;
+trans_range_list_tail                   :       '=''>' trans_range_list trans_range_list_tail
+                                                |
+                                                ;
+trans_range_list                        :       trans_item
+                                                | trans_item '[''*' repeat_range ']'
+                                                | trans_item '[''-''>' repeat_range ']'
+                                                | trans_item '[''=' repeat_range ']'
+                                                ;
+trans_item                              :       covergroup_range_list
+                                                ;
+repeat_range                            :       covergroup_expression
+                                                | covergroup_expression ':' covergroup_expression
+                                                ;
+cover_cross                             :       cross_identifier_optional CROSS list_of_cross_items iff_expression_optional cross_body
+                                                ;
+cross_identifier_optional               :       cross_identifier ':'
+                                                |
+                                                ;
+list_of_cross_items                     :       cross_item ',' list_of_cross_items
+                                                | cross_item ',' cross_item
+                                                ;
+cross_item                              :       cover_point_identifier
+                                                | variable_identifier
+                                                ;
+cross_body                              :       '{' cross_body_item_tail '}'
+                                                | ';'
+                                                ;
+cross_body_item_tail                    :       cross_body_item ';' cross_body_item_tail
+                                                | cross_body_item ';'
+                                                ;
+cross_body_item                         :       function_declaration
+                                                | bins_selection_or_option ';'
+                                                ;
+bins_selection_or_option                :       attribute_instance_tail coverage_option
+                                                | attribute_instance_tail bins_selection
+                                                ;
+bins_selection                          :       bins_keyword bin_identifier '=' select_expression iff_expression_optional
+                                                ;
+select_expression                       :       select_condition
+                                                | '!' select_condition
+                                                | select_expression '&''&' select_expression
+                                                | select_expression '|''|' select_expression
+                                                | '(' select_expression ')'
+                                                | select_expression WITH '(' with_covergroup_expression ')' matches_integer_covergroup_optional
+                                                | cross_identifier
+                                                | cross_set_expression matches_integer_covergroup_optional
+                                                ;
+matches_integer_covergroup_optional     :       MATCHES integer_covergroup_expression
+                                                |
+                                                ;
+select_condition                        :       BINSOF '(' bins_expression ')' intersect_covergroup_range_list_optional
+                                                ;
+intersect_covergroup_range_list_optional:       INTERSECT '{' covergroup_range_list '}'
+                                                | 
+                                                ;
+bins_expression                         :       variable_identifier
+                                                | cover_point_identifier bin_identifier_optional
+                                                ;
+bin_identifier_optional                 :       '.' bin_identifier
+                                                |
+                                                ;
+covergroup_range_list                   :       covergroup_value_range ',' covergroup_range_list
+                                                | covergroup_value_range
+                                                ;
+covergroup_value_range                  :       covergroup_expression
+                                                | '[' covergroup_expression ':' covergroup_expression ']'
+                                                ;
+with_covergroup_expression              :       covergroup_expression
+                                                ;
+set_covergroup_expression               :       covergroup_expression
+                                                ;
+integer_covergroup_expression           :       covergroup_expression
+                                                ;
+cross_set_expression                    :       covergroup_expression
+                                                ;
+covergroup_expression                   :       expression
+                                                ;
+let_declaration                         :       LET let_identifier let_port_list_optional '=' expression ';'
+                                                ;
+let_port_list_optional                  :       '(' ')'
+                                                | '(' let_port_list ')'
+                                                |
+                                                ;
+let_identifier                          :       identifier
+                                                ;
+let_port_list                           :       let_port_item ',' let_port_list
+                                                | let_port_item
+                                                ;
+let_port_item                           :       attribute_instance_tail let_formal_type formal_port_identifier variable_dimension_tail expression_equal_optional
+                                                ;
+let_formal_type                         :       data_type_or_implicit
+                                                | UNTYPED
+                                                ;
+let_expression                          :       package_scope_optional let_identifier let_list_of_arguments_optional
+                                                ;
+package_scope_optional                  :       package_scope
+                                                |
+                                                ;
+let_list_of_arguments_optional          :       '(' ')'
+                                                | '(' let_list_of_arguments ')'
+                                                |
+                                                ;
+let_list_of_arguments                   :       let_actual_arg_optional let_actual_arg_identifier_tail
+                                                | '.' identifier '(' let_actual_arg_optional ')' identifier_let_actual_arg_tail
+                                                ;
+let_actual_arg_optional                 :       let_actual_arg
+                                                |
+                                                ;
+let_actual_arg_identifier_tail          :       ',' let_actual_arg let_actual_arg_identifier_tail
+                                                | ',' '.' identifier '(' let_actual_arg_optional ')' let_actual_arg_identifier_tail
+                                                |
+                                                ;
+identifier_let_actual_arg_tail          :       ',' '.' identifier '(' let_actual_arg_optional ')' identifier_let_actual_arg_tail
+                                                |
+                                                ;
+let_actual_arg                          :       expression
+                                                ;
+gate_instantiation                      :       cmos_switchtype delay3_optional cmos_switch_instance_tail ';'
+                                                | enable_gatetype drive_strength_optional delay3_optional enable_gate_instance_tail ';'
+                                                | mos_switchtype delay3_optional mos_switch_instance_tail ';'
+                                                | n_input_gatetype drive_strength_optional delay2_optional n_input_gate_instance_tail ';'
+                                                | n_output_gatetype drive_strength_optional delay2_optional n_output_gate_instance_tail ';'
+                                                | pass_en_switchtype delay2_optional pass_enable_switch_instance_tail ';'
+                                                | pass_switchtype pass_switch_instance_tail ';'
+                                                | PULLDOWN pulldown_strength_optional pull_gate_instance_tail ';'
+                                                | PULLUP pullup_strength_optional pull_gate_instance_tail ';'
+                                                ;
+cmos_switch_instance_tail               :       cmos_switch_instance ',' cmos_switch_instance_tail
+                                                | cmos_switch_instance
+                                                ;
+enable_gate_instance_tail               :       enable_gate_instance ',' enable_gate_instance_tail
+                                                | enable_gate_instance
+                                                ;
+mos_switch_instance_tail                :       mos_switch_instance ',' mos_switch_instance_tail
+                                                | mos_switch_instance
+                                                ;
+n_input_gate_instance_tail              :       n_input_gate_instance ',' n_input_gate_instance_tail
+                                                | n_input_gate_instance
+                                                ;
+n_output_gate_instance_tail             :       n_output_gate_instance ',' n_output_gate_instance_tail
+                                                | n_output_gate_instance
+                                                ;
+pass_enable_switch_instance_tail        :       pass_enable_switch_instance ',' pass_enable_switch_instance_tail
+                                                | pass_enable_switch_instance
+                                                ;
+pass_switch_instance_tail               :       pass_switch_instance ',' pass_switch_instance_tail
+                                                | pass_switch_instance
+                                                ;
+pull_gate_instance_tail                 :       pull_gate_instance ',' pull_gate_instance_tail
+                                                | pull_gate_instance
+                                                ;
+delay2_optional                         :       delay2
+                                                |
+                                                ;
+pulldown_strength_optional              :       pulldown_stength
+                                                |
+                                                ;
+pullup_strength_optional                :       pullup_strength
+                                                |
+                                                ;
+
 
 %%
 
