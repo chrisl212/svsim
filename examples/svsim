@@ -1,0 +1,55 @@
+//`include "alu_if.vh"
+//`include "cpu_types_pkg.vh"
+
+module alu(alu_if.alu aluif);
+  logic overflow;
+  import cpu_types_pkg::*;
+
+  always_comb begin
+    aluif.out = 32'b0;
+    aluif.OVER = 1'b0;
+    overflow = 1'b0;
+
+    casez (aluif.op)
+      ALU_ADD:  begin
+              {overflow, aluif.out} = {aluif.inA[31], aluif.inA} + {aluif.inB[31], aluif.inB};
+            end
+      ALU_SUB:  begin
+              {overflow, aluif.out} = {aluif.inA[31], aluif.inA} - {aluif.inB[31], aluif.inB};
+            end
+      ALU_AND:  begin
+              aluif.out = aluif.inA & aluif.inB;
+            end
+      ALU_OR:  begin
+              aluif.out = aluif.inA | aluif.inB;
+            end
+      ALU_XOR:  begin
+              aluif.out = aluif.inA ^ aluif.inB;
+            end
+      ALU_NOR:  begin
+              aluif.out = ~(aluif.inA | aluif.inB);
+            end
+      ALU_SLL:  begin
+              aluif.out = aluif.inB << aluif.inA[4:0];
+            end
+      ALU_SRL:  begin
+              aluif.out = aluif.inB >> aluif.inA[4:0];
+            end
+      ALU_SLT:  begin
+              aluif.out = ($signed(aluif.inA) < $signed(aluif.inB));
+            end
+      ALU_SLTU: begin
+              aluif.out = ($unsigned(aluif.inA) < $unsigned(aluif.inB));
+            end
+    endcase
+
+    if (aluif.op == ALU_ADD || aluif.op == ALU_SUB) begin
+      if ({overflow, aluif.out[31]} == 2'b01 || {overflow, aluif.out[31]} == 2'b10) begin
+        aluif.OVER = 1'b1;
+      end
+    end
+
+    aluif.NEG = aluif.out[31];
+    aluif.ZERO = (aluif.out == 32'b0);
+  end
+endmodule
