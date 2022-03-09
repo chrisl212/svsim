@@ -14,7 +14,7 @@
     extern int yyparse();
 }
 
-%glr-parser
+//%glr-parser
 %define parse.trace
 %define parse.error verbose
 %locations
@@ -82,22 +82,39 @@
 
 %type <sval> c_identifier escaped_identifier system_tf_identifier simple_identifier string_literal
 
+%left TAGGED
 %left SCOPE
 %left INSIDE
 %left MATCHES
-%left '+'
-%left '-'
-%left '*'
-%left '/'
-%left '%'
-%left '='
-%left '!'
-%left '&'
-%left '|'
-%left '<'
-%left '>'
-%left '^'
-%left '~'
+%left "+"
+%left "-"
+%left "*"
+%left "/"
+%left "%"
+%left "=="
+%left "==="
+%left "!="
+%left "!=="
+%left "==?"
+%left "!=?"
+%left "&&"
+%left "||"
+%left "**"
+%left "<"
+%left "<="
+%left ">"
+%left ">="
+%left "&"
+%left "|"
+%left "^"
+%left "^~"
+%left "~^"
+%left ">>"
+%left "<<"
+%left ">>>"
+%left "<<<"
+%left "->"
+%left "<->"
 
 %%
 
@@ -247,14 +264,6 @@ interface_declaration                   :       interface_nonansi_header timeuni
                                                 | interface_nonansi_header timeunits_declaration ENDINTERFACE
                                                 | interface_nonansi_header ENDINTERFACE endinterface
                                                 | interface_nonansi_header ENDINTERFACE
-                                                | interface_ansi_header timeunits_declaration non_port_interface_item_tail ENDINTERFACE endinterface
-                                                | interface_ansi_header timeunits_declaration non_port_interface_item_tail ENDINTERFACE
-                                                | interface_ansi_header non_port_interface_item_tail ENDINTERFACE endinterface
-                                                | interface_ansi_header non_port_interface_item_tail ENDINTERFACE
-                                                | interface_ansi_header timeunits_declaration ENDINTERFACE endinterface
-                                                | interface_ansi_header timeunits_declaration ENDINTERFACE
-                                                | interface_ansi_header ENDINTERFACE endinterface
-                                                | interface_ansi_header ENDINTERFACE
                                                 | attribute_instance_tail INTERFACE identifier '(' '.' '*' ')' ';' timeunits_declaration ENDINTERFACE endinterface
                                                 | INTERFACE identifier '(' '.' '*' ')' ';' timeunits_declaration ENDINTERFACE endinterface
                                                 | attribute_instance_tail INTERFACE identifier '(' '.' '*' ')' ';' timeunits_declaration ENDINTERFACE
@@ -381,8 +390,9 @@ checker_declaration                     :       CHECKER identifier paren_checker
 paren_checker_port_list                 :       '(' checker_port_list ')'
                                                 | '(' ')'
                                                 ;
-checker_or_generate_item_tail           :       attribute_instance_tail checker_or_generate_item_tail checker_or_generate_item
+checker_or_generate_item_tail           :       checker_or_generate_item_tail attribute_instance_tail checker_or_generate_item
                                                 | checker_or_generate_item_tail checker_or_generate_item
+                                                | attribute_instance_tail checker_or_generate_item
                                                 | checker_or_generate_item
                                                 ;
 endchecker                              :       ':' identifier
@@ -453,15 +463,10 @@ class_declaration                       :       VIRTUAL CLASS lifetime identifie
                                                 | CLASS identifier ';' class_item_tail ENDCLASS
 // TODO: versions w/o class_item_tail
                                                 ;
-extends                                 :       EXTENDS class_type list_of_arguments
+extends                                 :       EXTENDS class_type '(' list_of_arguments ')'
                                                 | EXTENDS class_type
                                                 ;
-list_of_arguments                       :       '(' list_of_arguments ')'
-                                                ;
 implements                              :       IMPLEMENTS interface_class_type_tail
-                                                ;
-interface_class_type_tail               :       interface_class_type ',' interface_class_type_tail
-                                                | interface_class_type
                                                 ;
 class_item_tail                         :       class_item_tail class_item
                                                 | class_item
@@ -490,7 +495,7 @@ interface_class_declaration             :       INTERFACE CLASS identifier param
                                                 ;
 extends_interface_class                 :       EXTENDS interface_class_type_tail
                                                 ;
-interface_class_type_tail               :       interface_class_type ',' interface_class_type_tail
+interface_class_type_tail               :       interface_class_type_tail ',' interface_class_type
                                                 | interface_class_type
                                                 ;
 interface_class_item_tail               :       interface_class_item_tail interface_class_item
@@ -558,9 +563,9 @@ port_tail                               :       port ',' port_tail
 list_of_port_declarations               :       '(' ansi_port_declaration_tail ')'
                                                 | '(' ')'
                                                 ;
-ansi_port_declaration_tail              :       attribute_instance_tail ansi_port_declaration ',' ansi_port_declaration_tail
+ansi_port_declaration_tail              :       ansi_port_declaration_tail ',' attribute_instance_tail ansi_port_declaration
+                                                | ansi_port_declaration_tail ',' ansi_port_declaration
                                                 | attribute_instance_tail ansi_port_declaration
-                                                | ansi_port_declaration ',' ansi_port_declaration_tail
                                                 | ansi_port_declaration
                                                 ;
 port_declaration                        :       attribute_instance_tail inout_declaration
@@ -638,15 +643,15 @@ variable_dimension_tail                 :       variable_dimension_tail variable
 unpacked_dimension_tail                 :       unpacked_dimension_tail unpacked_dimension
                                                 | unpacked_dimension
                                                 ;
-equal_constant_expression               :       '=' constant_expression
+equal_constant_expression               :       '=' expression
                                                 ;
 elaboration_system_task                 :       FATAL finish_number ';'
                                                 | FATAL ';'
-                                                | ERROR paren_list_of_arguments ';'
+                                                | ERROR '(' list_of_arguments ')' ';'
                                                 | ERROR ';'
-                                                | WARNING paren_list_of_arguments ';'
+                                                | WARNING '(' list_of_arguments ')' ';'
                                                 | WARNING ';'
-                                                | INFO paren_list_of_arguments ';'
+                                                | INFO '(' list_of_arguments ')' ';'
                                                 | INFO ';'
                                                 ;
 finish_number                           :       '(' finish_number ')'
@@ -656,12 +661,7 @@ finish_number                           :       '0'
                                                 | '1'
                                                 | '2'
                                                 ;
-paren_list_of_arguments                 :       '(' ')'
-                                                | '(' list_of_arguments ')'
-                                                ;
 module_common_item                      :       module_or_generate_item_declaration
-                                                | interface_instantiation
-                                                | program_instantiation
                                                 | assertion_item
                                                 | bind_directive
                                                 | continuous_assign
@@ -679,12 +679,12 @@ module_item                             :       port_declaration ';'
 module_or_generate_item                 :       attribute_instance_tail parameter_override
                                                 | attribute_instance_tail gate_instantiation
                                                 | attribute_instance_tail udp_instantiation
-                                                | attribute_instance_tail module_instantiation
+                                                | attribute_instance_tail generic_instantiation
                                                 | attribute_instance_tail module_common_item
                                                 | parameter_override
                                                 | gate_instantiation
                                                 | udp_instantiation
-                                                | module_instantiation
+                                                | generic_instantiation
                                                 | module_common_item
                                                 ;
 module_or_generate_item_declaration     :       package_or_generate_item_declaration
@@ -715,9 +715,7 @@ bind_target_instance                    :       hierarchical_identifier constant
 bind_target_instance_list               :       bind_target_instance ',' bind_target_instance_list
                                                 | bind_target_instance
                                                 ;
-bind_instantiation                      :       program_instantiation
-                                                | module_instantiation
-                                                | interface_instantiation
+bind_instantiation                      :       generic_instantiation
                                                 | checker_instantiation
                                                 ;
 config_declaration                      :       CONFIG identifier local_parameter_declaration_tail design_statement config_rule_statement_tail ENDCONFIG endconfig
@@ -778,9 +776,7 @@ use_clause                              :       USE identifier '.' identifier ':
 named_parameter_assignment_tail         :       named_parameter_assignment ',' named_parameter_assignment_tail
                                                 | named_parameter_assignment
                                                 ;
-interface_or_generate_item              :       attribute_instance_tail module_common_item
-                                                | attribute_instance_tail extern_tf_declaration
-                                                | module_common_item
+interface_or_generate_item              :       attribute_instance_tail extern_tf_declaration
                                                 | extern_tf_declaration
                                                 ;
 extern_tf_declaration                   :       EXTERN method_prototype ';'
@@ -791,10 +787,12 @@ interface_item                          :       port_declaration ';'
                                                 ;
 non_port_interface_item                 :       generate_region
                                                 | interface_or_generate_item
+                                                | attribute_instance_tail module_common_item
+                                                | module_common_item
                                                 | program_declaration
                                                 | modport_declaration
                                                 | interface_declaration
-                                                | timeunits_declaration
+                                                //| timeunits_declaration
                                                 ;
 program_item                            :       port_declaration ';'
                                                 | non_port_program_item
@@ -809,7 +807,7 @@ non_port_program_item                   :       attribute_instance_tail continuo
                                                 | initial_construct
                                                 | final_construct
                                                 | concurrent_assertion_item
-                                                | timeunits_declaration
+                                                //| timeunits_declaration
                                                 | program_generate_item
                                                 ;
 program_generate_item                   :       loop_generate_construct
@@ -1181,7 +1179,7 @@ lifetime                                :       STATIC
                                                 | AUTOMATIC
                                                 ;
 casting_type                            :       simple_type
-                                                | constant_primary
+                                                | primary
                                                 | signing
                                                 | STRING
                                                 | CONST
@@ -1466,17 +1464,15 @@ variable_decl_assignment                :       identifier variable_dimension_ta
                                                 | identifier unsized_dimension
                                                 | identifier '=' class_new
                                                 ;
-class_new                               :       class_scope NEW list_of_arguments
-                                                | NEW list_of_arguments
-                                                | class_scope NEW
-                                                | NEW
-                                                | NEW expression
+class_new                               :       class_scope NEW '(' list_of_arguments ')'
+                                                | NEW '(' list_of_arguments ')'
+                                                // | NEW expression
                                                 ;
 dynamic_array_new                       :       NEW '[' expression ']' '(' expression ')'
                                                 | NEW '[' expression ']'
                                                 ;
 unpacked_dimension                      :       '[' constant_range ']'
-                                                | '[' constant_expression ']'
+                                                | '[' expression ']'
                                                 ;
 packed_dimension                        :       '[' constant_range ']'
                                                 | unsized_dimension
@@ -1489,7 +1485,7 @@ variable_dimension                      :       unsized_dimension
                                                 | associative_dimension
                                                 | queue_dimension
                                                 ;
-queue_dimension                         :       '[' '$' ':' constant_expression ']'
+queue_dimension                         :       '[' '$' ':' expression ']'
                                                 | '[' '$' ']'
                                                 ;
 unsized_dimension                       :       '[' ']'
@@ -1767,9 +1763,9 @@ property_expr                           :       sequence_expr
                                                 | sequence_expr '#''-''#' property_expr
                                                 | sequence_expr '#''=''#' property_expr
                                                 | NEXTTIME property_expr
-                                                | NEXTTIME '[' constant_expression ']' property_expr
+                                                | NEXTTIME '[' expression ']' property_expr
                                                 | S_NEXTTIME property_expr
-                                                | S_NEXTTIME '[' constant_expression ']' property_expr
+                                                | S_NEXTTIME '[' expression ']' property_expr
                                                 | ALWAYS property_expr
                                                 | ALWAYS '[' cycle_delay_const_range_expression ']' property_expr
                                                 | S_ALWAYS '[' constant_range ']' property_expr
@@ -1846,8 +1842,8 @@ sequence_expr                           :       cycle_delay_range_sequence_expr_
                                                 | sequence_expr cycle_delay_range_sequence_expr_tail
                                                 | expression_or_dist boolean_abbrev
                                                 | expression_or_dist
-                                                | sequence_instance sequence_abbrev
-                                                | sequence_instance
+                                                | tf_call sequence_abbrev
+                                                | tf_call
                                                 | '(' sequence_expr sequence_match_item_tail ')' sequence_abbrev
                                                 | '(' sequence_expr ')' sequence_abbrev
                                                 | '(' sequence_expr sequence_match_item_tail ')'
@@ -1867,19 +1863,16 @@ cycle_delay_range_sequence_expr_tail    :       cycle_delay_range sequence_expr 
 sequence_match_item_tail                :       sequence_match_item_tail ',' sequence_match_item
                                                 | sequence_match_item
                                                 ;
-cycle_delay_range                       :       '#''#' constant_primary
+cycle_delay_range                       :       '#''#' primary
                                                 | '#''#' '[' cycle_delay_const_range_expression ']'
                                                 | '#''#' '[' '*' ']'
                                                 | '#''#' '[' '+' ']'
                                                 ;
-sequence_method_call                    :       sequence_instance '.' identifier
+sequence_method_call                    :       tf_call '.' identifier
                                                 ;
 sequence_match_item                     :       operator_assignment
                                                 | inc_or_dec_expression
                                                 | subroutine_call
-                                                ;
-sequence_instance                       :       ps_or_hierarchical_identifier '(' sequence_list_of_arguments ')'
-                                                | ps_or_hierarchical_identifier '(' ')'
                                                 ;
 sequence_list_of_arguments              :       sequence_actual_arg_identifier_tail identifier_sequence_actual_arg_tail
                                                 | sequence_actual_arg_identifier_tail
@@ -1910,11 +1903,11 @@ non_consecutive_repetition              :       '[' '=' const_or_range_expressio
                                                 ;
 goto_repetition                         :       '[' '-''>' const_or_range_expression ']'
                                                 ;
-const_or_range_expression               :       constant_expression
+const_or_range_expression               :       expression
                                                 | cycle_delay_const_range_expression
                                                 ;
-cycle_delay_const_range_expression      :       constant_expression ':' constant_expression
-                                                | constant_expression ':' '$'
+cycle_delay_const_range_expression      :       expression ':' expression
+                                                | expression ':' '$'
                                                 ;
 expression_or_dist                      :       expression DIST '{' dist_list '}'
                                                 | expression
@@ -1942,7 +1935,7 @@ coverage_spec_or_option                 :       attribute_instance_tail coverage
                                                 | coverage_option ';'
                                                 ;
 coverage_option                         :       OPTION '.' identifier '=' expression
-                                                | TYPE_OPTION '.' identifier '=' constant_expression
+                                                | TYPE_OPTION '.' identifier '=' expression
                                                 ;
 coverage_spec                           :       cover_point
                                                 | cover_cross
@@ -2287,9 +2280,6 @@ pass_en_switchtype                      :       TRANIF0
 pass_switchtype                         :       TRAN
                                                 | RTRAN
                                                 ;
-module_instantiation                    :       identifier parameter_value_assignment hierarchical_instance_tail ';'
-                                                | identifier hierarchical_instance_tail ';'
-                                                ;
 hierarchical_instance_tail              :       hierarchical_instance ',' hierarchical_instance_tail
                                                 | hierarchical_instance
                                                 ;
@@ -2335,10 +2325,7 @@ named_port_connection                   :       attribute_instance_tail '.' iden
                                                 | '.' identifier
                                                 | '.' '*'
                                                 ;
-interface_instantiation                 :       identifier parameter_value_assignment hierarchical_instance_tail ';'
-                                                | identifier hierarchical_instance_tail ';'
-                                                ;
-program_instantiation                   :       identifier parameter_value_assignment hierarchical_instance_tail ';'
+generic_instantiation                   :       identifier parameter_value_assignment hierarchical_instance_tail ';'
                                                 | identifier hierarchical_instance_tail ';'
                                                 ;
 checker_instantiation                   :       ps_identifier name_of_instance '(' list_of_checker_port_connections ')' ';'
@@ -2375,8 +2362,8 @@ generate_item_tail                      :       generate_item_tail generate_item
                                                 ;
 loop_generate_construct                 :       FOR '(' genvar_initialization ';' genvar_expression ';' genvar_iteration ')' generate_block
                                                 ;
-genvar_initialization                   :       GENVAR identifier '=' constant_expression
-                                                | identifier '=' constant_expression
+genvar_initialization                   :       GENVAR identifier '=' expression
+                                                | identifier '=' expression
                                                 ;
 genvar_iteration                        :       identifier assignment_operator genvar_expression
                                                 | inc_or_dec_operator identifier
@@ -2385,20 +2372,20 @@ genvar_iteration                        :       identifier assignment_operator g
 conditional_generate_construct          :       if_generate_construct
                                                 | case_generate_construct
                                                 ;
-if_generate_construct                   :       IF '(' constant_expression ')' generate_block ELSE generate_block
-                                                | IF '(' constant_expression ')' generate_block
+if_generate_construct                   :       IF '(' expression ')' generate_block ELSE generate_block
+                                                | IF '(' expression ')' generate_block
                                                 ;
-case_generate_construct                 :       CASE '(' constant_expression ')' case_generate_item_tail ENDCASE
+case_generate_construct                 :       CASE '(' expression ')' case_generate_item_tail ENDCASE
                                                 ;
 case_generate_item_tail                 :       case_generate_item case_generate_item_tail
                                                 | case_generate_item
                                                 ;
-case_generate_item                      :       constant_expression_tail ':' generate_block
+case_generate_item                      :       expression_tail ':' generate_block
                                                 | DEFAULT ':' generate_block
                                                 | DEFAULT generate_block
                                                 ;
-constant_expression_tail                :       constant_expression ',' constant_expression_tail
-                                                | constant_expression
+constant_expression_tail                :       expression ',' expression_tail
+                                                | expression
                                                 ;
 generate_block                          :       generate_item
                                                 | identifier ':' _BEGIN ':' identifier generate_item_tail END ':' identifier
@@ -2413,7 +2400,7 @@ generate_block                          :       generate_item
                                                 ;
 generate_item                           :       module_or_generate_item
                                                 | interface_or_generate_item
-                                                | checker_or_generate_item
+                                                //| checker_or_generate_item
                                                 ;
 udp_nonansi_declaration                 :       attribute_instance_tail PRIMITIVE identifier '(' udp_port_list ')' ';'
                                                 | PRIMITIVE identifier '(' udp_port_list ')' ';'
@@ -2706,8 +2693,8 @@ event_expression                        :       edge_identifier expression IFF '
                                                 | expression IFF '(' expression ')'
                                                 | edge_identifier expression
                                                 | expression
-                                                | sequence_instance IFF '(' expression ')'
-                                                | sequence_instance
+                                                | tf_call IFF '(' expression ')'
+                                                | tf_call
                                                 | event_expression OR event_expression
                                                 | event_expression ',' event_expression
                                                 | '(' event_expression ')'
@@ -2733,7 +2720,6 @@ event_trigger                           :       '-''>' hierarchical_identifier
                                                 | '-''>''>' hierarchical_identifier ';'
                                                 ;
 disable_statement                       :       DISABLE hierarchical_identifier ';'
-                                                | DISABLE hierarchical_identifier ';'
                                                 | DISABLE FORK ';'
                                                 ;
 conditional_statement                   :       unique_priority IF '(' cond_predicate ')' statement_or_null else_if_tail ELSE statement_or_null
@@ -2816,7 +2802,7 @@ open_value_range                        :       value_range
                                                 ;
 pattern                                 :       '.' identifier
                                                 | '.' '*'
-                                                | constant_expression
+                                                | expression
                                                 | TAGGED identifier pattern
                                                 | TAGGED identifier
                                                 | '\'' '{' pattern_tail '}' //FIXME
@@ -2831,7 +2817,7 @@ member_identifier_pattern_tail          :       identifier ':' pattern ',' membe
 assignment_pattern                      :       '\'' '{' expression_tail '}'
                                                 | '\'' '{' structure_pattern_key_expression_tail '}'
                                                 | '\'' '{' array_pattern_key_expression_tail '}'
-                                                | '\'' '{' constant_expression '{' expression_tail '}' '}'
+                                                | '\'' '{' expression '{' expression_tail '}' '}'
                                                 ;
 expression_tail                         :       expression ',' expression_tail
                                                 | expression
@@ -2845,7 +2831,7 @@ array_pattern_key_expression_tail       :       array_pattern_key ':' expression
 structure_pattern_key                   :       identifier
                                                 | assignment_pattern_key
                                                 ;
-array_pattern_key                       :       constant_expression
+array_pattern_key                       :       expression
                                                 | assignment_pattern_key
                                                 ;
 assignment_pattern_key                  :       simple_type
@@ -3062,7 +3048,7 @@ rs_prod                                 :       production_item
                                                 | rs_repeat
                                                 | rs_case
                                                 ;
-production_item                         :       identifier paren_list_of_arguments
+production_item                         :       identifier '(' list_of_arguments ')'
                                                 | identifier
                                                 ;
 rs_if_else                              :       IF '(' expression ')' production_item ELSE production_item
@@ -3110,24 +3096,17 @@ parallel_path_description               :       '(' specify_input_terminal_descr
 full_path_description                   :       '(' list_of_path_inputs polarity_operator '*''>' list_of_path_outputs ')'
                                                 | '(' list_of_path_inputs '*''>' list_of_path_outputs ')'
                                                 ;
-list_of_path_inputs                     :       specify_input_terminal_descriptor ',' list_of_path_inputs
+list_of_path_inputs                     :       list_of_path_inputs ',' specify_input_terminal_descriptor
                                                 | specify_input_terminal_descriptor
                                                 ;
 list_of_path_outputs                    :       specify_output_terminal_descriptor ',' list_of_path_outputs
                                                 | specify_output_terminal_descriptor
                                                 ;
-specify_input_terminal_descriptor       :       input_identifier '[' constant_range_expression ']'
-                                                | input_identifier
-                                                ;
-specify_output_terminal_descriptor      :       output_identifier '[' constant_range_expression ']'
-                                                | output_identifier
-                                                ;
-input_identifier                        :       identifier
-                                                | identifier ',' identifier
-                                                ;
-output_identifier                       :       identifier
+specify_input_terminal_descriptor       :       identifier '[' constant_range_expression ']'
                                                 | identifier
-                                                | identifier ',' identifier
+                                                ;
+specify_output_terminal_descriptor      :       identifier '[' constant_range_expression ']'
+                                                | identifier
                                                 ;
 path_delay_value                        :       list_of_path_delay_expressions
                                                 | '(' list_of_path_delay_expressions ')'
@@ -3339,7 +3318,7 @@ delayed_reference                       :       identifier
                                                 ;
 end_edge_offset                         :       mintypmax_expression
                                                 ;
-event_based_flag                        :       constant_expression
+event_based_flag                        :       expression
                                                 ;
 notifier                                :       identifier
                                                 ;
@@ -3351,7 +3330,7 @@ timestamp_condition                     :       mintypmax_expression
                                                 ;
 start_edge_offset                       :       mintypmax_expression
                                                 ;
-threshold                               :       constant_expression
+threshold                               :       expression
                                                 ;
 timing_check_limit                      :       expression
                                                 ;
@@ -3413,16 +3392,16 @@ scalar_constant                         :       '1' '\'' 'b' '0' //FIXME
                                                 ;
 concatenation                           :       '{' expression_tail '}'
                                                 ;
-constant_concatenation                  :       '{' constant_expression_tail '}'
+constant_concatenation                  :       '{' expression_tail '}'
                                                 ;
-constant_multiple_concatenation         :       '{' constant_expression constant_concatenation '}'
+constant_multiple_concatenation         :       '{' expression constant_concatenation '}'
                                                 ;
 module_path_concatenation               :       '{' module_path_expression_tail '}'
                                                 ;
 module_path_expression_tail             :       module_path_expression ',' module_path_expression_tail
                                                 | module_path_expression
                                                 ;
-module_path_multiple_concatenation      :       '{' constant_expression module_path_concatenation '}';
+module_path_multiple_concatenation      :       '{' expression module_path_concatenation '}';
                                                 ;
 multiple_concatenation                  :       '{' expression concatenation '}'
                                                 ;
@@ -3433,7 +3412,7 @@ stream_operator                         :       '>''>'
                                                 | '<''<'
                                                 ;
 slice_size                              :       simple_type
-                                                | constant_expression
+                                                | expression
                                                 ;
 stream_concatenation                    :       '{' stream_expression_tail '}'
                                                 ;
@@ -3499,14 +3478,12 @@ method_call_body                        :       identifier attribute_instance_ta
 built_in_method_call                    :       array_manipulation_call
                                                 | randomize_call
                                                 ;
-array_manipulation_call                 :       array_method_name attribute_instance_tail list_of_arguments with_expression
+array_manipulation_call                 :       array_method_name attribute_instance_tail '(' list_of_arguments ')' with_expression
                                                 | array_method_name attribute_instance_tail with_expression
-                                                | array_method_name attribute_instance_tail list_of_arguments
-                                                | array_method_name attribute_instance_tail
-                                                | array_method_name list_of_arguments with_expression
+                                                | array_method_name attribute_instance_tail '(' list_of_arguments ')'
+                                                | array_method_name '(' list_of_arguments ')' with_expression
                                                 | array_method_name with_expression
-                                                | array_method_name list_of_arguments
-                                                | array_method_name
+                                                | array_method_name '(' list_of_arguments ')'
                                                 ;
 with_expression                         :       WITH '(' expression ')'
                                                 ;
@@ -3546,16 +3523,16 @@ inc_or_dec_expression                   :       inc_or_dec_operator attribute_in
 conditional_expression                  :       cond_predicate '?' attribute_instance_tail expression ':' expression
                                                 | cond_predicate '?' expression ':' expression
                                                 ;
-constant_expression                     :       constant_primary
-                                                | unary_operator attribute_instance_tail constant_primary
-                                                | constant_expression binary_operator attribute_instance_tail constant_expression
-                                                | constant_expression '?' attribute_instance_tail constant_expression ':' constant_expression
-                                                | unary_operator constant_primary
-                                                | constant_expression binary_operator constant_expression
-                                                | constant_expression '?' constant_expression ':' constant_expression
-                                                ;
-constant_mintypmax_expression           :       constant_expression
-                                                | constant_expression ':' constant_expression ':' constant_expression
+// expression                     :       constant_primary
+//                                                 | unary_operator attribute_instance_tail constant_primary
+//                                                 | expression binary_operator attribute_instance_tail expression
+//                                                 | expression '?' attribute_instance_tail expression ':' expression
+//                                                 | unary_operator constant_primary
+//                                                 | expression binary_operator expression
+//                                                 | expression '?' expression ':' expression
+//                                                 ;
+constant_mintypmax_expression           :       expression
+                                                | expression ':' expression ':' expression
                                                 ;
 constant_param_expression               :       constant_mintypmax_expression
                                                 | data_type
@@ -3565,33 +3542,33 @@ param_expression                        :       mintypmax_expression
                                                 | data_type
                                                 | '$'
                                                 ;
-constant_range_expression               :       constant_expression
+constant_range_expression               :       expression
                                                 | constant_part_select_range
                                                 ;
 constant_part_select_range              :       constant_range
                                                 | constant_indexed_range
                                                 ;
-constant_range                          :       constant_expression ':' constant_expression
+constant_range                          :       expression ':' expression
                                                 ;
-constant_indexed_range                  :       constant_expression '+'':' constant_expression
-                                                | constant_expression '-'':' constant_expression
+constant_indexed_range                  :       expression '+'':' expression
+                                                | expression '-'':' expression
                                                 ;
 expression                              :       primary
                                                 | unary_operator attribute_instance_tail primary
                                                 | unary_operator primary
                                                 | inc_or_dec_expression
                                                 | '(' operator_assignment ')'
+                                                | conditional_expression
+                                                | expression INSIDE '{' open_range_list '}'
+                                                //| tagged_union_expression
                                                 | expression binary_operator attribute_instance_tail expression
                                                 | expression binary_operator expression
-                                                | conditional_expression
-                                                | inside_expression
-                                                | tagged_union_expression
                                                 ;
 tagged_union_expression                 :       TAGGED identifier expression
                                                 | TAGGED identifier
                                                 ;
-inside_expression                       :       expression INSIDE '{' open_range_list '}'
-                                                ;
+//inside_expression                       :       
+//                                                ;
 value_range                             :       expression
                                                 | '[' expression ':' expression ']'
                                                 ;
@@ -3614,30 +3591,29 @@ module_path_mintypmax_expression        :       module_path_expression
 part_select_range                       :       constant_range
                                                 | indexed_range
                                                 ;
-indexed_range                           :       expression '+'':' constant_expression
-                                                | expression '-'':' constant_expression
+indexed_range                           :       expression '+'':' expression
+                                                | expression '-'':' expression
                                                 ;
-genvar_expression                       :       constant_expression
+genvar_expression                       :       expression
                                                 ;
-constant_primary                        :       primary_literal
-                                                | ps_parameter_identifier constant_select
-                                                | ps_parameter_identifier
-                                                | identifier '[' constant_range_expression ']'
-                                                | identifier constant_select
-                                                | identifier
-                                                | package_or_class_scope identifier
-                                                | constant_concatenation '[' constant_range_expression ']'
-                                                | constant_concatenation
-                                                | constant_multiple_concatenation '[' constant_range_expression ']'
-                                                | constant_multiple_concatenation
-                                                | constant_function_call
-                                                | constant_let_expression
-                                                | '(' constant_mintypmax_expression ')'
-                                                | constant_cast
-                                                | assignment_pattern_expression
-                                                | type_reference
-                                                | _NULL
-                                                ;
+// constant_primary                        :       primary_literal
+//                                                 | ps_parameter_identifier constant_select
+//                                                 | ps_parameter_identifier
+//                                                 | identifier '[' constant_range_expression ']'
+//                                                 | identifier constant_select
+//                                                 | identifier
+//                                                 | constant_concatenation '[' constant_range_expression ']'
+//                                                 | constant_concatenation
+//                                                 | constant_multiple_concatenation '[' constant_range_expression ']'
+//                                                 | constant_multiple_concatenation
+//                                                 | constant_function_call
+//                                                 | constant_let_expression
+//                                                 | '(' constant_mintypmax_expression ')'
+//                                                 | constant_cast
+//                                                 | assignment_pattern_expression
+//                                                 | type_reference
+//                                                 | _NULL
+//                                                 ;
 module_path_primary                     :       number
                                                 | identifier
                                                 | module_path_concatenation
@@ -3711,8 +3687,8 @@ nonrange_select                         :       identifier bit_select
                                                 | identifier
                                                 | bit_select
                                                 ;
-constant_bit_select                     :       constant_bit_select '[' constant_expression ']'
-                                                | '[' constant_expression ']'
+constant_bit_select                     :       constant_bit_select '[' expression ']'
+                                                | '[' expression ']'
                                                 ;
 constant_select                         :       member_constant_bit_select_tail '.' identifier constant_bit_select '[' constant_part_select_range ']'
                                                 | member_constant_bit_select_tail '.' identifier constant_bit_select
@@ -3723,7 +3699,7 @@ constant_select                         :       member_constant_bit_select_tail 
 member_constant_bit_select_tail         :       member_constant_bit_select_tail '.' identifier constant_bit_select
                                                 | '.' identifier constant_bit_select
                                                 ;
-constant_cast                           :       casting_type '\'' '(' constant_expression ')' // FIXME
+constant_cast                           :       casting_type '\'' '(' expression ')' // FIXME
                                                 ;
 constant_let_expression                 :       let_expression
                                                 ;
@@ -3790,7 +3766,7 @@ binary_operator                         :       '+'
                                                 | '<''<'
                                                 | '>''>''>'
                                                 | '<''<''<'
-                                                | '-''>'
+                                                // | '-''>' FIXME
                                                 | '<''-''>'
                                                 ;
 inc_or_dec_operator                     :       '+''+'
@@ -3827,15 +3803,6 @@ integral_number                         :       decimal_number
 sign                                    :       '+'
                                                 | '-'
                                                 ;
-size                                    :       non_zero_unsigned_number
-                                                ;
-non_zero_unsigned_number                :       underscore_decimal_tail
-                                                ;
-underscore_decimal_tail                 :       underscore_decimal_tail '_'
-                                                | underscore_decimal_tail decimal_digit
-                                                | '_'
-                                                | decimal_digit
-                                                ;
 real_number                             :       fixed_point_number
                                                 | unsigned_number dot_unsigned exp sign unsigned_number
                                                 | unsigned_number dot_unsigned exp unsigned_number
@@ -3849,20 +3816,7 @@ fixed_point_number                      :       unsigned_number '.' unsigned_num
 exp                                     :       'e'
                                                 | 'E'
                                                 ;
-unsigned_number                         :       underscore_decimal_tail
-                                                ;
-non_zero_decimal_digit                  :       '1'
-                                                | '2'
-                                                | '3'
-                                                | '4'
-                                                | '5'
-                                                | '6'
-                                                | '7'
-                                                | '8'
-                                                | '9'
-                                                ;
-decimal_digit                           :       '0'
-                                                | non_zero_decimal_digit
+unsigned_number                         :       decimal_number
                                                 ;
 unbased_unsized_literal                 :       '\'' '0' //FIXME
                                                 | '\'' '1'
@@ -3876,7 +3830,7 @@ attr_spec_tail                          :       attr_spec ',' attr_spec_tail
 attr_spec                               :       attr_name equal_constant_expression
                                                 | attr_name
                                                 ;
-equal_constant_expression               :       '=' constant_expression
+equal_constant_expression               :       '=' expression
                                                 ;
 attr_name                               :       identifier
                                                 ;
@@ -3901,13 +3855,6 @@ package_scope                           :       identifier SCOPE
 ps_identifier                           :       identifier
                                                 | package_scope identifier
                                                 ;
-ps_or_hierarchical_array_identifier     :       implicit_class_or_class_or_package hierarchical_identifier
-                                                | hierarchical_identifier
-                                                ;
-implicit_class_or_class_or_package      :       implicit_class_handle '.'
-                                                | class_scope
-                                                | package_scope
-                                                ;
 ps_or_hierarchical_identifier           :       ps_identifier
                                                 | hierarchical_identifier
                                                 ;
@@ -3919,7 +3866,7 @@ generate_constant_expression_tail       :       generate_constant_expression_tai
                                                 | identifier brace_constant_expression
                                                 | identifier
                                                 ;
-brace_constant_expression               :       '[' constant_expression ']'
+brace_constant_expression               :       '[' expression ']'
                                                 ;
 ps_type_identifier                      :       LOCAL SCOPE identifier
                                                 | class_scope identifier
