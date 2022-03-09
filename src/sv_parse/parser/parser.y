@@ -83,30 +83,29 @@
 
 %%
 
-source_text                             :       timeunits_declaration description description_tail
-                                                | description description_tail
-                                                | library_description library_description_tail
+source_text                             :       timeunits_declaration description_tail
+                                                | description_tail
+                                                | library_description_tail
                                                 |
                                                 ;
-library_description_tail                :       library_description library_description_tail
-                                                | 
+library_description_tail                :       library_description_tail library_description
+                                                | library_description
                                                 ;
 library_description                     :       library_declaration
                                                 | include_statement
-                                                | config_declaration
                                                 ;
 library_declaration                     :       LIBRARY identifier file_path_spec_tail ';'
                                                 | LIBRARY identifier INCDIR file_path_spec_tail ';'
                                                 ;
-file_path_spec_tail                     :       file_path_spec ',' file_path_spec_tail
+file_path_spec_tail                     :       file_path_spec_tail ',' file_path_spec
                                                 | file_path_spec
                                                 ;
 file_path_spec                          :       string_literal
                                                 ;
 include_statement                       :       INCLUDE file_path_spec ';'
                                                 ;
-description_tail                        :       description description_tail
-                                                |
+description_tail                        :       description_tail description
+                                                | description
                                                 ;
 description                             :       module_declaration
                                                 | udp_declaration
@@ -116,167 +115,164 @@ description                             :       module_declaration
                                                 | package_declaration
                                                 | package_item
                                                 | bind_directive
-                                                | attribute_instance attribute_instance_tail package_item
-                                                | attribute_instance attribute_instance_tail bind_directive
+                                                | attribute_instance_tail package_item
+                                                | attribute_instance_tail bind_directive
                                                 | config_declaration
                                                 ;
-attribute_instance_tail                 :       attribute_instance attribute_instance_tail
-                                                |
+attribute_instance_tail                 :       attribute_instance_tail attribute_instance
+                                                | attribute_instance
                                                 ;
-module_nonansi_header                   :       attribute_instance attribute_instance_tail module_keyword lifetime identifier package_import_declaration package_import_declaration_tail parameter_port_list list_of_ports ';'
-                                                | attribute_instance attribute_instance_tail module_keyword lifetime identifier package_import_declaration package_import_declaration_tail list_of_ports ';'
-                                                | attribute_instance attribute_instance_tail module_keyword lifetime identifier parameter_port_list list_of_ports ';'
-                                                | attribute_instance attribute_instance_tail module_keyword lifetime identifier list_of_ports ';'
-                                                | module_keyword lifetime identifier package_import_declaration package_import_declaration_tail parameter_port_list list_of_ports ';'
-                                                | module_keyword lifetime identifier package_import_declaration package_import_declaration_tail list_of_ports ';'
+module_nonansi_header                   :       attribute_instance_tail module_keyword lifetime identifier package_import_declaration_tail parameter_port_list list_of_ports ';'
+                                                | attribute_instance_tail module_keyword lifetime identifier package_import_declaration_tail list_of_ports ';'
+                                                | attribute_instance_tail module_keyword lifetime identifier parameter_port_list list_of_ports ';'
+                                                | attribute_instance_tail module_keyword lifetime identifier list_of_ports ';'
+                                                | module_keyword lifetime identifier package_import_declaration_tail parameter_port_list list_of_ports ';'
+                                                | module_keyword lifetime identifier package_import_declaration_tail list_of_ports ';'
                                                 | module_keyword lifetime identifier parameter_port_list list_of_ports ';'
                                                 | module_keyword lifetime identifier list_of_ports ';'
-                                                | attribute_instance attribute_instance_tail module_keyword identifier package_import_declaration package_import_declaration_tail parameter_port_list list_of_ports ';'
-                                                | attribute_instance attribute_instance_tail module_keyword identifier package_import_declaration package_import_declaration_tail list_of_ports ';'
-                                                | attribute_instance attribute_instance_tail module_keyword identifier parameter_port_list list_of_ports ';'
-                                                | attribute_instance attribute_instance_tail module_keyword identifier list_of_ports ';'
-                                                | module_keyword identifier package_import_declaration package_import_declaration_tail parameter_port_list list_of_ports ';'
-                                                | module_keyword identifier package_import_declaration package_import_declaration_tail list_of_ports ';'
+                                                | attribute_instance_tail module_keyword identifier package_import_declaration_tail parameter_port_list list_of_ports ';'
+                                                | attribute_instance_tail module_keyword identifier package_import_declaration_tail list_of_ports ';'
+                                                | attribute_instance_tail module_keyword identifier parameter_port_list list_of_ports ';'
+                                                | attribute_instance_tail module_keyword identifier list_of_ports ';'
+                                                | module_keyword identifier package_import_declaration_tail parameter_port_list list_of_ports ';'
+                                                | module_keyword identifier package_import_declaration_tail list_of_ports ';'
                                                 | module_keyword identifier parameter_port_list list_of_ports ';'
                                                 | module_keyword identifier list_of_ports ';'
                                                 ;
-package_import_declaration_tail         :       package_import_declaration package_import_declaration_tail
-                                                |
+package_import_declaration_tail         :       package_import_declaration_tail package_import_declaration
+                                                | package_import_declaration
                                                 ;
 // TODO: versions without port declarations
-module_ansi_header                      :       attribute_instance attribute_instance_tail module_keyword lifetime identifier package_import_declaration package_import_declaration_tail parameter_port_list list_of_port_declarations ';'
-                                                | attribute_instance attribute_instance_tail module_keyword lifetime identifier package_import_declaration package_import_declaration_tail list_of_port_declarations ';'
-                                                | attribute_instance attribute_instance_tail module_keyword lifetime identifier parameter_port_list list_of_port_declarations ';'
-                                                | attribute_instance attribute_instance_tail module_keyword lifetime identifier list_of_port_declarations ';'
-                                                | module_keyword lifetime identifier package_import_declaration package_import_declaration_tail parameter_port_list list_of_port_declarations ';'
-                                                | module_keyword lifetime identifier package_import_declaration package_import_declaration_tail list_of_port_declarations ';'
+module_ansi_header                      :       attribute_instance_tail module_keyword lifetime identifier package_import_declaration_tail parameter_port_list list_of_port_declarations ';'
+                                                | attribute_instance_tail module_keyword lifetime identifier package_import_declaration_tail list_of_port_declarations ';'
+                                                | attribute_instance_tail module_keyword lifetime identifier parameter_port_list list_of_port_declarations ';'
+                                                | attribute_instance_tail module_keyword lifetime identifier list_of_port_declarations ';'
+                                                | module_keyword lifetime identifier package_import_declaration_tail parameter_port_list list_of_port_declarations ';'
+                                                | module_keyword lifetime identifier package_import_declaration_tail list_of_port_declarations ';'
                                                 | module_keyword lifetime identifier parameter_port_list list_of_port_declarations ';'
                                                 | module_keyword lifetime identifier list_of_port_declarations ';'
-                                                | attribute_instance attribute_instance_tail module_keyword identifier package_import_declaration package_import_declaration_tail parameter_port_list list_of_port_declarations ';'
-                                                | attribute_instance attribute_instance_tail module_keyword identifier package_import_declaration package_import_declaration_tail list_of_port_declarations ';'
-                                                | attribute_instance attribute_instance_tail module_keyword identifier parameter_port_list list_of_port_declarations ';'
-                                                | attribute_instance attribute_instance_tail module_keyword identifier list_of_port_declarations ';'
-                                                | module_keyword identifier package_import_declaration package_import_declaration_tail parameter_port_list list_of_port_declarations ';'
-                                                | module_keyword identifier package_import_declaration package_import_declaration_tail list_of_port_declarations ';'
+                                                | attribute_instance_tail module_keyword identifier package_import_declaration_tail parameter_port_list list_of_port_declarations ';'
+                                                | attribute_instance_tail module_keyword identifier package_import_declaration_tail list_of_port_declarations ';'
+                                                | attribute_instance_tail module_keyword identifier parameter_port_list list_of_port_declarations ';'
+                                                | attribute_instance_tail module_keyword identifier list_of_port_declarations ';'
+                                                | module_keyword identifier package_import_declaration_tail parameter_port_list list_of_port_declarations ';'
+                                                | module_keyword identifier package_import_declaration_tail list_of_port_declarations ';'
                                                 | module_keyword identifier parameter_port_list list_of_port_declarations ';'
                                                 | module_keyword identifier list_of_port_declarations ';'
                                                 ;
-module_declaration                      :       module_nonansi_header timeunits_declaration module_item module_item_tail ENDMODULE endmodule
-                                                | module_nonansi_header timeunits_declaration module_item module_item_tail ENDMODULE
-                                                | module_nonansi_header module_item module_item_tail ENDMODULE endmodule
-                                                | module_nonansi_header module_item module_item_tail ENDMODULE
+module_declaration                      :       module_nonansi_header timeunits_declaration module_item_tail ENDMODULE endmodule
+                                                | module_nonansi_header timeunits_declaration module_item_tail ENDMODULE
+                                                | module_nonansi_header module_item_tail ENDMODULE endmodule
+                                                | module_nonansi_header module_item_tail ENDMODULE
                                                 | module_nonansi_header ENDMODULE endmodule
                                                 | module_nonansi_header ENDMODULE
-                                                | module_ansi_header timeunits_declaration module_item module_item_tail ENDMODULE endmodule
-                                                | module_ansi_header timeunits_declaration module_item module_item_tail ENDMODULE
-                                                | module_ansi_header module_item module_item_tail ENDMODULE endmodule
-                                                | module_ansi_header module_item module_item_tail ENDMODULE
+                                                | module_ansi_header timeunits_declaration module_item_tail ENDMODULE endmodule
+                                                | module_ansi_header timeunits_declaration module_item_tail ENDMODULE
+                                                | module_ansi_header module_item_tail ENDMODULE endmodule
+                                                | module_ansi_header module_item_tail ENDMODULE
                                                 | module_ansi_header ENDMODULE endmodule
                                                 | module_ansi_header ENDMODULE
-                                                | attribute_instance attribute_instance_tail module_keyword lifetime identifier '(' '.' '*' ')' ';' timeunits_declaration module_item module_item_tail ENDMODULE endmodule
-                                                | attribute_instance attribute_instance_tail module_keyword lifetime identifier '(' '.' '*' ')' ';' timeunits_declaration module_item module_item_tail ENDMODULE
-                                                | attribute_instance attribute_instance_tail module_keyword lifetime identifier '(' '.' '*' ')' ';' timeunits_declaration ENDMODULE endmodule
-                                                | attribute_instance attribute_instance_tail module_keyword lifetime identifier '(' '.' '*' ')' ';' timeunits_declaration ENDMODULE
-                                                | attribute_instance attribute_instance_tail module_keyword lifetime identifier '(' '.' '*' ')' ';' module_item module_item_tail ENDMODULE endmodule
-                                                | attribute_instance attribute_instance_tail module_keyword lifetime identifier '(' '.' '*' ')' ';' module_item module_item_tail ENDMODULE
-                                                | attribute_instance attribute_instance_tail module_keyword identifier '(' '.' '*' ')' ';' timeunits_declaration module_item module_item_tail ENDMODULE endmodule
-                                                | attribute_instance attribute_instance_tail module_keyword identifier '(' '.' '*' ')' ';' timeunits_declaration module_item module_item_tail ENDMODULE
-                                                | module_keyword lifetime identifier '(' '.' '*' ')' ';' timeunits_declaration module_item module_item_tail ENDMODULE endmodule
-                                                | module_keyword lifetime identifier '(' '.' '*' ')' ';' timeunits_declaration module_item module_item_tail ENDMODULE
+                                                | attribute_instance_tail module_keyword lifetime identifier '(' '.' '*' ')' ';' timeunits_declaration module_item_tail ENDMODULE endmodule
+                                                | attribute_instance_tail module_keyword lifetime identifier '(' '.' '*' ')' ';' timeunits_declaration module_item_tail ENDMODULE
+                                                | attribute_instance_tail module_keyword lifetime identifier '(' '.' '*' ')' ';' timeunits_declaration ENDMODULE endmodule
+                                                | attribute_instance_tail module_keyword lifetime identifier '(' '.' '*' ')' ';' timeunits_declaration ENDMODULE
+                                                | attribute_instance_tail module_keyword lifetime identifier '(' '.' '*' ')' ';' module_item_tail ENDMODULE endmodule
+                                                | attribute_instance_tail module_keyword lifetime identifier '(' '.' '*' ')' ';' module_item_tail ENDMODULE
+                                                | attribute_instance_tail module_keyword identifier '(' '.' '*' ')' ';' timeunits_declaration module_item_tail ENDMODULE endmodule
+                                                | attribute_instance_tail module_keyword identifier '(' '.' '*' ')' ';' timeunits_declaration module_item_tail ENDMODULE
+                                                | module_keyword lifetime identifier '(' '.' '*' ')' ';' timeunits_declaration module_item_tail ENDMODULE endmodule
+                                                | module_keyword lifetime identifier '(' '.' '*' ')' ';' timeunits_declaration module_item_tail ENDMODULE
                                                 | module_keyword lifetime identifier '(' '.' '*' ')' ';' timeunits_declaration ENDMODULE endmodule
                                                 | module_keyword lifetime identifier '(' '.' '*' ')' ';' timeunits_declaration ENDMODULE
-                                                | module_keyword lifetime identifier '(' '.' '*' ')' ';' module_item module_item_tail ENDMODULE endmodule
-                                                | module_keyword lifetime identifier '(' '.' '*' ')' ';' module_item module_item_tail ENDMODULE
-                                                | module_keyword identifier '(' '.' '*' ')' ';' timeunits_declaration module_item module_item_tail ENDMODULE endmodule
-                                                | module_keyword identifier '(' '.' '*' ')' ';' timeunits_declaration module_item module_item_tail ENDMODULE
+                                                | module_keyword lifetime identifier '(' '.' '*' ')' ';' module_item_tail ENDMODULE endmodule
+                                                | module_keyword lifetime identifier '(' '.' '*' ')' ';' module_item_tail ENDMODULE
+                                                | module_keyword identifier '(' '.' '*' ')' ';' timeunits_declaration module_item_tail ENDMODULE endmodule
+                                                | module_keyword identifier '(' '.' '*' ')' ';' timeunits_declaration module_item_tail ENDMODULE
                                                 | module_keyword identifier '(' '.' '*' ')' ';' timeunits_declaration ENDMODULE endmodule
                                                 | module_keyword identifier '(' '.' '*' ')' ';' timeunits_declaration ENDMODULE
-                                                | module_keyword identifier '(' '.' '*' ')' ';' module_item module_item_tail ENDMODULE endmodule
-                                                | module_keyword identifier '(' '.' '*' ')' ';' module_item module_item_tail ENDMODULE
+                                                | module_keyword identifier '(' '.' '*' ')' ';' module_item_tail ENDMODULE endmodule
+                                                | module_keyword identifier '(' '.' '*' ')' ';' module_item_tail ENDMODULE
                                                 | module_keyword identifier '(' '.' '*' ')' ';' ENDMODULE endmodule
                                                 | module_keyword identifier '(' '.' '*' ')' ';' ENDMODULE
                                                 | EXTERN module_nonansi_header
                                                 | EXTERN module_ansi_header
                                                 ;
-module_item_tail                        :       module_item module_item_tail
-                                                |
-                                                ;
-non_port_module_item_tail               :       non_port_module_item non_port_module_item_tail
-                                                |
+module_item_tail                        :       module_item_tail module_item
+                                                | module_item
                                                 ;
 endmodule                               :       ':' identifier
                                                 ;
 module_keyword                          :       MODULE
                                                 | MACROMODULE
                                                 ;
-interface_declaration                   :       interface_nonansi_header timeunits_declaration interface_item interface_item_tail ENDINTERFACE endinterface
-                                                | interface_nonansi_header timeunits_declaration interface_item interface_item_tail ENDINTERFACE
-                                                | interface_nonansi_header interface_item interface_item_tail ENDINTERFACE endinterface
-                                                | interface_nonansi_header interface_item interface_item_tail ENDINTERFACE
-                                                | interface_ansi_header timeunits_declaration non_port_interface_item non_port_interface_item_tail ENDINTERFACE endinterface
-                                                | interface_ansi_header timeunits_declaration non_port_interface_item non_port_interface_item_tail ENDINTERFACE
-                                                | interface_ansi_header non_port_interface_item non_port_interface_item_tail ENDINTERFACE endinterface
-                                                | interface_ansi_header non_port_interface_item non_port_interface_item_tail ENDINTERFACE
+interface_declaration                   :       interface_nonansi_header timeunits_declaration interface_item_tail ENDINTERFACE endinterface
+                                                | interface_nonansi_header timeunits_declaration interface_item_tail ENDINTERFACE
+                                                | interface_nonansi_header interface_item_tail ENDINTERFACE endinterface
+                                                | interface_nonansi_header interface_item_tail ENDINTERFACE
+                                                | interface_ansi_header timeunits_declaration non_port_interface_item_tail ENDINTERFACE endinterface
+                                                | interface_ansi_header timeunits_declaration non_port_interface_item_tail ENDINTERFACE
+                                                | interface_ansi_header non_port_interface_item_tail ENDINTERFACE endinterface
+                                                | interface_ansi_header non_port_interface_item_tail ENDINTERFACE
                                                 | interface_ansi_header timeunits_declaration ENDINTERFACE endinterface
                                                 | interface_ansi_header timeunits_declaration ENDINTERFACE
                                                 | interface_ansi_header ENDINTERFACE endinterface
                                                 | interface_ansi_header ENDINTERFACE
-                                                | attribute_instance attribute_instance_tail INTERFACE identifier '(' '.' '*' ')' ';' timeunits_declaration interface_item interface_item_tail ENDINTERFACE endinterface
-                                                | INTERFACE identifier '(' '.' '*' ')' ';' timeunits_declaration interface_item interface_item_tail ENDINTERFACE endinterface
-                                                | attribute_instance attribute_instance_tail INTERFACE identifier '(' '.' '*' ')' ';' timeunits_declaration interface_item interface_item_tail ENDINTERFACE
-                                                | INTERFACE identifier '(' '.' '*' ')' ';' timeunits_declaration interface_item interface_item_tail ENDINTERFACE
-                                                | attribute_instance attribute_instance_tail INTERFACE identifier '(' '.' '*' ')' ';' interface_item interface_item_tail ENDINTERFACE endinterface
-                                                | INTERFACE identifier '(' '.' '*' ')' ';' interface_item interface_item_tail ENDINTERFACE endinterface
-                                                | attribute_instance attribute_instance_tail INTERFACE identifier '(' '.' '*' ')' ';' interface_item interface_item_tail ENDINTERFACE
-                                                | INTERFACE identifier '(' '.' '*' ')' ';' interface_item interface_item_tail ENDINTERFACE
+                                                | attribute_instance_tail INTERFACE identifier '(' '.' '*' ')' ';' timeunits_declaration interface_item_tail ENDINTERFACE endinterface
+                                                | INTERFACE identifier '(' '.' '*' ')' ';' timeunits_declaration interface_item_tail ENDINTERFACE endinterface
+                                                | attribute_instance_tail INTERFACE identifier '(' '.' '*' ')' ';' timeunits_declaration interface_item_tail ENDINTERFACE
+                                                | INTERFACE identifier '(' '.' '*' ')' ';' timeunits_declaration interface_item_tail ENDINTERFACE
+                                                | attribute_instance_tail INTERFACE identifier '(' '.' '*' ')' ';' interface_item_tail ENDINTERFACE endinterface
+                                                | INTERFACE identifier '(' '.' '*' ')' ';' interface_item_tail ENDINTERFACE endinterface
+                                                | attribute_instance_tail INTERFACE identifier '(' '.' '*' ')' ';' interface_item_tail ENDINTERFACE
+                                                | INTERFACE identifier '(' '.' '*' ')' ';' interface_item_tail ENDINTERFACE
                                                 | interface_nonansi_header timeunits_declaration ENDINTERFACE endinterface
                                                 | interface_nonansi_header timeunits_declaration ENDINTERFACE
                                                 | interface_nonansi_header ENDINTERFACE endinterface
                                                 | interface_nonansi_header ENDINTERFACE
-                                                | interface_ansi_header timeunits_declaration non_port_interface_item non_port_interface_item_tail ENDINTERFACE endinterface
-                                                | interface_ansi_header timeunits_declaration non_port_interface_item non_port_interface_item_tail ENDINTERFACE
-                                                | interface_ansi_header non_port_interface_item non_port_interface_item_tail ENDINTERFACE endinterface
-                                                | interface_ansi_header non_port_interface_item non_port_interface_item_tail ENDINTERFACE
+                                                | interface_ansi_header timeunits_declaration non_port_interface_item_tail ENDINTERFACE endinterface
+                                                | interface_ansi_header timeunits_declaration non_port_interface_item_tail ENDINTERFACE
+                                                | interface_ansi_header non_port_interface_item_tail ENDINTERFACE endinterface
+                                                | interface_ansi_header non_port_interface_item_tail ENDINTERFACE
                                                 | interface_ansi_header timeunits_declaration ENDINTERFACE endinterface
                                                 | interface_ansi_header timeunits_declaration ENDINTERFACE
                                                 | interface_ansi_header ENDINTERFACE endinterface
                                                 | interface_ansi_header ENDINTERFACE
-                                                | attribute_instance attribute_instance_tail INTERFACE identifier '(' '.' '*' ')' ';' timeunits_declaration ENDINTERFACE endinterface
+                                                | attribute_instance_tail INTERFACE identifier '(' '.' '*' ')' ';' timeunits_declaration ENDINTERFACE endinterface
                                                 | INTERFACE identifier '(' '.' '*' ')' ';' timeunits_declaration ENDINTERFACE endinterface
-                                                | attribute_instance attribute_instance_tail INTERFACE identifier '(' '.' '*' ')' ';' timeunits_declaration ENDINTERFACE
+                                                | attribute_instance_tail INTERFACE identifier '(' '.' '*' ')' ';' timeunits_declaration ENDINTERFACE
                                                 | INTERFACE identifier '(' '.' '*' ')' ';' timeunits_declaration ENDINTERFACE
-                                                | attribute_instance attribute_instance_tail INTERFACE identifier '(' '.' '*' ')' ';' ENDINTERFACE endinterface
+                                                | attribute_instance_tail INTERFACE identifier '(' '.' '*' ')' ';' ENDINTERFACE endinterface
                                                 | INTERFACE identifier '(' '.' '*' ')' ';' ENDINTERFACE endinterface
-                                                | attribute_instance attribute_instance_tail INTERFACE identifier '(' '.' '*' ')' ';' ENDINTERFACE
+                                                | attribute_instance_tail INTERFACE identifier '(' '.' '*' ')' ';' ENDINTERFACE
                                                 | INTERFACE identifier '(' '.' '*' ')' ';' ENDINTERFACE
                                                 | EXTERN interface_nonansi_header
                                                 | EXTERN interface_ansi_header
                                                 ;
-interface_item_tail                     :       interface_item interface_item_tail
-                                                |
+interface_item_tail                     :       interface_item_tail interface_item
+                                                | interface_item
                                                 ;
-non_port_interface_item_tail            :       non_port_interface_item non_port_interface_item_tail
-                                                |
+non_port_interface_item_tail            :       non_port_interface_item_tail non_port_interface_item
+                                                | non_port_interface_item
                                                 ;
 endinterface                            :       ':' identifier
                                                 ;
-interface_nonansi_header                :       attribute_instance attribute_instance_tail INTERFACE lifetime identifier package_import_declaration_tail parameter_port_list list_of_ports ';'
-                                                | attribute_instance attribute_instance_tail INTERFACE lifetime identifier package_import_declaration_tail list_of_ports ';'
-                                                | attribute_instance attribute_instance_tail INTERFACE identifier package_import_declaration_tail parameter_port_list list_of_ports ';'
-                                                | attribute_instance attribute_instance_tail INTERFACE identifier package_import_declaration_tail list_of_ports ';'
+interface_nonansi_header                :       attribute_instance_tail INTERFACE lifetime identifier package_import_declaration_tail parameter_port_list list_of_ports ';'
+                                                | attribute_instance_tail INTERFACE lifetime identifier package_import_declaration_tail list_of_ports ';'
+                                                | attribute_instance_tail INTERFACE identifier package_import_declaration_tail parameter_port_list list_of_ports ';'
+                                                | attribute_instance_tail INTERFACE identifier package_import_declaration_tail list_of_ports ';'
                                                 | INTERFACE lifetime identifier package_import_declaration_tail parameter_port_list list_of_ports ';'
                                                 | INTERFACE lifetime identifier package_import_declaration_tail list_of_ports ';'
                                                 | INTERFACE identifier package_import_declaration_tail parameter_port_list list_of_ports ';'
                                                 | INTERFACE identifier package_import_declaration_tail list_of_ports ';'
                                                 ;
-interface_ansi_header                   :       attribute_instance attribute_instance_tail INTERFACE lifetime identifier package_import_declaration_tail parameter_port_list list_of_port_declarations ';'
-                                                | attribute_instance attribute_instance_tail INTERFACE lifetime identifier package_import_declaration_tail parameter_port_list ';'
-                                                | attribute_instance attribute_instance_tail INTERFACE lifetime identifier package_import_declaration_tail list_of_port_declarations ';'
-                                                | attribute_instance attribute_instance_tail INTERFACE lifetime identifier package_import_declaration_tail ';'
-                                                | attribute_instance attribute_instance_tail INTERFACE identifier package_import_declaration_tail parameter_port_list list_of_port_declarations ';'
-                                                | attribute_instance attribute_instance_tail INTERFACE identifier package_import_declaration_tail parameter_port_list ';'
-                                                | attribute_instance attribute_instance_tail INTERFACE identifier package_import_declaration_tail list_of_port_declarations ';'
-                                                | attribute_instance attribute_instance_tail INTERFACE identifier package_import_declaration_tail ';'
+interface_ansi_header                   :       attribute_instance_tail INTERFACE lifetime identifier package_import_declaration_tail parameter_port_list list_of_port_declarations ';'
+                                                | attribute_instance_tail INTERFACE lifetime identifier package_import_declaration_tail parameter_port_list ';'
+                                                | attribute_instance_tail INTERFACE lifetime identifier package_import_declaration_tail list_of_port_declarations ';'
+                                                | attribute_instance_tail INTERFACE lifetime identifier package_import_declaration_tail ';'
+                                                | attribute_instance_tail INTERFACE identifier package_import_declaration_tail parameter_port_list list_of_port_declarations ';'
+                                                | attribute_instance_tail INTERFACE identifier package_import_declaration_tail parameter_port_list ';'
+                                                | attribute_instance_tail INTERFACE identifier package_import_declaration_tail list_of_port_declarations ';'
+                                                | attribute_instance_tail INTERFACE identifier package_import_declaration_tail ';'
                                                 | INTERFACE lifetime identifier package_import_declaration_tail parameter_port_list list_of_port_declarations ';'
                                                 | INTERFACE lifetime identifier package_import_declaration_tail parameter_port_list ';'
                                                 | INTERFACE lifetime identifier package_import_declaration_tail list_of_port_declarations ';'
@@ -290,46 +286,62 @@ program_declaration                     :       program_nonansi_header timeunits
                                                 | program_nonansi_header timeunits_declaration program_item_tail ENDPROGRAM
                                                 | program_nonansi_header program_item_tail ENDPROGRAM endprogram
                                                 | program_nonansi_header program_item_tail ENDPROGRAM
+                                                | program_nonansi_header timeunits_declaration ENDPROGRAM endprogram
+                                                | program_nonansi_header timeunits_declaration ENDPROGRAM
+                                                | program_nonansi_header ENDPROGRAM endprogram
+                                                | program_nonansi_header ENDPROGRAM
                                                 | program_ansi_header timeunits_declaration non_port_program_item_tail ENDPROGRAM endprogram
                                                 | program_ansi_header timeunits_declaration non_port_program_item_tail ENDPROGRAM
                                                 | program_ansi_header non_port_program_item_tail ENDPROGRAM endprogram
                                                 | program_ansi_header non_port_program_item_tail ENDPROGRAM
-                                                | attribute_instance attribute_instance_tail PROGRAM identifier '(' '.' '*' ')' ';' timeunits_declaration program_item_tail ENDPROGRAM endprogram
-                                                | attribute_instance attribute_instance_tail PROGRAM identifier '(' '.' '*' ')' ';' timeunits_declaration program_item_tail ENDPROGRAM
-                                                | attribute_instance attribute_instance_tail PROGRAM identifier '(' '.' '*' ')' ';' program_item_tail ENDPROGRAM endprogram
-                                                | attribute_instance attribute_instance_tail PROGRAM identifier '(' '.' '*' ')' ';' program_item_tail ENDPROGRAM
+                                                | program_ansi_header timeunits_declaration ENDPROGRAM endprogram
+                                                | program_ansi_header timeunits_declaration ENDPROGRAM
+                                                | program_ansi_header ENDPROGRAM endprogram
+                                                | program_ansi_header ENDPROGRAM
+                                                | attribute_instance_tail PROGRAM identifier '(' '.' '*' ')' ';' timeunits_declaration program_item_tail ENDPROGRAM endprogram
+                                                | attribute_instance_tail PROGRAM identifier '(' '.' '*' ')' ';' timeunits_declaration program_item_tail ENDPROGRAM
+                                                | attribute_instance_tail PROGRAM identifier '(' '.' '*' ')' ';' program_item_tail ENDPROGRAM endprogram
+                                                | attribute_instance_tail PROGRAM identifier '(' '.' '*' ')' ';' program_item_tail ENDPROGRAM
                                                 | PROGRAM identifier '(' '.' '*' ')' ';' timeunits_declaration program_item_tail ENDPROGRAM endprogram
                                                 | PROGRAM identifier '(' '.' '*' ')' ';' timeunits_declaration program_item_tail ENDPROGRAM
                                                 | PROGRAM identifier '(' '.' '*' ')' ';' program_item_tail ENDPROGRAM endprogram
                                                 | PROGRAM identifier '(' '.' '*' ')' ';' program_item_tail ENDPROGRAM
+                                                | attribute_instance_tail PROGRAM identifier '(' '.' '*' ')' ';' timeunits_declaration ENDPROGRAM endprogram
+                                                | attribute_instance_tail PROGRAM identifier '(' '.' '*' ')' ';' timeunits_declaration ENDPROGRAM
+                                                | attribute_instance_tail PROGRAM identifier '(' '.' '*' ')' ';' ENDPROGRAM endprogram
+                                                | attribute_instance_tail PROGRAM identifier '(' '.' '*' ')' ';' ENDPROGRAM
+                                                | PROGRAM identifier '(' '.' '*' ')' ';' timeunits_declaration ENDPROGRAM endprogram
+                                                | PROGRAM identifier '(' '.' '*' ')' ';' timeunits_declaration ENDPROGRAM
+                                                | PROGRAM identifier '(' '.' '*' ')' ';' ENDPROGRAM endprogram
+                                                | PROGRAM identifier '(' '.' '*' ')' ';' ENDPROGRAM
                                                 | EXTERN program_nonansi_header
                                                 | EXTERN program_ansi_header
                                                 ;
-program_item_tail                       :       program_item program_item_tail
-                                                |
+program_item_tail                       :       program_item_tail program_item
+                                                | program_item
                                                 ;
 endprogram                              :       ':' identifier
                                                 ;
-non_port_program_item_tail              :       non_port_program_item non_port_program_item_tail
-                                                |
+non_port_program_item_tail              :       non_port_program_item_tail non_port_program_item
+                                                | non_port_program_item
                                                 ;
-program_nonansi_header                  :       attribute_instance attribute_instance_tail PROGRAM lifetime identifier package_import_declaration_tail parameter_port_list list_of_ports ';'
-                                                | attribute_instance attribute_instance_tail PROGRAM lifetime identifier package_import_declaration_tail list_of_ports ';'
-                                                | attribute_instance attribute_instance_tail PROGRAM identifier package_import_declaration_tail parameter_port_list list_of_ports ';'
-                                                | attribute_instance attribute_instance_tail PROGRAM identifier package_import_declaration_tail list_of_ports ';'
+program_nonansi_header                  :       attribute_instance_tail PROGRAM lifetime identifier package_import_declaration_tail parameter_port_list list_of_ports ';'
+                                                | attribute_instance_tail PROGRAM lifetime identifier package_import_declaration_tail list_of_ports ';'
+                                                | attribute_instance_tail PROGRAM identifier package_import_declaration_tail parameter_port_list list_of_ports ';'
+                                                | attribute_instance_tail PROGRAM identifier package_import_declaration_tail list_of_ports ';'
                                                 | PROGRAM lifetime identifier package_import_declaration_tail parameter_port_list list_of_ports ';'
                                                 | PROGRAM lifetime identifier package_import_declaration_tail list_of_ports ';'
                                                 | PROGRAM identifier package_import_declaration_tail parameter_port_list list_of_ports ';'
                                                 | PROGRAM identifier package_import_declaration_tail list_of_ports ';'
                                                 ;
-program_ansi_header                     :       attribute_instance attribute_instance_tail PROGRAM lifetime identifier package_import_declaration_tail parameter_port_list list_of_port_declarations ';'
-                                                | attribute_instance attribute_instance_tail PROGRAM lifetime identifier package_import_declaration_tail parameter_port_list ';'
-                                                | attribute_instance attribute_instance_tail PROGRAM lifetime identifier package_import_declaration_tail list_of_port_declarations ';'
-                                                | attribute_instance attribute_instance_tail PROGRAM lifetime identifier package_import_declaration_tail ';'
-                                                | attribute_instance attribute_instance_tail PROGRAM identifier package_import_declaration_tail parameter_port_list list_of_port_declarations ';'
-                                                | attribute_instance attribute_instance_tail PROGRAM identifier package_import_declaration_tail parameter_port_list ';'
-                                                | attribute_instance attribute_instance_tail PROGRAM identifier package_import_declaration_tail list_of_port_declarations ';'
-                                                | attribute_instance attribute_instance_tail PROGRAM identifier package_import_declaration_tail ';'
+program_ansi_header                     :       attribute_instance_tail PROGRAM lifetime identifier package_import_declaration_tail parameter_port_list list_of_port_declarations ';'
+                                                | attribute_instance_tail PROGRAM lifetime identifier package_import_declaration_tail parameter_port_list ';'
+                                                | attribute_instance_tail PROGRAM lifetime identifier package_import_declaration_tail list_of_port_declarations ';'
+                                                | attribute_instance_tail PROGRAM lifetime identifier package_import_declaration_tail ';'
+                                                | attribute_instance_tail PROGRAM identifier package_import_declaration_tail parameter_port_list list_of_port_declarations ';'
+                                                | attribute_instance_tail PROGRAM identifier package_import_declaration_tail parameter_port_list ';'
+                                                | attribute_instance_tail PROGRAM identifier package_import_declaration_tail list_of_port_declarations ';'
+                                                | attribute_instance_tail PROGRAM identifier package_import_declaration_tail ';'
                                                 | PROGRAM lifetime identifier package_import_declaration_tail parameter_port_list list_of_port_declarations ';'
                                                 | PROGRAM lifetime identifier package_import_declaration_tail parameter_port_list ';'
                                                 | PROGRAM lifetime identifier package_import_declaration_tail list_of_port_declarations ';'
@@ -343,13 +355,17 @@ checker_declaration                     :       CHECKER identifier paren_checker
                                                 | CHECKER identifier paren_checker_port_list ';' checker_or_generate_item_tail ENDCHECKER
                                                 | CHECKER identifier ';' checker_or_generate_item_tail ENDCHECKER endchecker
                                                 | CHECKER identifier ';' checker_or_generate_item_tail ENDCHECKER
+                                                | CHECKER identifier paren_checker_port_list ';' ENDCHECKER endchecker
+                                                | CHECKER identifier paren_checker_port_list ';' ENDCHECKER
+                                                | CHECKER identifier ';' ENDCHECKER endchecker
+                                                | CHECKER identifier ';' ENDCHECKER
                                                 ;
 paren_checker_port_list                 :       '(' checker_port_list ')'
                                                 | '(' ')'
                                                 ;
-checker_or_generate_item_tail           :       attribute_instance attribute_instance_tail checker_or_generate_item checker_or_generate_item_tail
-                                                | checker_or_generate_item checker_or_generate_item_tail
-                                                |
+checker_or_generate_item_tail           :       attribute_instance_tail checker_or_generate_item_tail checker_or_generate_item
+                                                | checker_or_generate_item_tail checker_or_generate_item
+                                                | checker_or_generate_item
                                                 ;
 endchecker                              :       ':' identifier
                                                 ;
@@ -417,6 +433,7 @@ class_declaration                       :       VIRTUAL CLASS lifetime identifie
                                                 | CLASS identifier implements ';' class_item_tail ENDCLASS
                                                 | CLASS identifier ';' class_item_tail ENDCLASS endclass
                                                 | CLASS identifier ';' class_item_tail ENDCLASS
+// TODO: versions w/o class_item_tail
                                                 ;
 extends                                 :       EXTENDS class_type list_of_arguments
                                                 | EXTENDS class_type
@@ -428,8 +445,8 @@ implements                              :       IMPLEMENTS interface_class_type_
 interface_class_type_tail               :       interface_class_type ',' interface_class_type_tail
                                                 | interface_class_type
                                                 ;
-class_item_tail                         :       class_item class_item_tail
-                                                |
+class_item_tail                         :       class_item_tail class_item
+                                                | class_item
                                                 ;
 endclass                                :       ':' identifier
                                                 ;
@@ -444,17 +461,25 @@ interface_class_declaration             :       INTERFACE CLASS identifier param
                                                 | INTERFACE CLASS identifier ';' interface_class_item_tail ENDCLASS endclass
                                                 | INTERFACE CLASS identifier extends_interface_class ';' interface_class_item_tail ENDCLASS
                                                 | INTERFACE CLASS identifier ';' interface_class_item_tail ENDCLASS
+                                                | INTERFACE CLASS identifier parameter_port_list extends_interface_class ';' ENDCLASS endclass
+                                                | INTERFACE CLASS identifier parameter_port_list ';' ENDCLASS endclass
+                                                | INTERFACE CLASS identifier parameter_port_list extends_interface_class ';' ENDCLASS
+                                                | INTERFACE CLASS identifier parameter_port_list ';' ENDCLASS
+                                                | INTERFACE CLASS identifier extends_interface_class ';' ENDCLASS endclass
+                                                | INTERFACE CLASS identifier ';' ENDCLASS endclass
+                                                | INTERFACE CLASS identifier extends_interface_class ';' ENDCLASS
+                                                | INTERFACE CLASS identifier ';' ENDCLASS
                                                 ;
 extends_interface_class                 :       EXTENDS interface_class_type_tail
                                                 ;
 interface_class_type_tail               :       interface_class_type ',' interface_class_type_tail
                                                 | interface_class_type
                                                 ;
-interface_class_item_tail               :       interface_class_item interface_class_item_tail
-                                                |
+interface_class_item_tail               :       interface_class_item_tail interface_class_item
+                                                | interface_class_item
                                                 ;
 interface_class_item                    :       type_declaration
-                                                | attribute_instance attribute_instance_tail interface_class_method
+                                                | attribute_instance_tail interface_class_method
                                                 | interface_class_method
                                                 | local_parameter_declaration ';'
                                                 | parameter_declaration ';'
@@ -462,14 +487,14 @@ interface_class_item                    :       type_declaration
                                                 ;
 interface_class_method                  :       PURE VIRTUAL method_prototype ';'
                                                 ;
-package_declaration                     :       attribute_instance attribute_instance_tail PACKAGE lifetime identifier ';' timeunits_declaration package_item_tail ENDPACKAGE endpackage
-                                                | attribute_instance attribute_instance_tail PACKAGE lifetime identifier ';' timeunits_declaration package_item_tail ENDPACKAGE
-                                                | attribute_instance attribute_instance_tail PACKAGE identifier ';' timeunits_declaration package_item_tail ENDPACKAGE endpackage
-                                                | attribute_instance attribute_instance_tail PACKAGE identifier ';' timeunits_declaration package_item_tail ENDPACKAGE
-                                                | attribute_instance attribute_instance_tail PACKAGE lifetime identifier ';' package_item_tail ENDPACKAGE endpackage
-                                                | attribute_instance attribute_instance_tail PACKAGE lifetime identifier ';' package_item_tail ENDPACKAGE
-                                                | attribute_instance attribute_instance_tail PACKAGE identifier ';' package_item_tail ENDPACKAGE endpackage
-                                                | attribute_instance attribute_instance_tail PACKAGE identifier ';' package_item_tail ENDPACKAGE
+package_declaration                     :       attribute_instance_tail PACKAGE lifetime identifier ';' timeunits_declaration package_item_tail ENDPACKAGE endpackage
+                                                | attribute_instance_tail PACKAGE lifetime identifier ';' timeunits_declaration package_item_tail ENDPACKAGE
+                                                | attribute_instance_tail PACKAGE identifier ';' timeunits_declaration package_item_tail ENDPACKAGE endpackage
+                                                | attribute_instance_tail PACKAGE identifier ';' timeunits_declaration package_item_tail ENDPACKAGE
+                                                | attribute_instance_tail PACKAGE lifetime identifier ';' package_item_tail ENDPACKAGE endpackage
+                                                | attribute_instance_tail PACKAGE lifetime identifier ';' package_item_tail ENDPACKAGE
+                                                | attribute_instance_tail PACKAGE identifier ';' package_item_tail ENDPACKAGE endpackage
+                                                | attribute_instance_tail PACKAGE identifier ';' package_item_tail ENDPACKAGE
                                                 | PACKAGE lifetime identifier ';' timeunits_declaration package_item_tail ENDPACKAGE endpackage
                                                 | PACKAGE lifetime identifier ';' timeunits_declaration package_item_tail ENDPACKAGE
                                                 | PACKAGE identifier ';' timeunits_declaration package_item_tail ENDPACKAGE endpackage
@@ -478,9 +503,10 @@ package_declaration                     :       attribute_instance attribute_ins
                                                 | PACKAGE lifetime identifier ';' package_item_tail ENDPACKAGE
                                                 | PACKAGE identifier ';' package_item_tail ENDPACKAGE endpackage
                                                 | PACKAGE identifier ';' package_item_tail ENDPACKAGE
+// TODO: empty packages
                                                 ;
-package_item_tail                       :       package_item package_item_tail
-                                                |
+package_item_tail                       :       package_item_tail package_item
+                                                | package_item
                                                 ;
 endpackage                              :       ':' identifier
                                                 ;
@@ -506,6 +532,7 @@ parameter_port_declaration              :       parameter_declaration
                                                 | TYPE list_of_type_assignments
                                                 ;
 list_of_ports                           :       '(' port_tail ')'
+                                                | '(' ')'
                                                 ;
 port_tail                               :       port ',' port_tail
                                                 | port
@@ -513,16 +540,16 @@ port_tail                               :       port ',' port_tail
 list_of_port_declarations               :       '(' ansi_port_declaration_tail ')'
                                                 | '(' ')'
                                                 ;
-ansi_port_declaration_tail              :       attribute_instance attribute_instance_tail ansi_port_declaration ',' ansi_port_declaration_tail
-                                                | attribute_instance attribute_instance_tail ansi_port_declaration
+ansi_port_declaration_tail              :       attribute_instance_tail ansi_port_declaration ',' ansi_port_declaration_tail
+                                                | attribute_instance_tail ansi_port_declaration
                                                 | ansi_port_declaration ',' ansi_port_declaration_tail
                                                 | ansi_port_declaration
                                                 ;
-port_declaration                        :       attribute_instance attribute_instance_tail inout_declaration
-                                                | attribute_instance attribute_instance_tail input_declaration
-                                                | attribute_instance attribute_instance_tail output_declaration
-                                                | attribute_instance attribute_instance_tail ref_declaration
-                                                | attribute_instance attribute_instance_tail interface_port_declaration
+port_declaration                        :       attribute_instance_tail inout_declaration
+                                                | attribute_instance_tail input_declaration
+                                                | attribute_instance_tail output_declaration
+                                                | attribute_instance_tail ref_declaration
+                                                | attribute_instance_tail interface_port_declaration
                                                 | inout_declaration
                                                 | input_declaration
                                                 | output_declaration
@@ -532,7 +559,6 @@ port_declaration                        :       attribute_instance attribute_ins
 port                                    :       port_expression
                                                 | '.' identifier '(' port_expression ')'
                                                 | '.' identifier '(' ')'
-                                                |
                                                 ;
 port_expression                         :       port_reference
                                                 | '{' port_reference_tail '}'
@@ -559,18 +585,18 @@ interface_port_header                   :       identifier '.' identifier
                                                 | INTERFACE '.' identifier
                                                 | INTERFACE
                                                 ;
-ansi_port_declaration                   :       net_interface_port_header identifier unpacked_dimension unpacked_dimension_tail equal_constant_expression
-                                                | net_interface_port_header identifier unpacked_dimension unpacked_dimension_tail
-                                                | identifier unpacked_dimension unpacked_dimension_tail equal_constant_expression
-                                                | identifier unpacked_dimension unpacked_dimension_tail
+ansi_port_declaration                   :       net_interface_port_header identifier unpacked_dimension_tail equal_constant_expression
+                                                | net_interface_port_header identifier unpacked_dimension_tail
+                                                | identifier unpacked_dimension_tail equal_constant_expression
+                                                | identifier unpacked_dimension_tail
                                                 | net_interface_port_header identifier equal_constant_expression
                                                 | net_interface_port_header identifier
                                                 | identifier equal_constant_expression
                                                 | identifier
-                                                | variable_port_header identifier variable_dimension variable_dimension variable_dimension_tail equal_constant_expression
-                                                | identifier variable_dimension variable_dimension variable_dimension_tail equal_constant_expression
-                                                | variable_port_header identifier variable_dimension variable_dimension variable_dimension_tail
-                                                | identifier variable_dimension variable_dimension variable_dimension_tail
+                                                | variable_port_header identifier variable_dimension_tail equal_constant_expression
+                                                | identifier variable_dimension_tail equal_constant_expression
+                                                | variable_port_header identifier variable_dimension_tail
+                                                | identifier variable_dimension_tail
                                                 | variable_port_header identifier variable_dimension equal_constant_expression
                                                 | identifier variable_dimension equal_constant_expression
                                                 | variable_port_header identifier variable_dimension
@@ -587,11 +613,11 @@ ansi_port_declaration                   :       net_interface_port_header identi
 net_interface_port_header               :       net_port_header
                                                 | interface_port_header
                                                 ;
-variable_dimension_tail                 :       variable_dimension variable_dimension_tail
-                                                |
+variable_dimension_tail                 :       variable_dimension_tail variable_dimension
+                                                | variable_dimension
                                                 ;
-unpacked_dimension_tail                 :       unpacked_dimension unpacked_dimension_tail
-                                                |
+unpacked_dimension_tail                 :       unpacked_dimension_tail unpacked_dimension
+                                                | unpacked_dimension
                                                 ;
 equal_constant_expression               :       '=' constant_expression
                                                 ;
@@ -631,11 +657,11 @@ module_common_item                      :       module_or_generate_item_declarat
 module_item                             :       port_declaration ';'
                                                 | non_port_module_item
                                                 ;
-module_or_generate_item                 :       attribute_instance attribute_instance_tail parameter_override
-                                                | attribute_instance attribute_instance_tail gate_instantiation
-                                                | attribute_instance attribute_instance_tail udp_instantiation
-                                                | attribute_instance attribute_instance_tail module_instantiation
-                                                | attribute_instance attribute_instance_tail module_common_item
+module_or_generate_item                 :       attribute_instance_tail parameter_override
+                                                | attribute_instance_tail gate_instantiation
+                                                | attribute_instance_tail udp_instantiation
+                                                | attribute_instance_tail module_instantiation
+                                                | attribute_instance_tail module_common_item
                                                 | parameter_override
                                                 | gate_instantiation
                                                 | udp_instantiation
@@ -651,7 +677,7 @@ module_or_generate_item_declaration     :       package_or_generate_item_declara
 non_port_module_item                    :       generate_region
                                                 | module_or_generate_item
                                                 | specify_block
-                                                | attribute_instance attribute_instance_tail specparam_declaration
+                                                | attribute_instance_tail specparam_declaration
                                                 | specparam_declaration
                                                 | program_declaration
                                                 | module_declaration
@@ -660,12 +686,9 @@ non_port_module_item                    :       generate_region
                                                 ;
 parameter_override                      :       DEFPARAM list_of_defparam_assignments ';'
                                                 ;
-bind_directive                          :       BIND bind_target_scope ':' bind_target_instance_list bind_instantiation ';'
-                                                | BIND bind_target_scope bind_instantiation ';'
+bind_directive                          :       BIND identifier ':' bind_target_instance_list bind_instantiation ';'
+                                                | BIND identifier bind_instantiation ';'
                                                 | BIND bind_target_instance bind_instantiation ';'
-                                                ;
-bind_target_scope                       :       identifier
-                                                | identifier
                                                 ;
 bind_target_instance                    :       hierarchical_identifier constant_bit_select
                                                 ;
@@ -677,22 +700,24 @@ bind_instantiation                      :       program_instantiation
                                                 | interface_instantiation
                                                 | checker_instantiation
                                                 ;
-config_declaration                      :       CONFIG identifier ';' local_parameter_declaration_tail design_statement config_rule_statement_tail ENDCONFIG endconfig
-                                                | CONFIG identifier ';' local_parameter_declaration_tail design_statement config_rule_statement_tail ENDCONFIG
+config_declaration                      :       CONFIG identifier local_parameter_declaration_tail design_statement config_rule_statement_tail ENDCONFIG endconfig
+                                                | CONFIG identifier local_parameter_declaration_tail design_statement config_rule_statement_tail ENDCONFIG
+                                                | CONFIG identifier local_parameter_declaration_tail design_statement ENDCONFIG endconfig
+                                                | CONFIG identifier local_parameter_declaration_tail design_statement ENDCONFIG
                                                 ;
-local_parameter_declaration_tail        :       local_parameter_declaration ';' local_parameter_declaration_tail
-                                                |
+local_parameter_declaration_tail        :       local_parameter_declaration_tail local_parameter_declaration ';'
+                                                | ';'
                                                 ;
-config_rule_statement_tail              :       config_rule_statement config_rule_statement_tail
-                                                | 
+config_rule_statement_tail              :       config_rule_statement_tail config_rule_statement
+                                                | config_rule_statement
                                                 ;
 endconfig                               :       ':' identifier
                                                 ;
 design_statement                        :       DESIGN cell_identifier_tail ';'
+                                                | DESIGN ';'
                                                 ;
-cell_identifier_tail                    :       identifier '.' identifier cell_identifier_tail
-                                                | identifier cell_identifier_tail
-                                                |
+cell_identifier_tail                    :       cell_identifier_tail '.' identifier 
+                                                | identifier
                                                 ;
 config_rule_statement                   :       default_clause liblist_clause ';'
                                                 | inst_clause liblist_clause ';'
@@ -705,17 +730,19 @@ default_clause                          :       DEFAULT
 inst_clause                             :       INSTANCE inst_name
                                                 ;
 inst_name                               :       identifier instance_identifier_tail
+                                                | identifier 
                                                 ;
-instance_identifier_tail                :       '.' identifier instance_identifier_tail
-                                                |
+instance_identifier_tail                :       instance_identifier_tail '.' identifier
+                                                | '.' identifier
                                                 ;
 cell_clause                             :       CELL identifier '.' identifier
                                                 | CELL identifier
                                                 ;
 liblist_clause                          :       LIBLIST library_identifier_tail
+                                                | LIBLIST
                                                 ;
-library_identifier_tail                 :       identifier library_identifier_tail
-                                                |
+library_identifier_tail                 :       library_identifier_tail identifier
+                                                | identifier
                                                 ;
 use_clause                              :       USE identifier '.' identifier ':' CONFIG
                                                 | USE identifier '.' identifier
@@ -731,8 +758,8 @@ use_clause                              :       USE identifier '.' identifier ':
 named_parameter_assignment_tail         :       named_parameter_assignment ',' named_parameter_assignment_tail
                                                 | named_parameter_assignment
                                                 ;
-interface_or_generate_item              :       attribute_instance attribute_instance_tail module_common_item
-                                                | attribute_instance attribute_instance_tail extern_tf_declaration
+interface_or_generate_item              :       attribute_instance_tail module_common_item
+                                                | attribute_instance_tail extern_tf_declaration
                                                 | module_common_item
                                                 | extern_tf_declaration
                                                 ;
@@ -752,11 +779,11 @@ non_port_interface_item                 :       generate_region
 program_item                            :       port_declaration ';'
                                                 | non_port_program_item
                                                 ;
-non_port_program_item                   :       attribute_instance attribute_instance_tail continuous_assign
-                                                | attribute_instance attribute_instance_tail module_or_generate_item_declaration
-                                                | attribute_instance attribute_instance_tail initial_construct
-                                                | attribute_instance attribute_instance_tail final_construct
-                                                | attribute_instance attribute_instance_tail concurrent_assertion_item
+non_port_program_item                   :       attribute_instance_tail continuous_assign
+                                                | attribute_instance_tail module_or_generate_item_declaration
+                                                | attribute_instance_tail initial_construct
+                                                | attribute_instance_tail final_construct
+                                                | attribute_instance_tail concurrent_assertion_item
                                                 | continuous_assign
                                                 | module_or_generate_item_declaration
                                                 | initial_construct
@@ -773,25 +800,22 @@ program_generate_item                   :       loop_generate_construct
 checker_port_list                       :       checker_port_item ',' checker_port_list
                                                 | checker_port_item
                                                 ;
-checker_port_item                       :       attribute_instance attribute_instance_tail checker_port_direction property_formal_type identifier variable_dimension variable_dimension_tail '=' property_actual_arg
-                                                | attribute_instance attribute_instance_tail checker_port_direction identifier variable_dimension variable_dimension_tail '=' property_actual_arg
-                                                | attribute_instance attribute_instance_tail checker_port_direction property_formal_type identifier variable_dimension variable_dimension_tail
-                                                | attribute_instance attribute_instance_tail checker_port_direction identifier variable_dimension variable_dimension_tail
-                                                | checker_port_direction property_formal_type identifier variable_dimension variable_dimension_tail '=' property_actual_arg
-                                                | checker_port_direction identifier variable_dimension variable_dimension_tail '=' property_actual_arg
-                                                | checker_port_direction property_formal_type identifier variable_dimension variable_dimension_tail
-                                                | checker_port_direction identifier variable_dimension variable_dimension_tail
-                                                | attribute_instance attribute_instance_tail checker_port_direction property_formal_type identifier '=' property_actual_arg
-                                                | attribute_instance attribute_instance_tail checker_port_direction identifier '=' property_actual_arg
-                                                | attribute_instance attribute_instance_tail checker_port_direction property_formal_type identifier
-                                                | attribute_instance attribute_instance_tail checker_port_direction identifier
+checker_port_item                       :       attribute_instance_tail checker_port_direction property_formal_type identifier variable_dimension_tail '=' property_actual_arg
+                                                | attribute_instance_tail checker_port_direction identifier variable_dimension_tail '=' property_actual_arg
+                                                | attribute_instance_tail checker_port_direction property_formal_type identifier variable_dimension_tail
+                                                | attribute_instance_tail checker_port_direction identifier variable_dimension_tail
+                                                | checker_port_direction property_formal_type identifier variable_dimension_tail '=' property_actual_arg
+                                                | checker_port_direction identifier variable_dimension_tail '=' property_actual_arg
+                                                | checker_port_direction property_formal_type identifier variable_dimension_tail
+                                                | checker_port_direction identifier variable_dimension_tail
+                                                | attribute_instance_tail checker_port_direction property_formal_type identifier '=' property_actual_arg
+                                                | attribute_instance_tail checker_port_direction identifier '=' property_actual_arg
+                                                | attribute_instance_tail checker_port_direction property_formal_type identifier
+                                                | attribute_instance_tail checker_port_direction identifier
                                                 | checker_port_direction property_formal_type identifier '=' property_actual_arg
                                                 | checker_port_direction identifier '=' property_actual_arg
                                                 | checker_port_direction property_formal_type identifier
                                                 | checker_port_direction identifier
-                                                ;
-checker_port_direction         :       checker_port_direction
-                                                |
                                                 ;
 checker_port_direction                  :       INPUT
                                                 | OUTPUT
@@ -821,11 +845,11 @@ checker_generate_item                   :       loop_generate_construct
                                                 | generate_region
                                                 | elaboration_system_task
                                                 ;
-class_item                              :       attribute_instance attribute_instance_tail class_property
-                                                | attribute_instance attribute_instance_tail class_method
-                                                | attribute_instance attribute_instance_tail class_constraint
-                                                | attribute_instance attribute_instance_tail class_declaration
-                                                | attribute_instance attribute_instance_tail covergroup_declaration
+class_item                              :       attribute_instance_tail class_property
+                                                | attribute_instance_tail class_method
+                                                | attribute_instance_tail class_constraint
+                                                | attribute_instance_tail class_declaration
+                                                | attribute_instance_tail covergroup_declaration
                                                 | class_property
                                                 | class_method
                                                 | class_constraint
@@ -836,24 +860,33 @@ class_item                              :       attribute_instance attribute_ins
                                                 | ';'
                                                 ;
 class_property                          :       property_qualifier_tail data_declaration
+                                                | data_declaration
                                                 | CONST class_item_qualifier_tail data_type identifier equal_constant_expression ';'
                                                 | CONST class_item_qualifier_tail data_type identifier ';'
+                                                | CONST data_type identifier equal_constant_expression ';'
+                                                | CONST data_type identifier ';'
                                                 ;
-property_qualifier_tail                 :       property_qualifier property_qualifier_tail
-                                                |
+property_qualifier_tail                 :       property_qualifier_tail property_qualifier
+                                                | property_qualifier
                                                 ;
-class_item_qualifier_tail               :       class_item_qualifier class_item_qualifier_tail
-                                                |
+class_item_qualifier_tail               :       class_item_qualifier_tail class_item_qualifier
+                                                | class_item_qualifier
                                                 ;
 class_method                            :       method_qualifier_tail task_declaration
                                                 | method_qualifier_tail function_declaration
+                                                | task_declaration
+                                                | function_declaration
                                                 | PURE VIRTUAL class_item_qualifier_tail method_prototype ';'
+                                                | PURE VIRTUAL method_prototype ';'
                                                 | EXTERN method_qualifier_tail method_prototype ';'
                                                 | method_qualifier_tail class_constructor_declaration
                                                 | EXTERN method_qualifier_tail class_constructor_prototype
+                                                | EXTERN method_prototype ';'
+                                                | class_constructor_declaration
+                                                | EXTERN class_constructor_prototype
                                                 ;
-method_qualifier_tail                   :       method_qualifier method_qualifier_tail
-                                                |
+method_qualifier_tail                   :       method_qualifier_tail method_qualifier
+                                                | method_qualifier
                                                 ;
 class_constructor_prototype             :       FUNCTION NEW tf_port_list ';'
                                                 | FUNCTION NEW ';'
@@ -897,15 +930,16 @@ class_constructor_declaration           :       FUNCTION class_scope NEW tf_port
                                                 | FUNCTION NEW ';' block_item_declaration_tail super_new function_statement_or_null_tail ENDFUNCTION
                                                 | FUNCTION NEW ';' block_item_declaration_tail function_statement_or_null_tail ENDFUNCTION endnew
                                                 | FUNCTION NEW ';' block_item_declaration_tail function_statement_or_null_tail ENDFUNCTION
+// TODO: empty blocks
                                                 ;
-block_item_declaration_tail             :       block_item_declaration block_item_declaration_tail
-                                                |
+block_item_declaration_tail             :       block_item_declaration_tail block_item_declaration
+                                                | block_item_declaration
                                                 ;
 super_new                               :       SUPER '.' NEW ';'
                                                 | SUPER '.' NEW '(' list_of_arguments ')' ';'
                                                 ;
-function_statement_or_null_tail         :       function_statement_or_null function_statement_or_null_tail
-                                                |
+function_statement_or_null_tail         :       function_statement_or_null_tail function_statement_or_null
+                                                | function_statement_or_null
                                                 ;
 endnew                                  :       ':' NEW
                                                 ;
@@ -913,9 +947,10 @@ constraint_declaration                  :       STATIC CONSTRAINT identifier con
                                                 | CONSTRAINT identifier constraint_block
                                                 ;
 constraint_block                        :       '{' constraint_block_item_tail '}'
+                                                | '{' '}'
                                                 ;
-constraint_block_item_tail              :       constraint_block_item constraint_block_item_tail
-                                                |
+constraint_block_item_tail              :       constraint_block_item_tail constraint_block_item
+                                                | constraint_block_item
                                                 ;
 constraint_block_item                   :       SOLVE solve_before_list BEFORE solve_before_list ';'
                                                 | constraint_expression
@@ -940,9 +975,10 @@ uniqueness_constraint                   :       UNIQUE '{' open_range_list '}'
                                                 ;
 constraint_set                          :       constraint_expression
                                                 | '{' constraint_expression_tail '}'
+                                                | '{' '}'
                                                 ;
-constraint_expression_tail              :       constraint_expression constraint_expression_tail
-                                                |
+constraint_expression_tail              :       constraint_expression_tail constraint_expression
+                                                | constraint_expression
                                                 ;
 dist_list                               :       dist_item ',' dist_list
                                                 | dist_item
@@ -964,7 +1000,7 @@ constraint_prototype_qualifier          :       EXTERN
 extern_constraint_declaration           :       STATIC CONSTRAINT class_scope identifier constraint_block
                                                 | CONSTRAINT class_scope identifier constraint_block
                                                 ;
-identifier_list                         :       identifier ',' identifier_list
+identifier_list                         :       identifier_list ',' identifier
                                                 | identifier
                                                 ;
 package_item                            :       package_or_generate_item_declaration
@@ -988,9 +1024,10 @@ package_or_generate_item_declaration    :       net_declaration
                                                 | ';'
                                                 ;
 anonymous_program                       :       PROGRAM ';' anonymous_program_item_tail ENDPROGRAM
+                                                | PROGRAM ';' ENDPROGRAM
                                                 ;
-anonymous_program_item_tail             :       anonymous_program_item anonymous_program_item_tail
-                                                |
+anonymous_program_item_tail             :       anonymous_program_item_tail anonymous_program_item
+                                                | anonymous_program_item
                                                 ;
 anonymous_program_item                  :       task_declaration
                                                 | function_declaration
@@ -1058,6 +1095,7 @@ package_export_declaration              :       EXPORT '*'':'':''*' ';'
                                                 | EXPORT package_import_item_tail ';'
                                                 ;
 genvar_declaration                      :       GENVAR list_of_genvar_identifiers ';'
+                                                | GENVAR ';'
                                                 ;
 net_declaration                         :       net_type drive_or_charge_strength vector_or_scalar data_type_or_implicit delay3 list_of_net_decl_assignments ';'
                                                 | net_type drive_or_charge_strength vector_or_scalar delay3 list_of_net_decl_assignments ';'
@@ -1091,10 +1129,7 @@ vector_or_scalar                        :       VECTORED
 net_identifier_tail                     :       identifier unpacked_dimension ',' net_identifier_tail
                                                 | identifier unpacked_dimension
                                                 ;
-unpacked_dimension             :       unpacked_dimension
-                                                |
-                                                ;
-type_declaration                        :       TYPEDEF data_type identifier variable_dimension variable_dimension_tail ';'
+type_declaration                        :       TYPEDEF data_type identifier variable_dimension_tail ';'
                                                 | TYPEDEF data_type identifier ';'
                                                 | TYPEDEF identifier constant_bit_select '.' identifier identifier ';'
                                                 | TYPEDEF typedef_type identifier ';'
@@ -1126,17 +1161,19 @@ casting_type                            :       simple_type
                                                 | STRING
                                                 | CONST
                                                 ;
-data_type                               :       integer_vector_type signing packed_dimension packed_dimension_tail
-                                                | integer_vector_type packed_dimension packed_dimension_tail
+data_type                               :       integer_vector_type signing packed_dimension_tail
+                                                | integer_vector_type packed_dimension_tail
                                                 | integer_vector_type signing
                                                 | integer_vector_type
                                                 | integer_atom_type signing
                                                 | integer_atom_type
                                                 | non_integer_type
-                                                | struct_union packed_signing '{' struct_union_member_tail '}' packed_dimension packed_dimension_tail
-                                                | ENUM enum_base_type '{' enum_name_declaration_tail '}' packed_dimension packed_dimension_tail
-                                                | ENUM '{' enum_name_declaration_tail '}' packed_dimension packed_dimension_tail
+                                                | struct_union packed_signing '{' struct_union_member_tail '}' packed_dimension_tail
+                                                | struct_union '{' struct_union_member_tail '}' packed_dimension_tail
+                                                | ENUM enum_base_type '{' enum_name_declaration_tail '}' packed_dimension_tail
+                                                | ENUM '{' enum_name_declaration_tail '}' packed_dimension_tail
                                                 | struct_union packed_signing '{' struct_union_member_tail '}'
+                                                | struct_union '{' struct_union_member_tail '}'
                                                 | ENUM enum_base_type '{' enum_name_declaration_tail '}'
                                                 | ENUM '{' enum_name_declaration_tail '}'
                                                 | STRING
@@ -1149,8 +1186,8 @@ data_type                               :       integer_vector_type signing pack
                                                 | VIRTUAL identifier '.' identifier
                                                 | VIRTUAL INTERFACE identifier
                                                 | VIRTUAL identifier
-                                                | package_or_class_scope identifier packed_dimension packed_dimension_tail
-                                                | identifier packed_dimension packed_dimension_tail
+                                                | package_or_class_scope identifier packed_dimension_tail
+                                                | identifier packed_dimension_tail
                                                 | package_or_class_scope identifier
                                                 | identifier
                                                 | class_type
@@ -1161,12 +1198,11 @@ data_type                               :       integer_vector_type signing pack
 enum_name_declaration_tail              :       enum_name_declaration ',' enum_name_declaration_tail
                                                 | enum_name_declaration
                                                 ;
-packed_dimension_tail                   :       packed_dimension packed_dimension_tail
-                                                |
+packed_dimension_tail                   :       packed_dimension_tail packed_dimension
+                                                | packed_dimension
                                                 ;
 packed_signing                          :       PACKED signing
                                                 | PACKED
-                                                |
                                                 ;
 struct_union_member_tail                :       struct_union_member struct_union_member_tail
                                                 | struct_union_member
@@ -1174,8 +1210,8 @@ struct_union_member_tail                :       struct_union_member struct_union
 data_type_or_implicit                   :       data_type
                                                 | implicit_data_type
                                                 ;
-implicit_data_type                      :       signing packed_dimension packed_dimension_tail
-                                                | packed_dimension packed_dimension packed_dimension_tail
+implicit_data_type                      :       signing packed_dimension_tail
+                                                | packed_dimension_tail
                                                 | signing
                                                 | packed_dimension
                                                 ;
@@ -1199,11 +1235,14 @@ integral_number_tail                    :       integral_number ':' integral_num
 class_scope                             :       class_type ':'':'
                                                 ;
 class_type                              :       ps_identifier parameter_value_assignment colon_class_identifier_tail
+                                                | ps_identifier parameter_value_assignment
                                                 | ps_identifier colon_class_identifier_tail
+                                                | ps_identifier
                                                 ;
-colon_class_identifier_tail             :       ':'':' identifier parameter_value_assignment colon_class_identifier_tail
-                                                | ':'':' identifier colon_class_identifier_tail
-                                                |
+colon_class_identifier_tail             :       colon_class_identifier_tail ':'':' identifier parameter_value_assignment
+                                                | colon_class_identifier_tail ':'':' identifier
+                                                | ':'':' identifier parameter_value_assignment
+                                                | ':'':' identifier
                                                 ;
 integer_type                            :       integer_vector_type
                                                 | integer_atom_type
@@ -1257,8 +1296,8 @@ simple_type                             :       integer_type
                                                 | ps_type_identifier
                                                 | ps_parameter_identifier
                                                 ;
-struct_union_member                     :       attribute_instance attribute_instance_tail random_qualifier data_type_or_void list_of_variable_decl_assignments ';'
-                                                | attribute_instance attribute_instance_tail data_type_or_void list_of_variable_decl_assignments ';'
+struct_union_member                     :       attribute_instance_tail random_qualifier data_type_or_void list_of_variable_decl_assignments ';'
+                                                | attribute_instance_tail data_type_or_void list_of_variable_decl_assignments ';'
                                                 | random_qualifier data_type_or_void list_of_variable_decl_assignments ';'
                                                 | data_type_or_void list_of_variable_decl_assignments ';'
                                                 ;
@@ -1311,11 +1350,11 @@ delay_value                             :       unsigned_number
 list_of_defparam_assignments            :       defparam_assignment ',' list_of_defparam_assignments
                                                 | defparam_assignment
                                                 ;
-list_of_genvar_identifiers              :       identifier ',' list_of_genvar_identifiers
+list_of_genvar_identifiers              :       list_of_genvar_identifiers ',' identifier
                                                 | identifier
                                                 ;
-list_of_interface_identifiers           :       identifier unpacked_dimension unpacked_dimension_tail ',' list_of_interface_identifiers
-                                                | identifier unpacked_dimension unpacked_dimension_tail
+list_of_interface_identifiers           :       identifier unpacked_dimension_tail ',' list_of_interface_identifiers
+                                                | identifier unpacked_dimension_tail
                                                 | identifier ',' list_of_interface_identifiers
                                                 | identifier
                                                 ;
@@ -1325,8 +1364,8 @@ list_of_net_decl_assignments            :       net_decl_assignment ',' list_of_
 list_of_param_assignments               :       param_assignment ',' list_of_param_assignments
                                                 | param_assignment
                                                 ;
-list_of_port_identifiers                :       identifier unpacked_dimension unpacked_dimension_tail ',' list_of_port_identifiers
-                                                | identifier unpacked_dimension unpacked_dimension_tail
+list_of_port_identifiers                :       identifier unpacked_dimension_tail ',' list_of_port_identifiers
+                                                | identifier unpacked_dimension_tail
                                                 | identifier ',' list_of_port_identifiers
                                                 | identifier
                                                 ;
@@ -1336,10 +1375,10 @@ list_of_udp_port_identifiers            :       identifier  ',' list_of_udp_port
 list_of_specparam_assignments           :       specparam_assignment ',' list_of_specparam_assignments
                                                 | specparam_assignment
                                                 ;
-list_of_tf_variable_identifiers         :       identifier variable_dimension variable_dimension_tail '=' expression ',' list_of_tf_variable_identifiers
-                                                | identifier variable_dimension variable_dimension_tail ',' list_of_tf_variable_identifiers
-                                                | identifier variable_dimension variable_dimension_tail '=' expression
-                                                | identifier variable_dimension variable_dimension_tail
+list_of_tf_variable_identifiers         :       identifier variable_dimension_tail '=' expression ',' list_of_tf_variable_identifiers
+                                                | identifier variable_dimension_tail ',' list_of_tf_variable_identifiers
+                                                | identifier variable_dimension_tail '=' expression
+                                                | identifier variable_dimension_tail
                                                 | identifier '=' expression ',' list_of_tf_variable_identifiers
                                                 | identifier ',' list_of_tf_variable_identifiers
                                                 | identifier '=' expression
@@ -1351,15 +1390,15 @@ list_of_type_assignments                :       type_assignment ',' list_of_type
 list_of_variable_decl_assignments       :       variable_decl_assignment ',' list_of_variable_decl_assignments
                                                 | variable_decl_assignment
                                                 ;
-list_of_variable_identifiers            :       identifier variable_dimension variable_dimension_tail ',' list_of_variable_identifiers
-                                                | identifier variable_dimension variable_dimension_tail
+list_of_variable_identifiers            :       identifier variable_dimension_tail ',' list_of_variable_identifiers
+                                                | identifier variable_dimension_tail
                                                 | identifier ',' list_of_variable_identifiers
                                                 | identifier
                                                 ;
-list_of_variable_port_identifiers       :       identifier variable_dimension variable_dimension_tail equal_constant_expression ',' list_of_variable_port_identifiers
-                                                | identifier variable_dimension variable_dimension_tail ',' list_of_variable_port_identifiers
-                                                | identifier variable_dimension variable_dimension_tail equal_constant_expression
-                                                | identifier variable_dimension variable_dimension_tail
+list_of_variable_port_identifiers       :       identifier variable_dimension_tail equal_constant_expression ',' list_of_variable_port_identifiers
+                                                | identifier variable_dimension_tail ',' list_of_variable_port_identifiers
+                                                | identifier variable_dimension_tail equal_constant_expression
+                                                | identifier variable_dimension_tail
                                                 | identifier equal_constant_expression ',' list_of_variable_port_identifiers
                                                 | identifier ',' list_of_variable_port_identifiers
                                                 | identifier equal_constant_expression
@@ -1367,13 +1406,13 @@ list_of_variable_port_identifiers       :       identifier variable_dimension va
                                                 ;
 defparam_assignment                     :       hierarchical_identifier '=' constant_mintypmax_expression
                                                 ;
-net_decl_assignment                     :       identifier unpacked_dimension unpacked_dimension_tail '=' expression
-                                                | identifier unpacked_dimension unpacked_dimension_tail
+net_decl_assignment                     :       identifier unpacked_dimension_tail '=' expression
+                                                | identifier unpacked_dimension_tail
                                                 | identifier '=' expression
                                                 | identifier
                                                 ;
-param_assignment                        :       identifier unpacked_dimension unpacked_dimension_tail '=' constant_param_expression
-                                                | identifier unpacked_dimension unpacked_dimension_tail
+param_assignment                        :       identifier unpacked_dimension_tail '=' constant_param_expression
+                                                | identifier unpacked_dimension_tail
                                                 | identifier '=' constant_param_expression
                                                 | identifier
                                                 ;
@@ -1393,10 +1432,10 @@ reject_limit_value                      :       limit_value
                                                 ;
 limit_value                             :       constant_mintypmax_expression
                                                 ;
-variable_decl_assignment                :       identifier variable_dimension variable_dimension_tail 
-                                                | identifier variable_dimension variable_dimension_tail '=' expression
-                                                | identifier unsized_dimension variable_dimension variable_dimension_tail '=' dynamic_array_new
-                                                | identifier unsized_dimension variable_dimension variable_dimension_tail
+variable_decl_assignment                :       identifier variable_dimension_tail 
+                                                | identifier variable_dimension_tail '=' expression
+                                                | identifier unsized_dimension variable_dimension_tail '=' dynamic_array_new
+                                                | identifier unsized_dimension variable_dimension_tail
                                                 | identifier 
                                                 | identifier '=' expression
                                                 | identifier unsized_dimension '=' dynamic_array_new
@@ -1426,10 +1465,8 @@ variable_dimension                      :       unsized_dimension
                                                 | associative_dimension
                                                 | queue_dimension
                                                 ;
-queue_dimension                         :       '[' '$' colon_equal_constant_expression ']'
-                                                ;
-colon_equal_constant_expression      :       ':' constant_expression
-                                                |
+queue_dimension                         :       '[' '$' ':' constant_expression ']'
+                                                | '[' '$' ']'
                                                 ;
 unsized_dimension                       :       '[' ']'
                                                 ;
@@ -1439,10 +1476,14 @@ function_data_type_or_implicit          :       data_type_or_void
 function_declaration                    :       FUNCTION lifetime function_body_declaration
                                                 | FUNCTION function_body_declaration
                                                 ;
-function_body_declaration               :       function_data_type_or_implicit interface_or_class_scope identifier ';' tf_item_declaration_tail function_statement_or_null_tail ENDFUNCTION endfunction
-                                                | function_data_type_or_implicit interface_or_class_scope identifier ';' tf_item_declaration_tail function_statement_or_null_tail ENDFUNCTION
-                                                | function_data_type_or_implicit identifier ';' tf_item_declaration_tail function_statement_or_null_tail ENDFUNCTION endfunction
-                                                | function_data_type_or_implicit identifier ';' tf_item_declaration_tail function_statement_or_null_tail ENDFUNCTION
+function_body_declaration               :       function_data_type_or_implicit interface_or_class_scope identifier ';' tf_item_declaration tf_item_declaration_tail function_statement_or_null_tail ENDFUNCTION endfunction
+                                                | function_data_type_or_implicit interface_or_class_scope identifier ';' tf_item_declaration tf_item_declaration_tail function_statement_or_null_tail ENDFUNCTION
+                                                | function_data_type_or_implicit identifier ';' tf_item_declaration tf_item_declaration_tail function_statement_or_null_tail ENDFUNCTION endfunction
+                                                | function_data_type_or_implicit identifier ';' tf_item_declaration tf_item_declaration_tail function_statement_or_null_tail ENDFUNCTION
+                                                | function_data_type_or_implicit interface_or_class_scope identifier ';' function_statement_or_null_tail ENDFUNCTION endfunction
+                                                | function_data_type_or_implicit interface_or_class_scope identifier ';' function_statement_or_null_tail ENDFUNCTION
+                                                | function_data_type_or_implicit identifier ';' function_statement_or_null_tail ENDFUNCTION endfunction
+                                                | function_data_type_or_implicit identifier ';' function_statement_or_null_tail ENDFUNCTION
                                                 | function_data_type_or_implicit interface_or_class_scope identifier '(' tf_port_list ')' ';' block_item_declaration_tail function_statement_or_null_tail ENDFUNCTION endfunction
                                                 | function_data_type_or_implicit interface_or_class_scope identifier '(' tf_port_list ')' ';' block_item_declaration_tail function_statement_or_null_tail ENDFUNCTION
                                                 | function_data_type_or_implicit identifier '(' tf_port_list ')' ';' block_item_declaration_tail function_statement_or_null_tail ENDFUNCTION endfunction
@@ -1451,6 +1492,7 @@ function_body_declaration               :       function_data_type_or_implicit i
                                                 | function_data_type_or_implicit interface_or_class_scope identifier '(' ')' ';' block_item_declaration_tail function_statement_or_null_tail ENDFUNCTION
                                                 | function_data_type_or_implicit identifier '(' ')' ';' block_item_declaration_tail function_statement_or_null_tail ENDFUNCTION endfunction
                                                 | function_data_type_or_implicit identifier '(' ')' ';' block_item_declaration_tail function_statement_or_null_tail ENDFUNCTION
+// TODO: empty function
                                                 ;
 interface_or_class_scope                :       identifier '.'
                                                 | class_scope
@@ -1490,10 +1532,14 @@ dpi_task_proto                          :       task_prototype
 task_declaration                        :       TASK lifetime task_body_declaration
                                                 | TASK task_body_declaration
                                                 ;
-task_body_declaration                   :       interface_or_class_scope identifier ';' tf_item_declaration_tail statement_or_null_tail ENDTASK endtask
-                                                | interface_or_class_scope identifier ';' tf_item_declaration_tail statement_or_null_tail ENDTASK
-                                                | identifier ';' tf_item_declaration_tail statement_or_null_tail ENDTASK endtask
-                                                | identifier ';' tf_item_declaration_tail statement_or_null_tail ENDTASK
+task_body_declaration                   :       interface_or_class_scope identifier ';' tf_item_declaration tf_item_declaration_tail statement_or_null_tail ENDTASK endtask
+                                                | interface_or_class_scope identifier ';' tf_item_declaration tf_item_declaration_tail statement_or_null_tail ENDTASK
+                                                | identifier ';' tf_item_declaration tf_item_declaration_tail statement_or_null_tail ENDTASK endtask
+                                                | identifier ';' tf_item_declaration tf_item_declaration_tail statement_or_null_tail ENDTASK
+                                                | interface_or_class_scope identifier ';' statement_or_null_tail ENDTASK endtask
+                                                | interface_or_class_scope identifier ';' statement_or_null_tail ENDTASK
+                                                | identifier ';' statement_or_null_tail ENDTASK endtask
+                                                | identifier ';' statement_or_null_tail ENDTASK
                                                 | interface_or_class_scope identifier '(' tf_port_list ')' ';' block_item_declaration_tail statement_or_null_tail ENDTASK endtask
                                                 | interface_or_class_scope identifier '(' tf_port_list ')' ';' block_item_declaration_tail statement_or_null_tail ENDTASK
                                                 | identifier '(' tf_port_list ')' ';' block_item_declaration_tail statement_or_null_tail ENDTASK endtask
@@ -1502,6 +1548,7 @@ task_body_declaration                   :       interface_or_class_scope identif
                                                 | interface_or_class_scope identifier '(' ')' ';' block_item_declaration_tail statement_or_null_tail ENDTASK
                                                 | identifier '(' ')' ';' block_item_declaration_tail statement_or_null_tail ENDTASK endtask
                                                 | identifier '(' ')' ';' block_item_declaration_tail statement_or_null_tail ENDTASK
+// TODO: empty task
                                                 ;
 endtask                                 :       ':' identifier
                                                 ;
@@ -1511,13 +1558,13 @@ tf_item_declaration                     :       block_item_declaration
 tf_port_list                            :       tf_port_item ',' tf_port_list
                                                 | tf_port_item
                                                 ;
-tf_port_item                            :       attribute_instance attribute_instance_tail tf_port_direction VAR data_type_or_implicit identifier
-                                                | attribute_instance attribute_instance_tail tf_port_direction VAR identifier
-                                                | attribute_instance attribute_instance_tail tf_port_direction VAR data_type_or_implicit
-                                                | attribute_instance attribute_instance_tail tf_port_direction VAR
-                                                | attribute_instance attribute_instance_tail tf_port_direction data_type_or_implicit identifier
-                                                | attribute_instance attribute_instance_tail tf_port_direction identifier
-                                                | attribute_instance attribute_instance_tail tf_port_direction
+tf_port_item                            :       attribute_instance_tail tf_port_direction VAR data_type_or_implicit identifier
+                                                | attribute_instance_tail tf_port_direction VAR identifier
+                                                | attribute_instance_tail tf_port_direction VAR data_type_or_implicit
+                                                | attribute_instance_tail tf_port_direction VAR
+                                                | attribute_instance_tail tf_port_direction data_type_or_implicit identifier
+                                                | attribute_instance_tail tf_port_direction identifier
+                                                | attribute_instance_tail tf_port_direction
                                                 | tf_port_direction VAR data_type_or_implicit identifier
                                                 | tf_port_direction VAR identifier
                                                 | tf_port_direction VAR data_type_or_implicit
@@ -1526,21 +1573,18 @@ tf_port_item                            :       attribute_instance attribute_ins
                                                 | tf_port_direction identifier
                                                 | tf_port_direction
                                                 ;
-tf_port_direction              :       tf_port_direction
-                                                |
-                                                ;
-port_identifier                         :       identifier variable_dimension variable_dimension_tail '=' expression
-                                                | identifier variable_dimension variable_dimension_tail
+port_identifier                         :       identifier variable_dimension_tail '=' expression
+                                                | identifier variable_dimension_tail
                                                 | identifier '=' expression
                                                 | identifier
                                                 ;
 tf_port_direction                       :       port_direction
                                                 | CONST REF
                                                 ;
-tf_port_declaration                     :       attribute_instance attribute_instance_tail tf_port_direction VAR data_type_or_implicit list_of_tf_variable_identifiers ';'
-                                                | attribute_instance attribute_instance_tail tf_port_direction VAR list_of_tf_variable_identifiers ';'
-                                                | attribute_instance attribute_instance_tail tf_port_direction data_type_or_implicit list_of_tf_variable_identifiers ';'
-                                                | attribute_instance attribute_instance_tail tf_port_direction list_of_tf_variable_identifiers ';'
+tf_port_declaration                     :       attribute_instance_tail tf_port_direction VAR data_type_or_implicit list_of_tf_variable_identifiers ';'
+                                                | attribute_instance_tail tf_port_direction VAR list_of_tf_variable_identifiers ';'
+                                                | attribute_instance_tail tf_port_direction data_type_or_implicit list_of_tf_variable_identifiers ';'
+                                                | attribute_instance_tail tf_port_direction list_of_tf_variable_identifiers ';'
                                                 | tf_port_direction VAR data_type_or_implicit list_of_tf_variable_identifiers ';'
                                                 | tf_port_direction VAR list_of_tf_variable_identifiers ';'
                                                 | tf_port_direction data_type_or_implicit list_of_tf_variable_identifiers ';'
@@ -1549,10 +1593,10 @@ tf_port_declaration                     :       attribute_instance attribute_ins
 task_prototype                          :       TASK identifier tf_port_list
                                                 | TASK identifier
                                                 ;
-block_item_declaration                  :       attribute_instance attribute_instance_tail data_declaration
-                                                | attribute_instance attribute_instance_tail local_parameter_declaration ';'
-                                                | attribute_instance attribute_instance_tail parameter_declaration ';'
-                                                | attribute_instance attribute_instance_tail let_declaration
+block_item_declaration                  :       attribute_instance_tail data_declaration
+                                                | attribute_instance_tail local_parameter_declaration ';'
+                                                | attribute_instance_tail parameter_declaration ';'
+                                                | attribute_instance_tail let_declaration
                                                 | data_declaration
                                                 | local_parameter_declaration ';'
                                                 | parameter_declaration ';'
@@ -1568,9 +1612,9 @@ modport_item                            :       identifier '(' modport_ports_dec
 modport_ports_declaration_tail          :       modport_ports_declaration ',' modport_ports_declaration_tail
                                                 | modport_ports_declaration
                                                 ;
-modport_ports_declaration               :       attribute_instance attribute_instance_tail modport_simple_ports_declaration
-                                                | attribute_instance attribute_instance_tail modport_tf_ports_declaration
-                                                | attribute_instance attribute_instance_tail modport_clocking_declaration
+modport_ports_declaration               :       attribute_instance_tail modport_simple_ports_declaration
+                                                | attribute_instance_tail modport_tf_ports_declaration
+                                                | attribute_instance_tail modport_clocking_declaration
                                                 | modport_simple_ports_declaration
                                                 | modport_tf_ports_declaration
                                                 | modport_clocking_declaration
@@ -1669,12 +1713,12 @@ endproperty                             :       ':' identifier
 property_port_list                      :       property_port_item ',' property_port_list
                                                 | property_port_item
                                                 ;
-property_port_item                      :       attribute_instance attribute_instance_tail  property_lvar_port_direction property_formal_type identifier variable_dimension variable_dimension_tail '=' property_actual_arg
-                                                | attribute_instance attribute_instance_tail  property_lvar_port_direction property_formal_type identifier variable_dimension variable_dimension_tail
-                                                |  property_lvar_port_direction property_formal_type identifier variable_dimension variable_dimension_tail '=' property_actual_arg
-                                                |  property_lvar_port_direction property_formal_type identifier variable_dimension variable_dimension_tail
-                                                | attribute_instance attribute_instance_tail  property_lvar_port_direction property_formal_type identifier '=' property_actual_arg
-                                                | attribute_instance attribute_instance_tail  property_lvar_port_direction property_formal_type identifier
+property_port_item                      :       attribute_instance_tail  property_lvar_port_direction property_formal_type identifier variable_dimension_tail '=' property_actual_arg
+                                                | attribute_instance_tail  property_lvar_port_direction property_formal_type identifier variable_dimension_tail
+                                                |  property_lvar_port_direction property_formal_type identifier variable_dimension_tail '=' property_actual_arg
+                                                |  property_lvar_port_direction property_formal_type identifier variable_dimension_tail
+                                                | attribute_instance_tail  property_lvar_port_direction property_formal_type identifier '=' property_actual_arg
+                                                | attribute_instance_tail  property_lvar_port_direction property_formal_type identifier
                                                 |  property_lvar_port_direction property_formal_type identifier '=' property_actual_arg
                                                 |  property_lvar_port_direction property_formal_type identifier
                                                 ;
@@ -1760,18 +1804,18 @@ endsequence                             :       ':' identifier
 sequence_port_list                      :       sequence_port_item ',' sequence_port_list
                                                 | sequence_port_item
                                                 ;
-sequence_port_item                      :       attribute_instance attribute_instance_tail sequence_lvar_port_direction sequence_formal_type identifier variable_dimension variable_dimension_tail '=' sequence_actual_arg
-                                                | attribute_instance attribute_instance_tail sequence_lvar_port_direction identifier variable_dimension variable_dimension_tail '=' sequence_actual_arg
-                                                | attribute_instance attribute_instance_tail sequence_lvar_port_direction sequence_formal_type identifier variable_dimension variable_dimension_tail
-                                                | attribute_instance attribute_instance_tail sequence_lvar_port_direction identifier variable_dimension variable_dimension_tail
-                                                | sequence_lvar_port_direction sequence_formal_type identifier variable_dimension variable_dimension_tail '=' sequence_actual_arg
-                                                | sequence_lvar_port_direction identifier variable_dimension variable_dimension_tail '=' sequence_actual_arg
-                                                | sequence_lvar_port_direction sequence_formal_type identifier variable_dimension variable_dimension_tail
-                                                | sequence_lvar_port_direction identifier variable_dimension variable_dimension_tail
-                                                | attribute_instance attribute_instance_tail sequence_lvar_port_direction sequence_formal_type identifier '=' sequence_actual_arg
-                                                | attribute_instance attribute_instance_tail sequence_lvar_port_direction identifier '=' sequence_actual_arg
-                                                | attribute_instance attribute_instance_tail sequence_lvar_port_direction sequence_formal_type identifier
-                                                | attribute_instance attribute_instance_tail sequence_lvar_port_direction identifier
+sequence_port_item                      :       attribute_instance_tail sequence_lvar_port_direction sequence_formal_type identifier variable_dimension_tail '=' sequence_actual_arg
+                                                | attribute_instance_tail sequence_lvar_port_direction identifier variable_dimension_tail '=' sequence_actual_arg
+                                                | attribute_instance_tail sequence_lvar_port_direction sequence_formal_type identifier variable_dimension_tail
+                                                | attribute_instance_tail sequence_lvar_port_direction identifier variable_dimension_tail
+                                                | sequence_lvar_port_direction sequence_formal_type identifier variable_dimension_tail '=' sequence_actual_arg
+                                                | sequence_lvar_port_direction identifier variable_dimension_tail '=' sequence_actual_arg
+                                                | sequence_lvar_port_direction sequence_formal_type identifier variable_dimension_tail
+                                                | sequence_lvar_port_direction identifier variable_dimension_tail
+                                                | attribute_instance_tail sequence_lvar_port_direction sequence_formal_type identifier '=' sequence_actual_arg
+                                                | attribute_instance_tail sequence_lvar_port_direction identifier '=' sequence_actual_arg
+                                                | attribute_instance_tail sequence_lvar_port_direction sequence_formal_type identifier
+                                                | attribute_instance_tail sequence_lvar_port_direction identifier
                                                 | sequence_lvar_port_direction sequence_formal_type identifier '=' sequence_actual_arg
                                                 | sequence_lvar_port_direction identifier '=' sequence_actual_arg
                                                 | sequence_lvar_port_direction sequence_formal_type identifier
@@ -1882,8 +1926,8 @@ coverage_spec_or_option_tail            :       coverage_spec_or_option coverage
                                                 ;
 endgroup                                :       ':' identifier
                                                 ;
-coverage_spec_or_option                 :       attribute_instance attribute_instance_tail coverage_spec
-                                                | attribute_instance attribute_instance_tail coverage_option ';'
+coverage_spec_or_option                 :       attribute_instance_tail coverage_spec
+                                                | attribute_instance_tail coverage_option ';'
                                                 | coverage_spec
                                                 | coverage_option ';'
                                                 ;
@@ -1916,7 +1960,7 @@ cover_point                             :       data_type_cover_point COVERPOINT
 data_type_cover_point                   :       data_type_or_implicit identifier ':'
                                                 | identifier ':'
                                                 ;
-bins_or_empty                           :       '{' attribute_instance attribute_instance_tail bins_or_options_tail '}'
+bins_or_empty                           :       '{' attribute_instance_tail bins_or_options_tail '}'
                                                 | '{' bins_or_options_tail '}'
                                                 | ';'
                                                 ;
@@ -2016,8 +2060,8 @@ cross_body_item_tail                    :       cross_body_item ';' cross_body_i
 cross_body_item                         :       function_declaration
                                                 | bins_selection_or_option ';'
                                                 ;
-bins_selection_or_option                :       attribute_instance attribute_instance_tail coverage_option
-                                                | attribute_instance attribute_instance_tail bins_selection
+bins_selection_or_option                :       attribute_instance_tail coverage_option
+                                                | attribute_instance_tail bins_selection
                                                 | coverage_option
                                                 | bins_selection
                                                 ;
@@ -2069,18 +2113,18 @@ let_identifier                          :       identifier
 let_port_list                           :       let_port_item ',' let_port_list
                                                 | let_port_item
                                                 ;
-let_port_item                           :       attribute_instance attribute_instance_tail let_formal_type identifier variable_dimension variable_dimension_tail '=' expression
-                                                | attribute_instance attribute_instance_tail identifier variable_dimension variable_dimension_tail '=' expression
-                                                | attribute_instance attribute_instance_tail let_formal_type identifier variable_dimension variable_dimension_tail
-                                                | attribute_instance attribute_instance_tail identifier variable_dimension variable_dimension_tail
-                                                | let_formal_type identifier variable_dimension variable_dimension_tail '=' expression
-                                                | identifier variable_dimension variable_dimension_tail '=' expression
-                                                | let_formal_type identifier variable_dimension variable_dimension_tail
-                                                | identifier variable_dimension variable_dimension_tail
-                                                | attribute_instance attribute_instance_tail let_formal_type identifier '=' expression
-                                                | attribute_instance attribute_instance_tail identifier '=' expression
-                                                | attribute_instance attribute_instance_tail let_formal_type identifier
-                                                | attribute_instance attribute_instance_tail identifier
+let_port_item                           :       attribute_instance_tail let_formal_type identifier variable_dimension_tail '=' expression
+                                                | attribute_instance_tail identifier variable_dimension_tail '=' expression
+                                                | attribute_instance_tail let_formal_type identifier variable_dimension_tail
+                                                | attribute_instance_tail identifier variable_dimension_tail
+                                                | let_formal_type identifier variable_dimension_tail '=' expression
+                                                | identifier variable_dimension_tail '=' expression
+                                                | let_formal_type identifier variable_dimension_tail
+                                                | identifier variable_dimension_tail
+                                                | attribute_instance_tail let_formal_type identifier '=' expression
+                                                | attribute_instance_tail identifier '=' expression
+                                                | attribute_instance_tail let_formal_type identifier
+                                                | attribute_instance_tail identifier
                                                 | let_formal_type identifier '=' expression
                                                 | identifier '=' expression
                                                 | let_formal_type identifier
@@ -2268,7 +2312,7 @@ named_parameter_assignment              :       '.' identifier '(' param_express
 hierarchical_instance                   :       name_of_instance '(' list_of_port_connections ')'
                                                 | name_of_instance '(' ')'
                                                 ;
-name_of_instance                        :       identifier unpacked_dimension unpacked_dimension_tail
+name_of_instance                        :       identifier unpacked_dimension_tail
                                                 | identifier
                                                 ;
 list_of_port_connections                :       ordered_port_connection_tail
@@ -2281,12 +2325,12 @@ ordered_port_connection_tail            :       ordered_port_connection ',' orde
 named_port_connection_tail              :       named_port_connection ',' named_port_connection_tail
                                                 | named_port_connection
                                                 ;
-ordered_port_connection                 :       attribute_instance attribute_instance_tail expression
+ordered_port_connection                 :       attribute_instance_tail expression
                                                 | expression
                                                 ;
-named_port_connection                   :       attribute_instance attribute_instance_tail '.' identifier '(' expression ')'
-                                                | attribute_instance attribute_instance_tail '.' identifier
-                                                | attribute_instance attribute_instance_tail '.' '*'
+named_port_connection                   :       attribute_instance_tail '.' identifier '(' expression ')'
+                                                | attribute_instance_tail '.' identifier
+                                                | attribute_instance_tail '.' '*'
                                                 | '.' identifier '(' expression ')'
                                                 | '.' identifier
                                                 | '.' '*'
@@ -2310,12 +2354,12 @@ ordered_checker_port_connection_tail    :       ordered_checker_port_connection 
 named_checker_port_connection_tail      :       named_checker_port_connection ',' named_checker_port_connection_tail
                                                 | named_checker_port_connection
                                                 ;
-ordered_checker_port_connection         :       attribute_instance attribute_instance_tail property_actual_arg
+ordered_checker_port_connection         :       attribute_instance_tail property_actual_arg
                                                 | property_actual_arg
                                                 ;
-named_checker_port_connection           :       attribute_instance attribute_instance_tail '.' identifier paren_property_actual_arg
-                                                | attribute_instance attribute_instance_tail '.' identifier
-                                                | attribute_instance attribute_instance_tail '.' '*'
+named_checker_port_connection           :       attribute_instance_tail '.' identifier paren_property_actual_arg
+                                                | attribute_instance_tail '.' identifier
+                                                | attribute_instance_tail '.' '*'
                                                 | '.' identifier paren_property_actual_arg
                                                 | '.' identifier
                                                 | '.' '*'
@@ -2375,10 +2419,10 @@ generate_item                           :       module_or_generate_item
                                                 | interface_or_generate_item
                                                 | checker_or_generate_item
                                                 ;
-udp_nonansi_declaration                 :       attribute_instance attribute_instance_tail PRIMITIVE identifier '(' udp_port_list ')' ';'
+udp_nonansi_declaration                 :       attribute_instance_tail PRIMITIVE identifier '(' udp_port_list ')' ';'
                                                 | PRIMITIVE identifier '(' udp_port_list ')' ';'
                                                 ;
-udp_ansi_declaration                    :       attribute_instance attribute_instance_tail PRIMITIVE identifier '(' udp_declaration_port_list ')' ';'
+udp_ansi_declaration                    :       attribute_instance_tail PRIMITIVE identifier '(' udp_declaration_port_list ')' ';'
                                                 | PRIMITIVE identifier '(' udp_declaration_port_list ')' ';'
                                                 ;
 udp_declaration                         :       udp_nonansi_declaration udp_port_declaration udp_port_declaration_tail udp_body ENDPRIMITIVE endprimitive
@@ -2387,8 +2431,8 @@ udp_declaration                         :       udp_nonansi_declaration udp_port
                                                 | udp_ansi_declaration udp_body ENDPRIMITIVE
                                                 | EXTERN udp_nonansi_declaration
                                                 | EXTERN udp_ansi_declaration
-                                                | attribute_instance attribute_instance_tail PRIMITIVE identifier '(' '.' '*' ')' ';' udp_port_declaration_tail udp_body ENDPRIMITIVE endprimitive
-                                                | attribute_instance attribute_instance_tail PRIMITIVE identifier '(' '.' '*' ')' ';' udp_port_declaration_tail udp_body ENDPRIMITIVE
+                                                | attribute_instance_tail PRIMITIVE identifier '(' '.' '*' ')' ';' udp_port_declaration_tail udp_body ENDPRIMITIVE endprimitive
+                                                | attribute_instance_tail PRIMITIVE identifier '(' '.' '*' ')' ';' udp_port_declaration_tail udp_body ENDPRIMITIVE
                                                 | PRIMITIVE identifier '(' '.' '*' ')' ';' udp_port_declaration_tail udp_body ENDPRIMITIVE endprimitive
                                                 | PRIMITIVE identifier '(' '.' '*' ')' ';' udp_port_declaration_tail udp_body ENDPRIMITIVE
                                                 ;
@@ -2411,17 +2455,17 @@ udp_port_declaration                    :       udp_output_declaration ';'
                                                 | udp_input_declaration ';'
                                                 | udp_reg_declaration ';'
                                                 ;
-udp_output_declaration                  :       attribute_instance attribute_instance_tail OUTPUT identifier
-                                                | attribute_instance attribute_instance_tail OUTPUT REG identifier equal_constant_expression
-                                                | attribute_instance attribute_instance_tail OUTPUT REG identifier
+udp_output_declaration                  :       attribute_instance_tail OUTPUT identifier
+                                                | attribute_instance_tail OUTPUT REG identifier equal_constant_expression
+                                                | attribute_instance_tail OUTPUT REG identifier
                                                 | OUTPUT identifier
                                                 | OUTPUT REG identifier equal_constant_expression
                                                 | OUTPUT REG identifier
                                                 ;
-udp_input_declaration                   :       attribute_instance attribute_instance_tail INPUT list_of_udp_port_identifiers
+udp_input_declaration                   :       attribute_instance_tail INPUT list_of_udp_port_identifiers
                                                 | INPUT list_of_udp_port_identifiers
                                                 ;
-udp_reg_declaration                     :       attribute_instance attribute_instance_tail REG identifier
+udp_reg_declaration                     :       attribute_instance_tail REG identifier
                                                 | REG identifier
                                                 ;
 udp_body                                :       combinatorial_body
@@ -2584,6 +2628,7 @@ seq_block                               :       _BEGIN ':' identifier block_item
                                                 | _BEGIN ':' identifier block_item_declaration_tail statement_or_null_tail END
                                                 | _BEGIN block_item_declaration_tail statement_or_null_tail END endblock
                                                 | _BEGIN block_item_declaration_tail statement_or_null_tail END
+// TODO: empty
                                                 ;
 endblock                                :       ':' identifier
                                                 ;
@@ -2591,18 +2636,19 @@ par_block                               :       FORK ':' identifier block_item_d
                                                 | FORK ':' identifier block_item_declaration_tail statement_or_null_tail join_keyword
                                                 | FORK block_item_declaration_tail statement_or_null_tail join_keyword endblock
                                                 | FORK block_item_declaration_tail statement_or_null_tail join_keyword
+// TODO: empty
                                                 ;
 join_keyword                            :       JOIN
                                                 | JOIN_ANY
                                                 | JOIN_NONE
                                                 ;
 statement_or_null                       :       statement
-                                                | attribute_instance attribute_instance_tail ';'
+                                                | attribute_instance_tail ';'
                                                 | ';'
                                                 ;
-statement                               :       identifier ':' attribute_instance attribute_instance_tail statement_item
+statement                               :       identifier ':' attribute_instance_tail statement_item
                                                 | identifier ':' statement_item
-                                                | attribute_instance attribute_instance_tail statement_item
+                                                | attribute_instance_tail statement_item
                                                 | statement_item
                                                 ;
 statement_item                          :       blocking_assignment ';'
@@ -2629,7 +2675,7 @@ statement_item                          :       blocking_assignment ';'
 function_statement                      :       statement
                                                 ;
 function_statement_or_null              :       function_statement
-                                                | attribute_instance attribute_instance_tail ';'
+                                                | attribute_instance_tail ';'
                                                 | ';'
                                                 ;
 variable_identifier_list                :       identifier ',' variable_identifier_list
@@ -2913,8 +2959,7 @@ clocking_event                          :       '@' identifier
                                                 ;
 clocking_item                           :       DEFAULT default_skew ';'
                                                 | clocking_direction list_of_clocking_decl_assign
-                                                | attribute_instance attribute_instance attribute_instance_tail assertion_item_declaration
-                                                | attribute_instance assertion_item_declaration
+                                                | attribute_instance_tail assertion_item_declaration
                                                 | assertion_item_declaration
                                                 ;
 default_skew                            :       INPUT clocking_skew
@@ -3396,9 +3441,9 @@ empty_unpacked_array_concatenation      :       '{''}'
                                                 ;
 constant_function_call                  :       function_subroutine_call
                                                 ;
-tf_call                                 :       ps_or_hierarchical_identifier attribute_instance attribute_instance_tail list_of_arguments
+tf_call                                 :       ps_or_hierarchical_identifier attribute_instance_tail list_of_arguments
                                                 
-                                                | ps_or_hierarchical_identifier attribute_instance attribute_instance_tail
+                                                | ps_or_hierarchical_identifier attribute_instance_tail
                                                 | ps_or_hierarchical_identifier list_of_arguments
                                                 
                                                 | ps_or_hierarchical_identifier
@@ -3435,8 +3480,8 @@ identifier_expression_tail              :       ',' '.' identifier '(' expressio
                                                 ;
 method_call                             :       method_call_root '.' method_call_body
                                                 ;
-method_call_body                        :       identifier attribute_instance attribute_instance_tail list_of_arguments
-                                                | identifier attribute_instance attribute_instance_tail
+method_call_body                        :       identifier attribute_instance_tail list_of_arguments
+                                                | identifier attribute_instance_tail
                                                 | identifier list_of_arguments
                                                 | identifier
                                                 | built_in_method_call
@@ -3444,10 +3489,10 @@ method_call_body                        :       identifier attribute_instance at
 built_in_method_call                    :       array_manipulation_call
                                                 | randomize_call
                                                 ;
-array_manipulation_call                 :       array_method_name attribute_instance attribute_instance_tail list_of_arguments with_expression
-                                                | array_method_name attribute_instance attribute_instance_tail with_expression
-                                                | array_method_name attribute_instance attribute_instance_tail list_of_arguments
-                                                | array_method_name attribute_instance attribute_instance_tail
+array_manipulation_call                 :       array_method_name attribute_instance_tail list_of_arguments with_expression
+                                                | array_method_name attribute_instance_tail with_expression
+                                                | array_method_name attribute_instance_tail list_of_arguments
+                                                | array_method_name attribute_instance_tail
                                                 | array_method_name list_of_arguments with_expression
                                                 | array_method_name with_expression
                                                 | array_method_name list_of_arguments
@@ -3455,10 +3500,10 @@ array_manipulation_call                 :       array_method_name attribute_inst
                                                 ;
 with_expression                         :       WITH '(' expression ')'
                                                 ;
-randomize_call                          :       RANDOMIZE attribute_instance attribute_instance_tail variable_list_null with_identifier_list
-                                                | RANDOMIZE attribute_instance attribute_instance_tail variable_list_null
-                                                | RANDOMIZE attribute_instance attribute_instance_tail with_identifier_list
-                                                | RANDOMIZE attribute_instance attribute_instance_tail
+randomize_call                          :       RANDOMIZE attribute_instance_tail variable_list_null with_identifier_list
+                                                | RANDOMIZE attribute_instance_tail variable_list_null
+                                                | RANDOMIZE attribute_instance_tail with_identifier_list
+                                                | RANDOMIZE attribute_instance_tail
                                                 | RANDOMIZE variable_list_null with_identifier_list
                                                 | RANDOMIZE variable_list_null
                                                 | RANDOMIZE with_identifier_list
@@ -3483,18 +3528,18 @@ array_method_name                       :       identifier
                                                 | OR
                                                 | XOR
                                                 ;
-inc_or_dec_expression                   :       inc_or_dec_operator attribute_instance attribute_instance_tail variable_lvalue
-                                                | variable_lvalue attribute_instance attribute_instance_tail inc_or_dec_operator
+inc_or_dec_expression                   :       inc_or_dec_operator attribute_instance_tail variable_lvalue
+                                                | variable_lvalue attribute_instance_tail inc_or_dec_operator
                                                 | inc_or_dec_operator variable_lvalue
                                                 | variable_lvalue inc_or_dec_operator
                                                 ;
-conditional_expression                  :       cond_predicate '?' attribute_instance attribute_instance_tail expression ':' expression
+conditional_expression                  :       cond_predicate '?' attribute_instance_tail expression ':' expression
                                                 | cond_predicate '?' expression ':' expression
                                                 ;
 constant_expression                     :       constant_primary
-                                                | unary_operator attribute_instance attribute_instance_tail constant_primary
-                                                | constant_expression binary_operator attribute_instance attribute_instance_tail constant_expression
-                                                | constant_expression '?' attribute_instance attribute_instance_tail constant_expression ':' constant_expression
+                                                | unary_operator attribute_instance_tail constant_primary
+                                                | constant_expression binary_operator attribute_instance_tail constant_expression
+                                                | constant_expression '?' attribute_instance_tail constant_expression ':' constant_expression
                                                 | unary_operator constant_primary
                                                 | constant_expression binary_operator constant_expression
                                                 | constant_expression '?' constant_expression ':' constant_expression
@@ -3522,11 +3567,11 @@ constant_indexed_range                  :       constant_expression '+'':' const
                                                 | constant_expression '-'':' constant_expression
                                                 ;
 expression                              :       primary
-                                                | unary_operator attribute_instance attribute_instance_tail primary
+                                                | unary_operator attribute_instance_tail primary
                                                 | unary_operator primary
                                                 | inc_or_dec_expression
                                                 | '(' operator_assignment ')'
-                                                | expression binary_operator attribute_instance attribute_instance_tail expression
+                                                | expression binary_operator attribute_instance_tail expression
                                                 | expression binary_operator expression
                                                 | conditional_expression
                                                 | inside_expression
@@ -3543,12 +3588,12 @@ value_range                             :       expression
 mintypmax_expression                    :       expression
                                                 | expression ':' expression ':' expression
                                                 ;
-module_path_conditional_expression      :       module_path_expression '?' attribute_instance attribute_instance_tail module_path_expression ':' module_path_expression
+module_path_conditional_expression      :       module_path_expression '?' attribute_instance_tail module_path_expression ':' module_path_expression
                                                 | module_path_expression '?' module_path_expression ':' module_path_expression
                                                 ;
 module_path_expression                  :       module_path_primary
-                                                | unary_module_path_operator attribute_instance attribute_instance_tail module_path_primary
-                                                | module_path_expression binary_module_path_operator attribute_instance attribute_instance_tail module_path_expression
+                                                | unary_module_path_operator attribute_instance_tail module_path_primary
+                                                | module_path_expression binary_module_path_operator attribute_instance_tail module_path_expression
                                                 | unary_module_path_operator module_path_primary
                                                 | module_path_expression binary_module_path_operator module_path_expression
                                                 | module_path_conditional_expression
