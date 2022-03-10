@@ -33,20 +33,49 @@ ID      [A-z_][A-z0-9_$]*
                                                     yylval.sval = yytext; 
                                                     return string_literal; 
                                                 }
+"::"                                            { return SCOPE; }
+"==="                                           { return TOK_LOG_XEQ; }
+"!=="                                           { return TOK_LOG_XNEQ; }
+"==?"                                           { return TOK_LOG_WEQ; }
+"!=?"                                           { return TOK_LOG_WNEQ; }
+">>>"                                           { return TOK_BIT_SRA; }
+"<<<"                                           { return TOK_BIT_SLA; }
+"<->"                                           { return TOK_EQUIV; }
+"|->"                                           { return TOK_IMP_OVLP; }
+"|=>"                                           { return TOK_IMP_NON_OVLP; }
+"+:"                                            { return TOK_RNG_UPTO; }
+"-:"                                            { return TOK_RNG_DNTO; }
+"++"                                            { return TOK_INC; }
+"--"                                            { return TOK_DEC; }
+"->"                                            { return TOK_IMP; }
+"&&"                                            { return TOK_LOG_AND; }
+"||"                                            { return TOK_LOG_OR; }
+"=="                                            { return TOK_LOG_EQ; }
+"!="                                            { return TOK_LOG_NEQ; }
+"<="                                            { return TOK_LOG_LEQ; }
+">="                                            { return TOK_LOG_GEQ; }
+">>"                                            { return TOK_BIT_SR; }
+"<<"                                            { return TOK_BIT_SL; }
+"~&"                                            { return TOK_BIT_NAND; }
+"~|"                                            { return TOK_BIT_NOR; }
+"~^"                                            { return TOK_BIT_XNOR; }
+"**"                                            { return TOK_PWR; }
+"+"                                             { return TOK_PLUS; }
+"-"                                             { return TOK_MINUS; }
+"*"                                             { return TOK_MUL; }
+"/"                                             { return TOK_DIV; }
+"%"                                             { return TOK_MOD; }
+"!"                                             { return TOK_LOG_NOT; }
+"<"                                             { return TOK_LOG_LT; }
+">"                                             { return TOK_LOG_GT; }
+"&"                                             { return TOK_BIT_AND; }
+"|"                                             { return TOK_BIT_OR; }
+"^"                                             { return TOK_BIT_XOR; }
+"~"                                             { return TOK_BIT_NOT; }
 "d"                                             { return 'd'; }
 "o"                                             { return 'o'; }
 "b"                                             { return 'b'; }
 "h"                                             { return 'h'; }
-"0"                                             { return '0'; }
-"1"                                             { return '1'; }
-"2"                                             { return '2'; }
-"3"                                             { return '3'; }
-"4"                                             { return '4'; }
-"5"                                             { return '5'; }
-"6"                                             { return '6'; }
-"7"                                             { return '7'; }
-"8"                                             { return '8'; }
-"9"                                             { return '9'; }
 "X"                                             { return 'X'; }
 "x"                                             { return 'x'; }
 "Z"                                             { return 'Z'; }
@@ -663,8 +692,6 @@ int lex_isKeyword(char *s) {
         return MODPORT;
     } else if (strcmp(s, "join_all") == 0) {
         return JOIN_ALL;
-    } else if (strcmp(s, "endcovergroup") == 0) {
-        return ENDCOVERGROUP;
     } else if (strcmp(s, "unit") == 0) {
         return UNIT;
     }
