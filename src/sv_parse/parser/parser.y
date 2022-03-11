@@ -17,7 +17,7 @@
     extern ast_node_t *root;
 }
 
-%glr-parser
+//%glr-parser
 %define parse.trace
 %define parse.error verbose
 %locations
@@ -92,6 +92,7 @@
     ast_time_unit_t ast_time_unit;
     ast_lifetime_t  ast_lifetime;
     ast_package_t * ast_package;
+    ast_module_t *ast_module;
     ast_timeunits_decl_t * ast_timeunits_decl;
     ast_time_literal_t * ast_time_literal;
     double      fval;
@@ -101,12 +102,14 @@
 
 %type <ast_node> source_text description primary_literal primary
 %type <ast_node_list> description_list attribute_instance attr_spec_list attribute_instance_list
+%type <ast_node_list> list_of_ports port_list
 %type <ast_package> package_declaration
+%type <ast_module> module_declaration
 %type <ast_expr> expression
 %type <ast_timeunits_decl> timeunits_declaration timeunits_declaration_optional
 %type <ast_time_literal> time_literal
 %type <ast_time_unit> time_unit
-%type <ast_lifetime> lifetime package_declaration_lifetime_optional
+%type <ast_lifetime> lifetime lifetime_optional
 %type <fval> fixed_point_number
 %type <ival> unsigned_number 
 %type <sval> c_identifier escaped_identifier system_tf_identifier simple_identifier string_literal
@@ -139,11 +142,32 @@ description_list
 description
     : package_declaration
         { $$ = (ast_node_t *)$1; }
+    | module_declaration
+        { $$ = (ast_node_t *)$1; }
+    ;
+
+// FIXME
+module_declaration
+    : attribute_instance_list MODULE lifetime_optional identifier list_of_ports ';' timeunits_declaration_optional ENDMODULE block_end_identifier_optional
+        { $$ = ast_module_new($1, $3, $4, NULL, NULL, $5, $7, NULL, $9); }
+    ;
+
+list_of_ports
+    : '(' port_list ')' { $$ = $2; }
+    ;
+
+port_list
+    : port_list ',' identifier
+    | identifier
+        {
+            $$ = ast_node_list_new();
+            ast_node_list_append($$, // TODO: add identifier ast node
+        }
     ;
 
 // FIXME
 package_declaration
-    : attribute_instance_list PACKAGE package_declaration_lifetime_optional identifier ';' timeunits_declaration_optional ENDPACKAGE block_end_identifier_optional
+    : attribute_instance_list PACKAGE lifetime_optional identifier ';' timeunits_declaration_optional ENDPACKAGE block_end_identifier_optional
         { $$ = ast_package_new($1, $3, $4, $6, NULL, $8); }
     ;
 
@@ -152,7 +176,7 @@ block_end_identifier_optional
     |                { $$ = NULL; }
     ;
 
-package_declaration_lifetime_optional
+lifetime_optional
     : lifetime { $$ = $1; }
     |          { $$ = AST_LIFETIME_STATIC; }
     ;

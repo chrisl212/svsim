@@ -4,3 +4,8 @@ package test_pkg;
     timeunit 10ps/10ps;
 
 endpackage : test_pkg
+
+(* attr = "b" + "string meister j" *)
+module test_mod;
+
+endmodule : test_mod
