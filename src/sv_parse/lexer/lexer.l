@@ -1,5 +1,6 @@
 %{
     #include <stdio.h>
+    #include <stdlib.h>
     #include <string.h>
     #include "sv_types/sv_types.h"
     #include "sv_parse/parser/parser.tab.h"
@@ -17,8 +18,16 @@ ID      [A-z_][A-z0-9_$]*
 [ \t\n]+                                        { }
 \/\/.*|"/*"([^*]|\*+[^*/])*\*+"/"               { }
 
-({NUM}?'d)?[xXzX]*[0-9]+                        {
+({NUM}?'d)[xXzX]*[0-9]+                         {
                                                     return decimal_number;
+                                                }
+[0-9]+\.[0-9]+                                  {
+                                                    yylval.fval = strtod(yytext, NULL);
+                                                    return fixed_point_number;
+                                                }
+[0-9]+                                          {
+                                                    yylval.ival = strtol(yytext, NULL, 10);
+                                                    return unsigned_number;
                                                 }
 {NUM}?'[bB][xXzX01?]+                           { 
                                                     return binary_number;
@@ -29,8 +38,8 @@ ID      [A-z_][A-z0-9_$]*
 {NUM}?'[h][xXzX0-9a-fA-F?]+                     {
                                                     return hex_number;
                                                 }
-\".*\"                                          {
-                                                    yylval.sval = yytext; 
+\"[^"]*\"                                       {
+                                                    yylval.sval = strdup(yytext);
                                                     return string_literal; 
                                                 }
 "::"                                            { return SCOPE; }
@@ -72,51 +81,31 @@ ID      [A-z_][A-z0-9_$]*
 "|"                                             { return TOK_BIT_OR; }
 "^"                                             { return TOK_BIT_XOR; }
 "~"                                             { return TOK_BIT_NOT; }
-"d"                                             { return 'd'; }
-"o"                                             { return 'o'; }
-"b"                                             { return 'b'; }
-"h"                                             { return 'h'; }
-"X"                                             { return 'X'; }
-"x"                                             { return 'x'; }
-"Z"                                             { return 'Z'; }
-"z"                                             { return 'z'; }
-"!"                                             { return '!'; }
-"~"                                             { return '~'; }
-"-"                                             { return '-'; }
 "]"                                             { return ']'; }
-"/"                                             { return '/'; }
 ","                                             { return ','; }
 "?"                                             { return '?'; }
-"^"                                             { return '^'; }
-"<"                                             { return '<'; }
 "("                                             { return '('; }
 "}"                                             { return '}'; }
-"&"                                             { return '&'; }
 "."                                             { return '.'; }
 "{"                                             { return '{'; }
 "@"                                             { return '@'; }
-"+"                                             { return '+'; }
-">"                                             { return '>'; }
 "_"                                             { return '_'; }
-"*"                                             { return '*'; }
 "["                                             { return '['; }
 "'"                                             { return '\''; }
-"|"                                             { return '|'; }
 ")"                                             { return ')'; }
-"="                                             { return '='; }
 ";"                                             { return ';'; }
 ":"                                             { return ':'; }
-"%"                                             { return '%'; }
 "#"                                             { return '#'; }
 "$"                                             { return '$'; }
+"="                                             { return '='; }
 {ID}                                            {
-                                                    int k;
+                                                    int keyword;
 
-                                                    if ((k = lex_isKeyword(yytext))) {
-                                                        printf("KEYWORD %s\n", yytext);
-                                                        return k;
+                                                    if ((keyword = lex_isKeyword(yytext))) {
+                                                        return keyword;
                                                     }
-                                                    printf("NOT KEYWORD %s\n", yytext);
+
+                                                    yylval.sval = strdup(yytext);
                                                     return simple_identifier;
                                                 }
 
