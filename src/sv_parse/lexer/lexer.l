@@ -15,6 +15,7 @@ ID      [A-Za-z_][A-Za-z0-9_$]*
 
 %%
 
+"ELSE IF"                                       { return ELSE_IF; }
 [ \t\n]+                                        { }
 \/\/.*|"/*"([^*]|\*+[^*/])*\*+"/"               { }
 
@@ -42,6 +43,10 @@ ID      [A-Za-z_][A-Za-z0-9_$]*
                                                     yylval.sval = strdup(yytext);
                                                     return string_literal; 
                                                 }
+({ID}::{ID})+                                   {
+                                                    yylval.sval = strdup(yytext);
+                                                    return ps_identifier_tok;
+                                                }
 "::"                                            { return SCOPE; }
 "==="                                           { return TOK_LOG_XEQ; }
 "!=="                                           { return TOK_LOG_XNEQ; }
@@ -52,6 +57,7 @@ ID      [A-Za-z_][A-Za-z0-9_$]*
 "<->"                                           { return TOK_EQUIV; }
 "|->"                                           { return TOK_IMP_OVLP; }
 "|=>"                                           { return TOK_IMP_NON_OVLP; }
+"&&&"                                           { return TOK_3AMP; }
 "+:"                                            { return TOK_RNG_UPTO; }
 "-:"                                            { return TOK_RNG_DNTO; }
 "++"                                            { return TOK_INC; }
@@ -81,6 +87,7 @@ ID      [A-Za-z_][A-Za-z0-9_$]*
 "|"                                             { return TOK_BIT_OR; }
 "^"                                             { return TOK_BIT_XOR; }
 "~"                                             { return TOK_BIT_NOT; }
+"'"                                             { return TOK_SING_QUOT; }
 "]"                                             { return ']'; }
 ","                                             { return ','; }
 "?"                                             { return '?'; }
@@ -91,7 +98,6 @@ ID      [A-Za-z_][A-Za-z0-9_$]*
 "@"                                             { return '@'; }
 "_"                                             { return '_'; }
 "["                                             { return '['; }
-"'"                                             { return '\''; }
 ")"                                             { return ')'; }
 ";"                                             { return ';'; }
 ":"                                             { return ':'; }
