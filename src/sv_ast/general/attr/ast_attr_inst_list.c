@@ -9,12 +9,12 @@ void ast_attr_inst_list_print(ast_node_list_t *list) {
         return;
     }
 
-    for (node_outer = list->root; node_outer != NULL; node_outer = node_outer->next) {
+    for (node_outer = list->first; node_outer != NULL; node_outer = node_outer->next) {
         ast_node_list_t *inner_list = (ast_node_list_t *)node_outer->node;
 
         printf("(* ");
-        for (node_inner = inner_list->root; node_inner != NULL; node_inner = node_inner->next) {
-            if (node_inner != inner_list->root) {
+        for (node_inner = inner_list->first; node_inner != NULL; node_inner = node_inner->next) {
+            if (node_inner != inner_list->first) {
                 printf(", ");
             }
             ast_node_print(node_inner->node);

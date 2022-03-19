@@ -10,7 +10,8 @@ typedef struct _ast_node_list_item {
 
 typedef struct _ast_node_list {
     ast_node_t super;
-    ast_node_list_item_t *root;
+    ast_node_list_item_t *first;
+    ast_node_list_item_t *last;
     int len;
 } ast_node_list_t;
 

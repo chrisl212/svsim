@@ -85,6 +85,8 @@
 %left TOK_MUL TOK_DIV TOK_MOD TOK_LOG_NOT TOK_LOG_LT TOK_LOG_GT TOK_BIT_AND TOK_BIT_OR
 %left TOK_BIT_XOR TOK_BIT_NOT TOK_INC TOK_DEC TOK_RNG_UPTO TOK_RNG_DNTO SCOPE
 
+%right '?' ':'
+
 %union {
     ast_node_t *    ast_node;
     ast_node_list_t * ast_node_list;
@@ -95,6 +97,7 @@
     ast_module_t *ast_module;
     ast_timeunits_decl_t * ast_timeunits_decl;
     ast_time_literal_t * ast_time_literal;
+    ast_identifier_t * ast_identifier;
     double      fval;
     int         ival;
     char        *sval;
@@ -110,11 +113,11 @@
 %type <ast_time_literal> time_literal
 %type <ast_time_unit> time_unit
 %type <ast_lifetime> lifetime lifetime_optional
+%type <ast_identifier> identifier block_end_identifier_optional
 %type <fval> fixed_point_number
 %type <ival> unsigned_number 
 %type <sval> c_identifier escaped_identifier system_tf_identifier simple_identifier string_literal
-%type <sval> block_identifier class_identifier package_identifier type_identifier identifier
-%type <sval> block_end_identifier_optional
+%type <sval> block_identifier class_identifier package_identifier type_identifier
 
 %%
 
@@ -158,17 +161,260 @@ list_of_ports
 
 port_list
     : port_list ',' identifier
+        { ast_node_list_append($1, (ast_node_t *)$3); }
     | identifier
         {
             $$ = ast_node_list_new();
-            ast_node_list_append($$, // TODO: add identifier ast node
+            ast_node_list_append($$, (ast_node_t *)$1);
         }
     ;
 
 // FIXME
+data_type
+    : integer_vector_type
+    | integer_vector_type packed_dimension_list
+    | integer_vector_type signing
+    | integer_vector_type signing packed_dimension_list
+    ;
+
+data_type_or_implicit
+    : data_type
+    |
+    ;
+
+signing
+    : SIGNED
+    | UNSIGNED
+    ;
+
+packed_dimension_list
+    : packed_dimension_list packed_dimension
+    | packed_dimension
+    ;
+
+packed_dimension
+    : '[' ']'
+    | '[' constant_range ']'
+    ;
+
+constant_range
+    : constant_expression ':' constant_expression
+    ;
+
+constant_expression
+    : constant_primary
+    | TOK_PLUS attribute_instance_list constant_primary
+    | TOK_MINUS attribute_instance_list constant_primary
+    | TOK_LOG_NOT attribute_instance_list constant_primary
+    | TOK_BIT_NOT attribute_instance_list constant_primary
+    | TOK_BIT_AND attribute_instance_list constant_primary
+    | TOK_BIT_NAND attribute_instance_list constant_primary
+    | TOK_BIT_OR attribute_instance_list constant_primary
+    | TOK_BIT_NOR attribute_instance_list constant_primary
+    | TOK_BIT_XOR attribute_instance_list constant_primary
+    | TOK_BIT_XNOR attribute_instance_list constant_primary
+    | constant_expression TOK_PLUS attribute_instance_list constant_expression
+    | constant_expression TOK_MINUS attribute_instance_list constant_expression
+    | constant_expression TOK_MUL attribute_instance_list constant_expression
+    | constant_expression TOK_DIV attribute_instance_list constant_expression
+    | constant_expression TOK_MOD attribute_instance_list constant_expression
+    | constant_expression TOK_LOG_EQ attribute_instance_list constant_expression
+    | constant_expression TOK_LOG_XEQ attribute_instance_list constant_expression
+    | constant_expression TOK_LOG_XNEQ attribute_instance_list constant_expression
+    | constant_expression TOK_LOG_WEQ attribute_instance_list constant_expression
+    | constant_expression TOK_LOG_WNEQ attribute_instance_list constant_expression
+    | constant_expression TOK_LOG_AND attribute_instance_list constant_expression
+    | constant_expression TOK_LOG_OR attribute_instance_list constant_expression
+    | constant_expression TOK_PWR attribute_instance_list constant_expression
+    | constant_expression TOK_LOG_LT attribute_instance_list constant_expression
+    | constant_expression TOK_LOG_LEQ attribute_instance_list constant_expression
+    | constant_expression TOK_LOG_GT attribute_instance_list constant_expression
+    | constant_expression TOK_LOG_GEQ attribute_instance_list constant_expression
+    | constant_expression TOK_BIT_AND attribute_instance_list constant_expression
+    | constant_expression TOK_BIT_OR attribute_instance_list constant_expression
+    | constant_expression TOK_BIT_XOR attribute_instance_list constant_expression
+    | constant_expression TOK_BIT_XNOR attribute_instance_list constant_expression
+    | constant_expression TOK_BIT_SR attribute_instance_list constant_expression
+    | constant_expression TOK_BIT_SL attribute_instance_list constant_expression
+    | constant_expression TOK_BIT_SRA attribute_instance_list constant_expression
+    | constant_expression TOK_BIT_SLA attribute_instance_list constant_expression
+    | constant_expression TOK_IMP attribute_instance_list constant_expression
+    | constant_expression TOK_EQUIV attribute_instance_list constant_expression
+    | constant_expression '?' attribute_instance_list constant_expression ':' constant_expression
+    ;
+
+// FIXME
+constant_primary
+    : primary_literal
+    ;
+
+integer_vector_type
+    : BIT
+    | LOGIC
+    | REG
+    ;
+
+// FIXME
 package_declaration
-    : attribute_instance_list PACKAGE lifetime_optional identifier ';' timeunits_declaration_optional ENDPACKAGE block_end_identifier_optional
-        { $$ = ast_package_new($1, $3, $4, $6, NULL, $8); }
+    : attribute_instance_list PACKAGE lifetime_optional identifier ';' timeunits_declaration_optional package_item_list_optional ENDPACKAGE block_end_identifier_optional
+        { $$ = ast_package_new($1, $3, $4, $6, NULL, $9); }
+    ;
+
+package_item_list_optional
+    : package_item_list_optional package_item
+    |
+    ;
+
+// FIXME
+package_item
+    : package_item_declaration
+    ;
+
+// FIXME
+package_item_declaration
+    : data_declaration
+    | function_declaration
+    | ';'
+    ;
+
+function_declaration
+    : FUNCTION lifetime_optional function_body_declaration
+    ;
+
+// FIXME
+function_body_declaration
+    : data_type identifier ';' tf_item_declaration_list ENDFUNCTION block_end_identifier_optional
+    ;
+
+tf_item_declaration_list
+    : tf_item_declaration_list tf_item_declaration
+    |
+    ;
+
+// FIXME
+tf_item_declaration
+    : block_item_declaration
+    ;
+
+block_item_declaration
+    : attribute_instance_list data_declaration
+    | attribute_instance_list local_parameter_declaration ';'
+    | attribute_instance_list parameter_declaration ';'
+    | attribute_instance_list overload_declaration
+//    | attribute_instance_list let_declaration
+    ;
+
+overload_declaration
+    : BIND overload_operator FUNCTION data_type identifier '(' overload_proto_formals ')' ';'
+    ;
+
+overload_operator
+    : TOK_PLUS
+    | TOK_INC
+    | TOK_MINUS
+    | TOK_DEC
+    | TOK_MUL
+    | TOK_PWR
+    | TOK_DIV
+    | TOK_MOD
+    | TOK_LOG_EQ
+    | TOK_LOG_NEQ
+    | TOK_LOG_LT
+    | TOK_LOG_LEQ
+    | TOK_LOG_GT
+    | TOK_LOG_GEQ
+    | '='
+    ;
+
+overload_proto_formals
+    : overload_proto_formals ',' data_type
+    | data_type
+    ;
+
+// FIXME
+local_parameter_declaration
+    : LOCALPARAM data_type_or_implicit list_of_param_assignments
+    | LOCALPARAM TYPE list_of_type_assignments
+    ;
+
+// FIXME
+parameter_declaration
+    : PARAMETER data_type_or_implicit list_of_param_assignments
+    | PARAMETER TYPE list_of_type_assignments
+    ;
+
+list_of_param_assignments
+    : list_of_param_assignments ',' param_assignment
+    | param_assignment
+    ;
+
+list_of_type_assignments
+    : list_of_type_assignments ',' type_assignment
+    | type_assignment
+    ;
+
+// FIXME
+param_assignment
+    : identifier '=' constant_param_expression
+    | identifier
+    ;
+
+constant_param_expression
+    : constant_mintypmax_expression
+    | data_type
+    | '$'
+    ;
+
+constant_mintypmax_expression
+    : constant_expression ':' constant_expression ':' constant_expression
+    | constant_expression
+    ;
+
+type_assignment
+    : identifier '=' data_type
+    | identifier
+    ;
+
+// FIXME
+data_declaration
+    : const_optional var_optional lifetime_optional data_type identifier ';'
+    | type_declaration
+    | package_import_declaration
+    ;
+
+// FIXME
+type_declaration
+    : TYPEDEF data_type identifier ';'
+    | TYPEDEF ENUM identifier ';'
+    | TYPEDEF STRUCT identifier ';'
+    | TYPEDEF UNION identifier ';'
+    | TYPEDEF CLASS identifier ';'
+    | TYPEDEF INTERFACE CLASS identifier ';'
+    ;
+
+// FIXME
+package_import_declaration
+    : IMPORT package_import_item_list ';'
+    ;
+
+package_import_item_list
+    : package_import_item_list ',' package_import_item
+    | package_import_item
+    ;
+
+package_import_item
+    : identifier SCOPE identifier
+    | identifier SCOPE TOK_MUL
+    ;
+
+const_optional
+    : CONST
+    |
+    ;
+
+var_optional
+    : VAR
+    |
     ;
 
 block_end_identifier_optional
@@ -235,15 +481,85 @@ time_literal
         { $$ = ast_time_literal_new($1, $2); }
     ;
 
+// FIXME
 primary_literal
-    : time_literal   { $$ = (ast_node_t *)$1; }
-    | string_literal { $$ = (ast_node_t *)ast_string_literal_new($1); }
+    : time_literal
+        { $$ = (ast_node_t *)$1; }
+    | string_literal
+        { $$ = (ast_node_t *)ast_string_literal_new($1); }
+    | unsigned_number
+        { $$ = (ast_node_t *)ast_unsigned_int_literal_new($1); }
     ;
 
+// FIXME
 primary
     : primary_literal
+    | identifier
+        { $$ = (ast_node_t *)$1; }
+    | package_scope identifier
+    | '{' '}'
+    | subroutine_call
+//    | let_expression
+//     | '(' mintypmax_expression ')'
+//     | cast
+//     | assignment_pattern_expression
+//     | streaming_concatenation
+//     | sequence_method_call
+    | THIS
+    | '$'
+    | _NULL
     ;
 
+// FIXME
+subroutine_call
+    : tf_call
+//  | system_tf_call
+    | randomize_call
+    | STD SCOPE randomize_call
+    ;
+
+// FIXME
+tf_call
+    : identifier attribute_instance_list '(' list_of_arguments ')'
+    ;
+
+randomize_call
+    : RANDOMIZE attribute_instance_list
+    | RANDOMIZE attribute_instance_list '(' identifier_list ')'
+    | RANDOMIZE attribute_instance_list '(' _NULL ')'
+    ;
+
+identifier_list
+    : identifier_list ',' identifier
+    |
+    ;
+
+list_of_arguments
+    : expression_list_optional
+    | expression_list_optional ',' identifier_expression_list
+    | identifier_expression_list
+    ;
+
+expression_list_optional
+    : expression_list_optional ',' expression
+    |
+    ;
+
+identifier_expression_list
+    : identifier_expression_list ',' '.' identifier '(' expression_optional ')'
+    | '.' identifier '(' expression_optional ')'
+    ;
+
+expression_optional
+    : expression
+    |
+    ;
+
+package_scope
+    : identifier SCOPE
+    ;
+
+// FIXME
 expression
     : primary
         { $$ = (ast_expr_t *)ast_expr_primary_new($1); }
@@ -266,8 +582,8 @@ lifetime
     ;
 
 identifier
-    : simple_identifier  { $$ = $1; }
-    | escaped_identifier { $$ = $1; }
+    : simple_identifier  { $$ = ast_identifier_new($1); }
+    | escaped_identifier { $$ = ast_identifier_new($1); }
     ;
 
 %%

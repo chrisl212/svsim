@@ -11,7 +11,7 @@
 %option yylineno
 
 NUM     [0-9]+
-ID      [A-z_][A-z0-9_$]*
+ID      [A-Za-z_][A-Za-z0-9_$]*
 
 %%
 

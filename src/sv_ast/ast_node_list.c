@@ -18,14 +18,19 @@ ast_node_list_t* ast_node_list_new(void) {
 void ast_node_list_append(ast_node_list_t *list, ast_node_t *node) {
     ast_node_list_item_t *item = calloc(1, sizeof(*item));
     item->node = node;
-    item->next = list->root;
-    list->root = item;
     list->len++;
+
+    if (!list->first && !list->last) {
+        list->first = list->last = item;
+    } else {
+        list->last->next = item;
+        list->last = item;
+    }
 }
 
 static void _ast_node_list_print(ast_node_t *node) {
     ast_node_list_t *list = (ast_node_list_t *)node;
-    _ast_node_list_item_print(list->root);
+    _ast_node_list_item_print(list->first);
 }
 
 static void _ast_node_list_free(ast_node_t *node) {
@@ -36,7 +41,7 @@ static void _ast_node_list_free(ast_node_t *node) {
         return;
     }
 
-    _ast_node_list_item_free(list->root);
+    _ast_node_list_item_free(list->first);
     free(list);
 }
 
@@ -45,8 +50,8 @@ static void _ast_node_list_item_print(ast_node_list_item_t *item) {
         return;
     }
 
-    _ast_node_list_item_print(item->next);
     ast_node_print(item->node);
+    _ast_node_list_item_print(item->next);
 }
 
 static void _ast_node_list_item_free(ast_node_list_item_t *item) {

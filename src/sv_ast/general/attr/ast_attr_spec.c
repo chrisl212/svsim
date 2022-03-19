@@ -5,7 +5,7 @@
 static void _ast_attr_spec_print(ast_node_t *node);
 static void _ast_attr_spec_free(ast_node_t *node);
 
-ast_attr_spec_t* ast_attr_spec_new(ast_identifier_t identifier, ast_expr_t *expr) {
+ast_attr_spec_t* ast_attr_spec_new(ast_identifier_t *identifier, ast_expr_t *expr) {
     ast_attr_spec_t *attr       = calloc(1, sizeof(*attr));
 
     attr->super.print           = _ast_attr_spec_print;
@@ -20,7 +20,7 @@ ast_attr_spec_t* ast_attr_spec_new(ast_identifier_t identifier, ast_expr_t *expr
 static void _ast_attr_spec_print(ast_node_t *node) {
     ast_attr_spec_t *attr = (ast_attr_spec_t *)node;
 
-    printf("%s", attr->identifier);
+    ast_node_print((ast_node_t *)attr->identifier);
     if (attr->expr) {
         printf(" = ");
         ast_node_print((ast_node_t *)attr->expr);
@@ -30,7 +30,7 @@ static void _ast_attr_spec_print(ast_node_t *node) {
 static void _ast_attr_spec_free(ast_node_t *node) {
     ast_attr_spec_t *attr = (ast_attr_spec_t *)node;
 
-    free(attr->identifier);
+    ast_node_free((ast_node_t *)attr->identifier);
     ast_node_free((ast_node_t *)attr->expr);
 }
 

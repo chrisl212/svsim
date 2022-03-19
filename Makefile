@@ -19,16 +19,16 @@ YOBJ			= $(patsubst $(SRCDIR)/%.y, $(BUILDDIR)/%.tab.c, $(YSRC))
 .PHONY				: all clean
 
 all					: $(TARGET)
-$(TARGET)			: $(YOBJ) $(LOBJ) $(COBJ)
+$(TARGET)			: $(COBJ)
 	$(CC) $(CFLAGS) $(COBJ) $(LOBJ) $(YOBJ) $(LDFLAGS) -o $@
-$(BUILDDIR)/%.o		: $(SRCDIR)/%.c 
+$(BUILDDIR)/%.o		: $(SRCDIR)/%.c $(LOBJ)
 	mkdir -p $(@D)
 	$(CC) -c $(CFLAGS) $< -o $@
-$(BUILDDIR)/%.yy.c	: $(SRCDIR)/%.l
+$(BUILDDIR)/%.yy.c	: $(SRCDIR)/%.l $(YOBJ)
 	mkdir -p $(@D)
 	$(LEX) -o $@ $<
 $(BUILDDIR)/%.tab.c	: $(SRCDIR)/%.y
 	mkdir -p $(@D)
-	$(YACC) -d $< -o $@
+	$(YACC) --color=always -Wcounterexamples -v -d $< -o $@
 clean				:
 	rm -rf $(TARGET) $(BUILDDIR) *.dSYM
