@@ -15,6 +15,18 @@ package test_pkg;
     var reg a;
     const var logic d;
 
+    class this_is_a_class
+      extends some_other_class#(.a(sdas+2323))
+      implements some_interface_class#(asd,"2323");
+
+      parameter A = 3;
+
+      class child_class; endclass
+
+      pure virtual task subclass();
+      extern function new();
+    endclass : asdasd
+
     function static bit func;
       parameter abc = 2, def = 3 ? 2 : 1 ** 23 / 2 - 2 ^ 323 | 2 && 233;
       localparam lcl = 23:2:3;
@@ -85,4 +97,44 @@ endpackage : test_pkg
 
 (* attr = "string meister j" *)
 module test_mod(a,b,c);
+  input wire a;
+  output reg b;
+
+  import mips_pkg::*;
+  default clocking mon_cb;
+
+  logic clk;
+
+  always#(CLK/2) clk = ~clk;
+
+  defparam asdasd.asdasd = 23:23:2;
+
+  // generate
+  //   defparam aslddp.dad = 2;
+  // endgenerate
+ 
+  assign a = 3;
+  alias a = b = c = d = e;
+
+  mod_inst adder(
+    .*
+  ),
+  sub(
+    .a(a),
+    .b
+  );
+
+  initial begin
+    print("test start");
+  end
+
+  final begin
+    print("test end");
+  end
+
+  for (genvar g=0; g<23; g+=3) begin : Gtt
+    assign sig[g] = 3;
+  end
+
 endmodule : test_mod
+

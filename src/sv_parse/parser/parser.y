@@ -17,7 +17,8 @@
     extern ast_node_t *root;
 }
 
-//%glr-parser
+%expect-rr 1
+%glr-parser
 %define parse.trace
 %define parse.error verbose
 %locations
@@ -45,7 +46,7 @@
 %token WEAK0 STRONG1 PULL1 WEAK1 SMALL MEDIUM LARGE _1STEP
 %token TASK ENDTASK DPIC DPI CONTEXT ASSERT PROPERTY
 %token ASSUME COVER COVERGROUP EXPECT SEQUENCE
-%token RESTRICT ENDPROPERTY NOT AND OR CASE ENDCASE
+%token RESTRICT ENDPROPERTY NOT CASE ENDCASE
 %token OPTION _BEGIN PMOS TABLE UNTIL PRIORITY
 %token ENDFUNCTION ROOT PS POSEDGE WIDTH TRANIF0
 %token BUFIF0 FORCE ENDSEQUENCE REJECT_ON
@@ -60,7 +61,7 @@
 %token RTRANIF0 SIGNED CASEZ TIMEUNIT BUF
 %token MODPORT ASSIGN RELEASE ALWAYS NOCHANGE
 %token WEAK BINS TRAN BIND PRIMITIVE STRONG
-%token S_UNTIL PERIOD NOTIF1 REPEAT INITIAL
+%token S_UNTIL PERIOD NOTIF1 REPEAT _INITIAL
 %token SETUP RTRAN ALWAYS_LATCH RNMOS INTERSECT
 %token PULLDOWN MATCHES REMOVAL TIMESKEW ALWAYS_FF
 %token RANDCASE DEASSIGN CASEX TIMEPRECISION
@@ -72,24 +73,29 @@
 %token TYPE_OPTION MS ENDTABLE IGNORE_BINS
 %token BUFIF1 FOR RETURN _NULL GLOBAL ILLEGAL_BINS
 %token UNIQUE0 RANDSEQUENCE LET EVENTUALLY
-%token EDGE ACCEPT_ON CONTINUE ENDSPECIFY
+%token EDGE ACCEPT_ON CONTINUE ENDSPECIFY PURE_VIRTUAL
 %token RECREM BREAK S_ALWAYS ENDGROUP RTRANIF1
-%token COVERPOINT CROSS FS WILDCARD RCMOS UNIT
+%token COVERPOINT CROSS FS WILDCARD RCMOS UNIT TOK_UPTO TOK_DNTO SUPER_NEW
 %token c_identifier escaped_identifier system_tf_identifier simple_identifier string_literal
 %token block_identifier class_identifier package_identifier type_identifier ps_identifier_tok
 %token binary_number octal_number hex_number decimal_number unsigned_number fixed_point_number
-%left TOK_LOG_XEQ TOK_LOG_XNEQ TOK_LOG_WEQ TOK_LOG_WNEQ TOK_BIT_SRA
+%left TOK_LOG_XEQ TOK_LOG_XNEQ TOK_LOG_WEQ TOK_LOG_WNEQ TOK_BIT_SRA TOK_DLY
 %left TOK_BIT_SLA TOK_EQUIV TOK_IMP_OVLP TOK_IMP_NON_OVLP TOK_IMP TOK_LOG_AND
-%left TOK_LOG_OR TOK_LOG_EQ TOK_LOG_NEQ TOK_LOG_LEQ TOK_LOG_GEQ TOK_BIT_SR
+%left TOK_LOG_OR TOK_LOG_EQ TOK_LOG_NEQ TOK_LOG_LEQ TOK_LOG_GEQ TOK_BIT_SR OR AND
 %left TOK_BIT_SL TOK_BIT_NAND TOK_BIT_NOR TOK_BIT_XNOR TOK_PWR TOK_PLUS TOK_MINUS TOK_3AMP
 %left TOK_MUL TOK_DIV TOK_MOD TOK_LOG_NOT TOK_LOG_LT TOK_LOG_GT TOK_BIT_AND TOK_BIT_OR
-%left TOK_BIT_XOR TOK_BIT_NOT TOK_INC TOK_DEC TOK_RNG_UPTO TOK_RNG_DNTO SCOPE TOK_SING_QUOT
+%left TOK_BIT_XOR TOK_BIT_NOT TOK_INC TOK_DEC SCOPE TOK_SING_QUOT
+%token TOK_SL_EQ TOK_SR_EQ TOK_SLA_EQ TOK_SRA_EQ TOK_PLUS_EQ TOK_MINUS_EQ TOK_MUL_EQ
+%token TOK_DIV_EQ TOK_MOD_EQ TOK_AND_EQ TOK_OR_EQ TOK_XOR_EQ
 
 %right '?' ':'
+%left ','
 %left TAGGED INSIDE // FIXME
+%right '['
+%right TIMEUNIT TIMEPRECISION
 
 %precedence THEN
-%precedence ELSE ELSE_IF
+%precedence ELSE ELSE_IF VIRTUAL_INTERFACE
 
 %union {
     ast_node_t *    ast_node;
@@ -155,8 +161,490 @@ description
 
 // FIXME
 module_declaration
-    : attribute_instance_list MODULE lifetime_optional identifier list_of_ports ';' timeunits_declaration_optional ENDMODULE block_end_identifier_optional
-        { $$ = ast_module_new($1, $3, $4, NULL, NULL, $5, $7, NULL, $9); }
+    : module_nonansi_header module_item_list ENDMODULE block_end_identifier_optional
+    | module_ansi_header non_port_module_item_list ENDMODULE block_end_identifier_optional
+    | EXTERN module_nonansi_header
+    | EXTERN module_ansi_header
+    ;
+
+module_nonansi_header
+    : attribute_instance_list module_keyword lifetime_optional identifier package_import_declaration_list parameter_port_list_optional list_of_ports ';'
+    ;
+
+module_ansi_header
+    : attribute_instance_list module_keyword lifetime_optional identifier package_import_declaration_list parameter_port_list_optional port_declaration_list ';'
+    ;
+
+port_declaration_list
+    : '(' ansi_port_declaration_list ')'
+    | '(' ')'
+    |
+    ;
+
+ansi_port_declaration_list
+    : ansi_port_declaration_list ',' ansi_port_declaration
+    | ansi_port_declaration
+    ;
+
+ansi_port_declaration
+    : net_port_header identifier unpacked_dimension_list_optional '=' expression
+    | net_port_header identifier unpacked_dimension_list_optional
+    | variable_port_header identifier variable_dimension_list_optional '=' expression
+    | variable_port_header identifier variable_dimension_list_optional
+    | port_direction '.' identifier '(' expression_optional ')'
+    | '.' identifier '(' expression_optional ')'
+    ;
+
+net_port_header
+    : port_direction net_port_type
+    | net_port_type
+    ;
+
+variable_port_header
+    : port_direction variable_port_type
+    | variable_port_type
+    ;
+
+port_direction
+    : INPUT
+    | OUTPUT
+    | INOUT
+    | REF
+    ;
+
+package_import_declaration_list
+    : package_import_declaration_list package_import_declaration
+    |
+    ;
+
+parameter_port_list_optional
+    : parameter_port_list
+    |
+    ;
+
+parameter_port_list
+    : '#' '(' param_assignment_list ')' // FIXME
+    | '#' '(' parameter_port_declaration ')' // FIXME
+    | '#' '(' ')'
+    ;
+
+//parameter_port_declaration_list
+//    : parameter_port_declaration_list ',' parameter_port_declaration
+//    |
+//    ;
+
+parameter_port_declaration
+    : parameter_declaration
+    | local_parameter_declaration
+    | data_type param_assignment_list
+    | TYPE type_assignment_list
+    ;
+
+module_keyword
+    : MODULE
+    | MACROMODULE
+    ;
+
+module_item_list
+    : module_item_list module_item
+    |
+    ;
+
+non_port_module_item_list
+    : non_port_module_item_list non_port_module_item
+    |
+    ;
+
+module_item
+    : port_declaration ';'
+    | non_port_module_item
+    ;
+
+// FIXME
+non_port_module_item
+    : generate_region
+    | module_or_generate_item
+    | specify_block
+    | attribute_instance_list specparam_declaration
+//   | program_declaration
+    | module_declaration
+//   | interface_declaration
+    | timeunits_declaration
+    ;
+
+specify_block
+    : SPECIFY specify_item_list ENDSPECIFY
+    ;
+
+specify_item_list
+    : specify_item_list specify_item
+    |
+    ;
+
+// FIXME
+specify_item
+    : specparam_declaration
+    | pulsestyle_declaration
+    | showcancelled_declaration
+//    | path_declaration
+//    | system_timing_check
+    ;
+
+specparam_declaration
+    : SPECPARAM packed_dimension_list_optional specparam_assignment_list ';'
+    ;
+
+specparam_assignment_list
+    : specparam_assignment_list ',' specparam_assignment
+    | specparam_assignment
+    ;
+
+specparam_assignment
+    : identifier '=' constant_mintypmax_expression
+    | pulse_control_specparam
+    ;
+
+pulse_control_specparam
+    : PATHPULSE'$' '=' '(' constant_mintypmax_expression ',' constant_mintypmax_expression ')'
+    | PATHPULSE'$' '=' '(' constant_mintypmax_expression ')'
+    | PATHPULSE'$' hierarchical_identifier '$' hierarchical_identifier '=' '(' constant_mintypmax_expression ',' constant_mintypmax_expression ')'
+    | PATHPULSE'$' hierarchical_identifier '$' hierarchical_identifier '=' '(' constant_mintypmax_expression ')'
+    ;
+
+pulsestyle_declaration
+    : PULSESTYLE_ONEVENT path_output_list ';'
+    | PULSESTYLE_ONDETECT path_output_list ';'
+    ;
+
+showcancelled_declaration
+    : SHOWCANCELLED path_output_list ';'
+    | NOSHOWCANCELLED path_output_list ';'
+    ;
+
+path_output_list
+    : path_output_list ',' specify_terminal_descriptor
+    | specify_terminal_descriptor
+    ;
+
+specify_terminal_descriptor
+    : hierarchical_identifier
+    ;
+
+generate_region
+    : GENERATE generate_item_list ENDGENERATE
+    ;
+
+generate_item_list
+    : generate_item_list generate_item
+    |
+    ;
+
+// FIXME
+generate_item
+    : module_or_generate_item
+//    | interface_or_generate_item
+//    | checker_or_generate_item
+    ;
+
+module_or_generate_item
+    : parameter_override
+//    | attribute_instance_list gate_instantiation FIXME
+//    | attribute_instance_list udp_instantiation
+    | module_common_item
+    ;
+
+// FIXME
+module_common_item
+    : module_or_generate_item_declaration
+    | generic_instantiation
+//    | assertion_item
+    | bind_directive
+    | continuous_assign
+    | net_alias
+    | _INITIAL statement
+    | FINAL statement
+    | always_keyword statement
+    | loop_generate_construct
+    | if_generate_construct
+    | case_generate_construct
+    ;
+
+if_generate_construct
+    : IF '(' expression ')' generate_block ELSE generate_block
+    | IF '(' expression ')' generate_block %prec THEN
+    ;
+
+case_generate_construct
+    : CASE '(' expression ')' case_generate_item_list ENDCASE
+    ;
+
+case_generate_item_list
+    : case_generate_item_list case_generate_item
+    | case_generate_item
+    ;
+
+case_generate_item
+    : expression_list ':' generate_block
+    | DEFAULT ':' generate_block
+    | DEFAULT generate_block
+    ;
+
+loop_generate_construct
+    : FOR '(' genvar_initialization ';' expression ';' genvar_iteration ')' generate_block
+    ;
+
+generate_block
+    : generate_item
+    | identifier ':' _BEGIN ':' identifier generate_item_list END block_end_identifier_optional
+    | identifier ':' _BEGIN generate_item_list END block_end_identifier_optional
+    | _BEGIN ':' identifier generate_item_list END block_end_identifier_optional
+    | _BEGIN generate_item_list END block_end_identifier_optional
+    ;
+
+genvar_initialization
+    : GENVAR identifier '=' expression
+    | identifier '=' expression
+    ;
+
+genvar_iteration
+    : identifier assignment_operator expression
+    | TOK_INC identifier 
+    | TOK_DEC identifier 
+    | identifier TOK_INC
+    | identifier TOK_DEC
+    ;
+
+assignment_operator
+    : '='
+    | TOK_SL_EQ
+    | TOK_SR_EQ
+    | TOK_SLA_EQ
+    | TOK_SRA_EQ
+    | TOK_PLUS_EQ
+    | TOK_MINUS_EQ
+    | TOK_MUL_EQ
+    | TOK_DIV_EQ
+    | TOK_MOD_EQ
+    | TOK_AND_EQ
+    | TOK_OR_EQ
+    | TOK_XOR_EQ
+    ;
+
+net_alias
+    : ALIAS lvalue '=' lvalue lvalue_list ';'
+    ;
+
+lvalue_list
+    : lvalue_list '=' lvalue
+    | '=' lvalue
+    ;
+
+// FIXME
+continuous_assign
+    : ASSIGN variable_assignment_list ';'
+    ;
+
+bind_directive
+    : BIND hierarchical_identifier generic_instantiation ';'
+    ;
+
+generic_instantiation
+    : data_type hierarchical_instance_list ';' // FIXME
+    ;
+
+hierarchical_instance_list
+    : hierarchical_instance_list ',' hierarchical_instance
+    | hierarchical_instance
+    ;
+
+hierarchical_instance
+    : name_of_instance '(' ordered_port_connection_list ')'
+    | name_of_instance '(' named_port_connection_list ')'
+    | name_of_instance '(' ')'
+    ;
+
+name_of_instance
+    : identifier unpacked_dimension_list_optional
+    ;
+
+ordered_port_connection_list
+    : ordered_port_connection_list ',' ordered_port_connection
+    | ordered_port_connection
+    ;
+
+ordered_port_connection
+    : attribute_instance_list expression
+    ;
+
+named_port_connection_list
+    : named_port_connection_list ',' named_port_connection
+    | named_port_connection
+    ;
+
+named_port_connection
+    : attribute_instance_list '.' identifier '(' expression_optional ')'
+    | attribute_instance_list '.' identifier
+    | attribute_instance_list '.' TOK_MUL
+    ;
+
+parameter_value_assignment
+    : '#' '(' ordered_parameter_assignment_list ')'
+    | '#' '(' named_parameter_assignment_list ')'
+    | '#' '(' ')'
+    ;
+
+ordered_parameter_assignment_list
+    : ordered_parameter_assignment_list ',' ordered_parameter_assignment
+    | ordered_parameter_assignment
+    ;
+
+named_parameter_assignment_list
+    : named_parameter_assignment_list ',' named_parameter_assignment
+    | named_parameter_assignment
+    ;
+
+ordered_parameter_assignment
+    : param_expression
+    ;
+
+named_parameter_assignment
+    : '.' identifier '(' param_expression ')'
+    | '.' identifier '(' ')'
+    ;
+
+param_expression
+    : mintypmax_expression
+    | data_type_no_identifier
+    ;
+
+always_keyword
+    : ALWAYS
+    | ALWAYS_COMB
+    | ALWAYS_LATCH
+    | ALWAYS_FF
+    ;
+
+// FIXME
+module_or_generate_item_declaration
+    : package_or_generate_item_declaration
+    //| genvar_declaration
+    //| clocking_declaration
+    | DEFAULT CLOCKING identifier ';'
+    ;
+
+parameter_override
+    : DEFPARAM defparam_assignment_list ';'
+    ;
+
+defparam_assignment_list
+    : defparam_assignment_list ',' defparam_assignment
+    | defparam_assignment
+    ;
+
+defparam_assignment
+    : hierarchical_identifier '=' constant_mintypmax_expression
+    ;
+
+port_declaration
+    : attribute_instance_list inout_declaration
+    | attribute_instance_list input_declaration
+    | attribute_instance_list output_declaration
+    | attribute_instance_list ref_declaration
+    //| attribute_instance_list interface_port_declaration
+    ;
+
+inout_declaration
+    : INOUT net_port_type port_identifier_list
+    ;
+
+input_declaration
+    : INPUT net_port_type port_identifier_list
+    | INPUT variable_port_type variable_identifier_list
+    ;
+
+output_declaration
+    : OUTPUT net_port_type port_identifier_list
+    | OUTPUT variable_port_type variable_identifier_list
+    ;
+
+ref_declaration
+    : REF variable_port_type variable_identifier_list
+    ;
+
+port_identifier_list
+    : port_identifier_list ',' identifier unpacked_dimension_list_optional
+    | identifier unpacked_dimension_list_optional
+    ;
+
+unpacked_dimension_list_optional
+    : unpacked_dimension_list
+    |
+    ;
+
+unpacked_dimension_list
+    : unpacked_dimension_list unpacked_dimension
+    | unpacked_dimension
+    ;
+
+variable_identifier_list
+    : variable_identifier_list ',' identifier variable_dimension_list_optional
+    | identifier variable_dimension_list_optional
+    ;
+
+variable_dimension_list_optional
+    : variable_dimension_list
+    |
+    ;
+
+variable_dimension_list
+    : variable_dimension_list variable_dimension
+    | variable_dimension
+    ;
+
+variable_dimension
+    : unsized_dimension
+    | unpacked_dimension
+    | associative_dimension
+    ;
+
+associative_dimension
+    : '[' data_type_no_identifier ']'
+    | '[' TOK_MUL ']'
+    ;
+
+unpacked_dimension
+    : '[' part_select_range ']'
+    ;
+
+unsized_dimension
+    : '[' ']'
+    ;
+
+net_port_type
+    : net_type
+    //| net_type data_type FIXME
+    | INTERCONNECT signing_optional packed_dimension_list_optional
+    ;
+
+net_type
+    : SUPPLY0
+    | SUPPLY1
+    | TRI
+    | TRIAND
+    | TRIOR
+    | TRIREG
+    | TRI0
+    | TRI1
+    | UWIRE
+    | WIRE
+    | WAND
+    | WOR
+    ;
+
+variable_port_type
+    : data_type
+    // | VAR data_type FIXME
+    | VAR
     ;
 
 list_of_ports
@@ -175,13 +663,31 @@ port_list
 
 // FIXME
 data_type
+    : data_type_no_identifier
+    | hierarchical_identifier // only select cases valid
+    | ps_identifier packed_dimension_list_optional
+    | identifier parameter_value_assignment
+    ;
+
+data_type_no_identifier
     : integer_vector_type signing_optional packed_dimension_list_optional
     | integer_atom_type signing_optional
     | non_integer_type
-    | identifier
     | STRING
     | CHANDLE
+    | virtual_interface_type identifier parameter_value_assignment_optional '.' identifier
+    | virtual_interface_type identifier parameter_value_assignment_optional
     | EVENT
+    ;
+
+parameter_value_assignment_optional
+    : parameter_value_assignment
+    |
+    ;
+
+virtual_interface_type
+    : VIRTUAL_INTERFACE
+    | VIRTUAL
     ;
 
 signing_optional
@@ -206,54 +712,50 @@ packed_dimension_list
 
 packed_dimension
     : '[' ']'
-    | '[' constant_range ']'
+    | '[' part_select_range ']'
     ;
 
-constant_range
-    : constant_expression ':' constant_expression
-    ;
-
-constant_expression
-    : constant_primary
-    | TOK_PLUS attribute_instance_list constant_primary
-    | TOK_MINUS attribute_instance_list constant_primary
-    | TOK_LOG_NOT attribute_instance_list constant_primary
-    | TOK_BIT_NOT attribute_instance_list constant_primary
-    | TOK_BIT_AND attribute_instance_list constant_primary
-    | TOK_BIT_NAND attribute_instance_list constant_primary
-    | TOK_BIT_OR attribute_instance_list constant_primary
-    | TOK_BIT_NOR attribute_instance_list constant_primary
-    | TOK_BIT_XOR attribute_instance_list constant_primary
-    | TOK_BIT_XNOR attribute_instance_list constant_primary
-    | constant_expression TOK_PLUS attribute_instance_list constant_expression
-    | constant_expression TOK_MINUS attribute_instance_list constant_expression
-    | constant_expression TOK_MUL attribute_instance_list constant_expression
-    | constant_expression TOK_DIV attribute_instance_list constant_expression
-    | constant_expression TOK_MOD attribute_instance_list constant_expression
-    | constant_expression TOK_LOG_EQ attribute_instance_list constant_expression
-    | constant_expression TOK_LOG_XEQ attribute_instance_list constant_expression
-    | constant_expression TOK_LOG_XNEQ attribute_instance_list constant_expression
-    | constant_expression TOK_LOG_WEQ attribute_instance_list constant_expression
-    | constant_expression TOK_LOG_WNEQ attribute_instance_list constant_expression
-    | constant_expression TOK_LOG_AND attribute_instance_list constant_expression
-    | constant_expression TOK_LOG_OR attribute_instance_list constant_expression
-    | constant_expression TOK_PWR attribute_instance_list constant_expression
-    | constant_expression TOK_LOG_LT attribute_instance_list constant_expression
-    | constant_expression TOK_LOG_LEQ attribute_instance_list constant_expression
-    | constant_expression TOK_LOG_GT attribute_instance_list constant_expression
-    | constant_expression TOK_LOG_GEQ attribute_instance_list constant_expression
-    | constant_expression TOK_BIT_AND attribute_instance_list constant_expression
-    | constant_expression TOK_BIT_OR attribute_instance_list constant_expression
-    | constant_expression TOK_BIT_XOR attribute_instance_list constant_expression
-    | constant_expression TOK_BIT_XNOR attribute_instance_list constant_expression
-    | constant_expression TOK_BIT_SR attribute_instance_list constant_expression
-    | constant_expression TOK_BIT_SL attribute_instance_list constant_expression
-    | constant_expression TOK_BIT_SRA attribute_instance_list constant_expression
-    | constant_expression TOK_BIT_SLA attribute_instance_list constant_expression
-    | constant_expression TOK_IMP attribute_instance_list constant_expression
-    | constant_expression TOK_EQUIV attribute_instance_list constant_expression
-    | constant_expression '?' attribute_instance_list constant_expression ':' constant_expression
-    ;
+// constant_expression
+//     : constant_primary
+//     | TOK_PLUS constant_primary
+//     | TOK_MINUS constant_primary
+//     | TOK_LOG_NOT constant_primary
+//     | TOK_BIT_NOT constant_primary
+//     | TOK_BIT_AND constant_primary
+//     | TOK_BIT_NAND constant_primary
+//     | TOK_BIT_OR constant_primary
+//     | TOK_BIT_NOR constant_primary
+//     | TOK_BIT_XOR constant_primary
+//     | TOK_BIT_XNOR constant_primary
+//     | constant_expression TOK_PLUS constant_expression
+//     | constant_expression TOK_MINUS constant_expression
+//     | constant_expression TOK_MUL constant_expression
+//     | constant_expression TOK_DIV constant_expression
+//     | constant_expression TOK_MOD constant_expression
+//     | constant_expression TOK_LOG_EQ constant_expression
+//     | constant_expression TOK_LOG_XEQ constant_expression
+//     | constant_expression TOK_LOG_XNEQ constant_expression
+//     | constant_expression TOK_LOG_WEQ constant_expression
+//     | constant_expression TOK_LOG_WNEQ constant_expression
+//     | constant_expression TOK_LOG_AND constant_expression
+//     | constant_expression TOK_LOG_OR constant_expression
+//     | constant_expression TOK_PWR constant_expression
+//     | constant_expression TOK_LOG_LT constant_expression
+//     | constant_expression TOK_LOG_LEQ constant_expression
+//     | constant_expression TOK_LOG_GT constant_expression
+//     | constant_expression TOK_LOG_GEQ constant_expression
+//     | constant_expression TOK_BIT_AND constant_expression
+//     | constant_expression TOK_BIT_OR constant_expression
+//     | constant_expression TOK_BIT_XOR constant_expression
+//     | constant_expression TOK_BIT_XNOR constant_expression
+//     | constant_expression TOK_BIT_SR constant_expression
+//     | constant_expression TOK_BIT_SL constant_expression
+//     | constant_expression TOK_BIT_SRA constant_expression
+//     | constant_expression TOK_BIT_SLA constant_expression
+//     | constant_expression TOK_IMP constant_expression
+//     | constant_expression TOK_EQUIV constant_expression
+//     | constant_expression '?' constant_expression ':' constant_expression
+//     ;
 
 // FIXME
 constant_primary
@@ -279,14 +781,111 @@ package_item_list_optional
 
 // FIXME
 package_item
-    : package_item_declaration
+    : package_or_generate_item_declaration
     ;
 
 // FIXME
-package_item_declaration
+package_or_generate_item_declaration
+    // : net_declaration
     : data_declaration
+    | task_declaration
     | function_declaration
+//    | checker_declaration
+//    | dpi_import_export
+//    | extern_constraint_declaration
+    | class_declaration
+//    | class_constructor_declaration
+    | local_parameter_declaration ';'
+    | parameter_declaration ';'
+//    | covergroup_declaration
+//    | overload_declaration
+//    | assertion_item_declaration
     | ';'
+    ;
+
+class_declaration
+    : virtual_optional CLASS lifetime_optional identifier parameter_port_list_optional extends_class_optional implements_interface_optional ';' class_item_list ENDCLASS block_end_identifier_optional
+    ;
+
+virtual_optional
+    : VIRTUAL
+    |
+    ;
+
+extends_class_optional
+    : EXTENDS hierarchical_identifier parameter_value_assignment_optional '(' argument_list ')'
+    | EXTENDS hierarchical_identifier parameter_value_assignment_optional
+    |
+    ;
+
+implements_interface_optional
+    : IMPLEMENTS interface_class_type_list
+    |
+    ;
+
+interface_class_type_list
+    : interface_class_type_list ',' interface_class_type
+    | interface_class_type
+    ;
+
+interface_class_type
+    : hierarchical_identifier parameter_value_assignment_optional
+    ;
+
+class_item_list
+    : class_item_list class_item
+    |
+    ;
+
+class_item
+    : class_property
+    | class_method
+    //| class_constraint
+    | class_declaration
+    // | covergroup_declaration
+    | local_parameter_declaration ';'
+    | parameter_declaration ';'
+    | ';'
+    ;
+
+class_property
+    : data_declaration // verify only correct modifiers
+    ;
+
+class_method
+    : class_method_qualifier_list task_declaration
+    | class_method_qualifier_list function_declaration
+    | task_declaration
+    | function_declaration
+    | PURE_VIRTUAL class_method_qualifier_list method_prototype ';'
+    | PURE_VIRTUAL method_prototype ';'
+    | EXTERN class_method_qualifier_list method_prototype ';'
+    | EXTERN method_prototype ';'
+    ;
+
+method_prototype
+    : task_prototype
+    | function_prototype
+    ;
+
+class_method_qualifier_list
+    : method_variable_qualifier_list
+    | method_qualifier_list
+    ;
+
+method_qualifier_list
+    : method_qualifier_list method_qualifier
+    | method_qualifier
+    ;
+
+function_prototype
+    : FUNCTION function_type_name '(' tf_port_list_optional ')'
+    | FUNCTION function_type_name
+    ;
+
+task_prototype
+    : TASK ps_or_hierarchical_identifier '(' tf_port_list_optional ')'
+    | TASK ps_or_hierarchical_identifier
     ;
 
 function_declaration
@@ -294,8 +893,72 @@ function_declaration
     ;
 
 // FIXME
+// ps_or_hierarchical needs to be checked
 function_body_declaration
-    : data_type identifier ';' tf_item_declaration_list statement_list ENDFUNCTION block_end_identifier_optional
+    : function_type_name ';' tf_item_declaration_list statement_list_optional ENDFUNCTION function_block_end_identifier_optional
+    | function_type_name '(' tf_port_list_optional ')' ';' block_item_declaration_list statement_list_optional ENDFUNCTION function_block_end_identifier_optional
+    | function_type_name '(' tf_port_list_optional ')' ';' statement_list_optional ENDFUNCTION function_block_end_identifier_optional
+    ;
+
+function_block_end_identifier_optional
+    : block_end_identifier_optional
+    | ':' NEW
+    ;
+
+function_type_name
+    : function_data_type ps_or_hierarchical_identifier
+    | function_data_type SCOPE NEW
+    | ps_identifier_tok NEW
+    | NEW
+    | function_data_type
+    ;
+
+task_declaration
+    : TASK lifetime_optional task_body_declaration
+    ;
+
+task_body_declaration
+    : ps_or_hierarchical_identifier ';' tf_item_declaration_list statement_list_optional ENDTASK block_end_identifier_optional
+    | ps_or_hierarchical_identifier  '(' tf_port_list_optional ')' ';' block_item_declaration_list statement_list_optional ENDTASK block_end_identifier_optional
+    | ps_or_hierarchical_identifier  '(' tf_port_list_optional ')' ';' statement_list_optional ENDTASK block_end_identifier_optional
+    ;
+
+tf_port_list_optional
+    : tf_port_list
+    |
+    ;
+
+tf_port_list
+    : tf_port_list ',' tf_port_item
+    | tf_port_item
+    ;
+
+tf_port_item
+    : attribute_instance_list tf_port_direction VAR data_type identifier variable_dimension_list_optional equals_expression_optional
+    | attribute_instance_list tf_port_direction VAR data_type equals_expression_optional
+    | attribute_instance_list tf_port_direction data_type identifier variable_dimension_list_optional equals_expression_optional
+    | attribute_instance_list tf_port_direction data_type equals_expression_optional
+    ;
+
+equals_expression_optional
+    : '=' expression
+    |
+    ;
+
+tf_port_direction
+    : port_direction
+    | CONST REF
+    |
+    ;
+
+statement_list_optional
+    : statement_list
+    |
+    ;
+
+function_data_type
+    : data_type
+    | VOID
     ;
 
 // FIXME
@@ -319,7 +982,7 @@ statement_item
     | loop_statement
     | jump_statement
     | par_block
-//    | procedural_timing_control_statement
+    | procedural_timing_control_statement
     | seq_block
     | wait_statement
 //    | procedural_assertion_statement
@@ -327,6 +990,67 @@ statement_item
 //    | randsequence_statement
 //    | randcase_statement
 //    | expect_property_statement
+    | SUPER_NEW '(' argument_list ')' ';'
+    | SUPER_NEW ';'
+    ;
+
+procedural_timing_control_statement
+    : procedural_timing_control statement
+    ;
+
+delay_or_event_control
+    : delay_control
+    | event_control
+    | REPEAT '(' expression ')' event_control
+    ;
+
+delay_control
+    : '#' delay_value
+    | '#' '(' mintypmax_expression ')'
+    ;
+
+delay_value
+    : unsigned_number
+    //| real_number FIXME
+    | ps_identifier
+    | time_literal
+    | _1STEP
+    ;
+
+// FIXME
+event_control
+    : '@' hierarchical_identifier
+    | '@' '(' event_expression ')'
+    | '@' TOK_MUL
+    | '@' '(' TOK_MUL ')'
+    ;
+
+// FIXME
+event_expression
+    : edge_identifier expression IFF expression
+    | edge_identifier expression
+    | expression IFF expression
+    | event_expression OR event_expression
+    | event_expression ',' event_expression
+    | '(' event_expression ')'
+    ;
+
+edge_identifier
+    : POSEDGE
+    | NEGEDGE
+    | EDGE
+    ;
+
+procedural_timing_control
+    : delay_control
+    | event_control
+    | cycle_delay
+    ;
+
+cycle_delay
+    : TOK_DLY unsigned_number // FIXME
+    | TOK_DLY identifier
+    | TOK_DLY '(' expression ')'
     ;
 
 loop_statement
@@ -419,6 +1143,7 @@ case_item_list
 case_item
     : expression_list ':' statement
     | DEFAULT ':' statement
+    | DEFAULT statement
     ;
 
 // case_pattern_item
@@ -467,28 +1192,60 @@ disable_statement
 wait_statement
     : WAIT '(' expression ')' statement
     | WAIT FORK ';'
-//    | WAIT_ORDER '(' hierarchical_identifier_list ')' action_block FIXME
+    | WAIT_ORDER '(' hierarchical_identifier_list ')' action_block
+    ;
+
+hierarchical_identifier_list
+    : hierarchical_identifier_list ',' hierarchical_identifier
+    | hierarchical_identifier
+    ;
+
+action_block
+    : statement %prec THEN
+    | statement ELSE statement
+    | ELSE statement
     ;
 
 // FIXME
 blocking_assignment
-    : variable_lvalue '=' expression
+    : lvalue '=' delay_or_event_control expression
+    | lvalue assignment_operator dynamic_array_new // TODO: need to check semantics, should only be '='
+    | lvalue assignment_operator class_new // same
+    | operator_assignment
     ;
 
-// FIXME
+class_new
+    : class_scope NEW '(' argument_list ')'
+    | class_scope NEW
+    | NEW '(' argument_list ')'
+    //| NEW expression FIXME
+    | NEW
+    ;
+
+class_scope
+    : ps_identifier_tok
+    | identifier parameter_value_assignment SCOPE
+    ;
+
+dynamic_array_new
+    : NEW '[' expression ']' '(' expression ')'
+    | NEW '[' expression ']'
+    ;
+
 nonblocking_assignment
-    : variable_lvalue TOK_LOG_LEQ expression
+    : lvalue TOK_LOG_LEQ delay_or_event_control expression
+    | lvalue TOK_LOG_LEQ expression
     ;
 
 procedural_continuous_assignment
     : ASSIGN variable_assignment
-    | DEASSIGN variable_lvalue
+    | DEASSIGN lvalue
     | FORCE variable_assignment
-    | RELEASE variable_lvalue
+    | RELEASE lvalue
     ;
 
 variable_assignment
-    : variable_lvalue '=' expression
+    : lvalue '=' expression
     ;
 
 jump_statement
@@ -550,25 +1307,25 @@ overload_proto_formals
 
 // FIXME
 local_parameter_declaration
-    : LOCALPARAM data_type list_of_param_assignments
-    | LOCALPARAM list_of_param_assignments
-    | LOCALPARAM TYPE list_of_type_assignments
+    : LOCALPARAM data_type param_assignment_list
+    | LOCALPARAM param_assignment_list
+    | LOCALPARAM TYPE type_assignment_list
     ;
 
 // FIXME
 parameter_declaration
-    : PARAMETER data_type list_of_param_assignments
-    | PARAMETER list_of_param_assignments
-    | PARAMETER TYPE list_of_type_assignments
+    : PARAMETER data_type param_assignment_list
+    | PARAMETER param_assignment_list
+    | PARAMETER TYPE type_assignment_list
     ;
 
-list_of_param_assignments
-    : list_of_param_assignments ',' param_assignment
+param_assignment_list
+    : param_assignment_list ',' param_assignment
     | param_assignment
     ;
 
-list_of_type_assignments
-    : list_of_type_assignments ',' type_assignment
+type_assignment_list
+    : type_assignment_list ',' type_assignment
     | type_assignment
     ;
 
@@ -579,14 +1336,13 @@ param_assignment
     ;
 
 constant_param_expression
-    : constant_mintypmax_expression
-    | data_type
-    | '$'
+    : mintypmax_expression
+    //| data_type
     ;
 
 constant_mintypmax_expression
-    : constant_expression ':' constant_expression ':' constant_expression
-    | constant_expression
+    : expression ':' expression ':' expression
+    | expression
     ;
 
 type_assignment
@@ -596,21 +1352,41 @@ type_assignment
 
 // FIXME
 data_declaration
-    : data_declaration_qualifiers data_type variable_decl_assignment_list ';'
-    | data_declaration_qualifiers variable_decl_assignment_list ';'
+    : variable_qualifier_list data_type variable_decl_assignment_list ';'
+    | variable_qualifier_list variable_decl_assignment_list ';'
+    | method_variable_qualifier_list data_type variable_decl_assignment_list ';'
+    | method_variable_qualifier_list variable_decl_assignment_list ';'
     | data_type variable_decl_assignment_list ';'
     | type_declaration
     | package_import_declaration
     ;
 
-data_declaration_qualifiers
-    : CONST VAR lifetime
-    | CONST VAR
-    | CONST
-    | CONST lifetime
-    | VAR lifetime
+method_variable_qualifier_list
+    : method_variable_qualifier_list method_variable_qualifier
+    | method_variable_qualifier
+    ;
+
+variable_qualifier_list
+    : variable_qualifier_list variable_qualifier
+    | variable_qualifier
+    ;
+
+variable_qualifier
+    : CONST
     | VAR
-    | lifetime
+    | RAND
+    | RANDC
+    ;
+
+method_qualifier
+    : PURE
+    | VIRTUAL
+    ;
+
+method_variable_qualifier
+    : lifetime
+    | PROTECTED
+    | LOCAL
     ;
 
 variable_decl_assignment_list
@@ -619,8 +1395,8 @@ variable_decl_assignment_list
     ;
 
 variable_decl_assignment
-    : identifier '=' expression // FIXME
-    | identifier
+    : identifier variable_dimension_list_optional '=' expression // FIXME
+    | identifier variable_dimension_list_optional
     ;
 
 // FIXME
@@ -645,7 +1421,7 @@ package_import_item_list
 
 package_import_item
     : ps_identifier
-    | identifier SCOPE TOK_MUL
+    | ps_identifier_tok TOK_MUL
     ;
 
 block_end_identifier_optional
@@ -698,7 +1474,7 @@ timeunits_declaration_optional
 timeunits_declaration
     : TIMEUNIT time_literal TOK_DIV time_literal ';'
         { $$ = ast_timeunits_decl_new($2, $4); }
-    | TIMEPRECISION time_literal ';'
+    | TIMEPRECISION time_literal ';' %prec TIMEUNIT
         { $$ = ast_timeunits_decl_new(NULL, $2); }
     | TIMEUNIT time_literal ';' TIMEPRECISION time_literal ';'
         { $$ = ast_timeunits_decl_new($2, $5); }
@@ -723,13 +1499,29 @@ primary_literal
         { $$ = (ast_node_t *)ast_unsigned_int_literal_new($1); }
     ;
 
+concatenation
+    : '{' concatenation_expression_list '}'
+    ;
+
+multiple_concatenation
+    : '{' expression concatenation '}'
+    ;
+
+concatenation_expression_list
+    : concatenation_expression_list ',' expression
+    | expression
+    ;
+
 // FIXME
 primary
     : primary_literal
-    | identifier
-        { $$ = (ast_node_t *)$1; }
-    | package_scope identifier
+    | hierarchical_identifier
+    | ps_identifier
     | '{' '}'
+//   | concatenation '[' range_expression ']'
+    | concatenation
+//   | multiple_concatenation '[' range_expression ']'
+    | multiple_concatenation
     | subroutine_call
 //    | let_expression
     | '(' mintypmax_expression ')'
@@ -793,7 +1585,14 @@ subroutine_call
     ;
 
 tf_call
-    : ps_or_hierarchical_identifier attribute_instance_list '(' list_of_arguments ')'
+    : ps_or_hierarchical_identifier attribute_instance_list '(' argument_list ')'
+    | implicit_class_handle '.' identifier attribute_instance_list '(' argument_list ')'
+    ;
+
+implicit_class_handle
+    // : THIS '.' SUPER FIXME
+    : THIS
+    | SUPER
     ;
 
 randomize_call
@@ -809,26 +1608,29 @@ identifier_list
     ;
 
 ps_identifier
-    : ps_identifier_tok
+    : ps_identifier_tok identifier
     | '$' UNIT SCOPE identifier
     ;
 
 ps_or_hierarchical_identifier
     : ps_identifier
+    | identifier parameter_value_assignment SCOPE identifier
     | hierarchical_identifier
     ;
 
 hierarchical_identifier
-    : hierarchical_identifier '.' identifier constant_bit_select
-    | identifier constant_bit_select
+    : hierarchical_identifier '.' identifier unpacked_dimension_list_optional
+    | identifier unpacked_dimension_list_optional
     ;
 
-constant_bit_select
-    : '[' constant_expression ']'
-    |
+part_select_range
+    : expression ':' expression
+    | expression TOK_UPTO expression
+    | expression TOK_DNTO expression
+    | expression
     ;
 
-list_of_arguments
+argument_list
     : expression_list
     | expression_list ',' identifier_expression_list
     | identifier_expression_list
@@ -843,10 +1645,6 @@ identifier_expression_list
 expression_optional
     : expression
     |
-    ;
-
-package_scope
-    : identifier SCOPE
     ;
 
 // FIXME
@@ -897,22 +1695,22 @@ expression
     | expression '?' expression ':' expression 
     | expression INSIDE '{' value_range_list '}'
     | TAGGED identifier expression
-    | TAGGED identifier
+    //| TAGGED identifier
     ;
 
 inc_or_dec_expression
-    : TOK_INC variable_lvalue
-    | TOK_DEC variable_lvalue
-    | variable_lvalue TOK_INC
-    | variable_lvalue TOK_DEC
+    : TOK_INC lvalue
+    | TOK_DEC lvalue
+    | lvalue TOK_INC
+    | lvalue TOK_DEC
     ;
 
 operator_assignment
-    : variable_lvalue '=' expression
+    : lvalue assignment_operator expression
     ;
 
 // FIXME
-variable_lvalue
+lvalue
     : hierarchical_identifier
     ;
 

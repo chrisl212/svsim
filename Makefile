@@ -29,6 +29,6 @@ $(BUILDDIR)/%.yy.c	: $(SRCDIR)/%.l $(YOBJ)
 	$(LEX) -o $@ $<
 $(BUILDDIR)/%.tab.c	: $(SRCDIR)/%.y
 	mkdir -p $(@D)
-	$(YACC) --color=always -Wcounterexamples -v -d $< -o $@
+	$(YACC) --color=always -v -d $< -o $@
 clean				:
 	rm -rf $(TARGET) $(BUILDDIR) *.dSYM

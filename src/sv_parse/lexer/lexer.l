@@ -15,12 +15,47 @@ ID      [A-Za-z_][A-Za-z0-9_$]*
 
 %%
 
-"ELSE IF"                                       { return ELSE_IF; }
+else[ \t\n]+if                                  { return ELSE_IF; }
+virtual[ \t\n]+interface                        { return VIRTUAL_INTERFACE; }
+super\.new                                      { return SUPER_NEW; }
+pure[ \t\n]+virtual                             { return PURE_VIRTUAL; }
 [ \t\n]+                                        { }
 \/\/.*|"/*"([^*]|\*+[^*/])*\*+"/"               { }
-
 ({NUM}?'d)[xXzX]*[0-9]+                         {
-                                                    return decimal_number;
+                                                    char *dup = strdup(yytext);
+                                                    char *tok = strtok(dup, "'");
+                                                    // int width = strtol(tok, NULL, 10);
+                                                    yylval.ival = strtol(strtok(NULL, "'")+1, NULL, 10);
+                                                    free(dup);
+                                                    return unsigned_number;
+                                                }
+{NUM}?'[bB][xXzX01?]+                           {
+                                                    char *dup = strdup(yytext);
+                                                    char *tok = strtok(dup, "'");
+                                                    // int width = strtol(tok, NULL, 10);
+                                                    yylval.ival = strtol(strtok(NULL, "'")+1, NULL, 2);
+                                                    free(dup);
+                                                    return unsigned_number;
+                                                }
+{NUM}?'[oO][xXzX0-7?]+                          {
+                                                    char *dup = strdup(yytext);
+                                                    char *tok = strtok(dup, "'");
+                                                    // int width = strtol(tok, NULL, 10);
+                                                    yylval.ival = strtol(strtok(NULL, "'")+1, NULL, 8);
+                                                    free(dup);
+                                                    return unsigned_number;
+                                                }
+{NUM}?'[hH][xXzX0-9a-fA-F?]+                    {
+                                                    char *dup = strdup(yytext);
+                                                    char *tok = strtok(dup, "'");
+                                                    // int width = strtol(tok, NULL, 10);
+                                                    yylval.ival = strtol(strtok(NULL, "'")+1, NULL, 16);
+                                                    free(dup);
+                                                    return unsigned_number;
+                                                }
+'[01]                                           {
+                                                    yylval.ival = strtol(yytext, NULL, 16);
+                                                    return unsigned_number;
                                                 }
 [0-9]+\.[0-9]+                                  {
                                                     yylval.fval = strtod(yytext, NULL);
@@ -30,20 +65,11 @@ ID      [A-Za-z_][A-Za-z0-9_$]*
                                                     yylval.ival = strtol(yytext, NULL, 10);
                                                     return unsigned_number;
                                                 }
-{NUM}?'[bB][xXzX01?]+                           { 
-                                                    return binary_number;
-                                                }
-{NUM}?'[o][xXzX0-7?]+                           {
-                                                    return octal_number;
-                                                }
-{NUM}?'[h][xXzX0-9a-fA-F?]+                     {
-                                                    return hex_number;
-                                                }
 \"[^"]*\"                                       {
                                                     yylval.sval = strdup(yytext);
                                                     return string_literal; 
                                                 }
-({ID}::{ID})+                                   {
+{ID}(::{ID})*::                                 {
                                                     yylval.sval = strdup(yytext);
                                                     return ps_identifier_tok;
                                                 }
@@ -58,8 +84,18 @@ ID      [A-Za-z_][A-Za-z0-9_$]*
 "|->"                                           { return TOK_IMP_OVLP; }
 "|=>"                                           { return TOK_IMP_NON_OVLP; }
 "&&&"                                           { return TOK_3AMP; }
-"+:"                                            { return TOK_RNG_UPTO; }
-"-:"                                            { return TOK_RNG_DNTO; }
+"<<="                                           { return TOK_SL_EQ; }
+">>="                                           { return TOK_SR_EQ; }
+"<<<="                                          { return TOK_SLA_EQ; }
+">>>="                                          { return TOK_SRA_EQ; }
+"+="                                            { return TOK_PLUS_EQ; }
+"-="                                            { return TOK_MINUS_EQ; }
+"*="                                            { return TOK_MUL_EQ; }
+"/="                                            { return TOK_DIV_EQ; }
+"%="                                            { return TOK_MOD_EQ; }
+"&="                                            { return TOK_AND_EQ; }
+"|="                                            { return TOK_OR_EQ; }
+"^="                                            { return TOK_XOR_EQ; }
 "++"                                            { return TOK_INC; }
 "--"                                            { return TOK_DEC; }
 "->"                                            { return TOK_IMP; }
@@ -75,6 +111,9 @@ ID      [A-Za-z_][A-Za-z0-9_$]*
 "~|"                                            { return TOK_BIT_NOR; }
 "~^"                                            { return TOK_BIT_XNOR; }
 "**"                                            { return TOK_PWR; }
+"##"                                            { return TOK_DLY; }
+"+:"                                            { return TOK_UPTO; }
+"-:"                                            { return TOK_DNTO; }
 "+"                                             { return TOK_PLUS; }
 "-"                                             { return TOK_MINUS; }
 "*"                                             { return TOK_MUL; }
@@ -107,7 +146,7 @@ ID      [A-Za-z_][A-Za-z0-9_$]*
 {ID}                                            {
                                                     int keyword;
 
-                                                    if ((keyword = lex_isKeyword(yytext))) {
+                                                    if ((keyword = lex_isKeyword(yytext)) >= 0) {
                                                         return keyword;
                                                     }
 
@@ -520,7 +559,7 @@ int lex_isKeyword(char *s) {
     } else if (strcmp(s, "do") == 0) {
         return DO;
     } else if (strcmp(s, "initial") == 0) {
-        return INITIAL;
+        return _INITIAL;
     } else if (strcmp(s, "pull0") == 0) {
         return PULL0;
     } else if (strcmp(s, "first_match") == 0) {
@@ -690,6 +729,6 @@ int lex_isKeyword(char *s) {
     } else if (strcmp(s, "unit") == 0) {
         return UNIT;
     }
-    return 0;
+    return -1;
 }
 
