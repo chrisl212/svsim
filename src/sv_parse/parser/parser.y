@@ -141,7 +141,7 @@
 
 // FIXME
 source_text
-    : description_list { root = (ast_node_t *)$1; }
+    : timeunits_declaration_optional description_list { root = (ast_node_t *)$2; }
     ;
 
 description_list
@@ -155,8 +155,13 @@ description_list
 description
     : package_declaration
         { $$ = (ast_node_t *)$1; }
+//    | udp_declaration
     | module_declaration
         { $$ = (ast_node_t *)$1; }
+    | interface_declaration
+    | attribute_instance_list package_item
+    | attribute_instance_list bind_directive
+//    | config_declaration
     ;
 
 // FIXME
@@ -268,8 +273,93 @@ non_port_module_item
     | attribute_instance_list specparam_declaration
 //   | program_declaration
     | module_declaration
-//   | interface_declaration
+    | interface_declaration
     | timeunits_declaration
+    ;
+
+interface_declaration
+    : interface_non_ansi_header timeunits_declaration_optional interface_item_list ENDINTERFACE block_end_identifier_optional
+    | interface_ansi_header timeunits_declaration_optional non_port_interface_item_list ENDINTERFACE block_end_identifier_optional
+    | EXTERN interface_non_ansi_header
+    | EXTERN interface_ansi_header
+    ;
+
+interface_non_ansi_header
+    : attribute_instance_list INTERFACE lifetime_optional identifier package_import_declaration_list parameter_port_list_optional list_of_ports ';'
+    | attribute_instance_list INTERFACE lifetime_optional identifier package_import_declaration_list parameter_port_list_optional '(' '.' TOK_MUL ')' ';'
+    ;
+
+interface_ansi_header
+    : attribute_instance_list INTERFACE lifetime_optional identifier package_import_declaration_list parameter_port_list_optional port_declaration_list ';'
+    ;
+
+interface_item_list
+    : interface_item_list interface_item
+    |
+    ;
+
+non_port_interface_item_list
+    : non_port_interface_item_list non_port_interface_item
+    |
+    ;
+
+// FIXME
+non_port_interface_item
+    : generate_region
+    | interface_or_generate_item
+//    | program_declaration
+    | modport_declaration
+    | interface_declaration
+//    | timeunits_declaration
+    ;
+
+modport_declaration
+    : MODPORT modport_item_list ';'
+    ;
+
+modport_item_list
+    : modport_item_list ',' modport_item
+    | modport_item
+    ;
+
+modport_item
+    : identifier '(' modport_ports_declaration_list ')'
+    ;
+
+modport_ports_declaration_list
+    : modport_ports_declaration_list ',' modport_ports_declaration
+    | modport_ports_declaration
+    ;
+
+modport_ports_declaration
+    : modport_simple_ports_declaration
+    //| modport_tf_ports_declaration FIXME
+    | CLOCKING identifier
+    ;
+
+modport_simple_ports_declaration
+    //: modport_simple_ports_declaration ',' modport_simple_port FIXME
+    : port_direction modport_simple_port
+    ;
+
+modport_simple_port
+    : '.' identifier '(' expression_optional ')'
+    | identifier
+    ;
+
+interface_or_generate_item
+    : module_common_item
+    | extern_tf_declaration
+    ;
+
+interface_item
+    : port_declaration ';'
+    | non_port_interface_item
+    ;
+
+extern_tf_declaration
+    : EXTERN method_prototype ';'
+    | EXTERN FORKJOIN task_prototype ';'
     ;
 
 specify_block
@@ -342,7 +432,7 @@ generate_item_list
 // FIXME
 generate_item
     : module_or_generate_item
-//    | interface_or_generate_item
+//    | extern_tf_declaration
 //    | checker_or_generate_item
     ;
 
@@ -528,8 +618,34 @@ always_keyword
 module_or_generate_item_declaration
     : package_or_generate_item_declaration
     //| genvar_declaration
-    //| clocking_declaration
+    | clocking_declaration
     | DEFAULT CLOCKING identifier ';'
+    ;
+
+clocking_declaration
+    : DEFAULT CLOCKING identifier_optional clocking_event ';' clocking_item_list ENDCLOCKING block_end_identifier_optional
+    | CLOCKING identifier_optional clocking_event ';' clocking_item_list ENDCLOCKING block_end_identifier_optional
+    | GLOBAL CLOCKING identifier_optional clocking_event ';' ENDCLOCKING block_end_identifier_optional
+    ;
+
+clocking_item_list
+    : clocking_item_list clocking_item
+    |
+    ;
+
+// FIXME
+clocking_item
+    : ';'
+    ;
+
+clocking_event
+    : '@' identifier
+    | '@' '(' event_expression ')'
+    ;
+
+identifier_optional
+    : identifier
+    |
     ;
 
 parameter_override

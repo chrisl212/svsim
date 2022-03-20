@@ -136,5 +136,9 @@ module test_mod(a,b,c);
     assign sig[g] = 3;
   end
 
+  interface abc_intf(.*);
+    
+  endinterface : abc_intf
+
 endmodule : test_mod
 
