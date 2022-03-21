@@ -333,8 +333,23 @@ modport_ports_declaration_list
 
 modport_ports_declaration
     : modport_simple_ports_declaration
-    //| modport_tf_ports_declaration FIXME
+    | modport_tf_ports_declaration
     | CLOCKING identifier
+    ;
+
+modport_tf_ports_declaration
+    : IMPORT modport_tf_port_list
+    //| EXPORT modport_tf_port_list
+    ;
+
+modport_tf_port_list
+    : modport_tf_port_list ',' modport_tf_port
+    | modport_tf_port
+    ;
+
+modport_tf_port
+    : method_prototype
+    | identifier
     ;
 
 modport_simple_ports_declaration
