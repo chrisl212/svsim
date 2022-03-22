@@ -38,7 +38,7 @@
 %token UNIQUE LOCALPARAM PARAMETER SPECPARAM VAR
 %token INTERCONNECT VECTORED SCALARED TYPEDEF
 %token ENUM STRUCT UNION NETTYPE WITH AUTOMATIC
-%token STRING CHANDLE EVENT PACKED BYTE SHORTINT
+%token STRING CHANDLE EVENT PACKED BYTE SHORTINT HASH0
 %token INT LONGINT INTEGER TIME BIT LOGIC REG 
 %token SHORTREAL REAL REALTIME SUPPLY0 SUPPLY1
 %token TRI TRIAND TRIOR TRIREG TRI0 TRI1 UWIRE WIRE WAND WOR
@@ -73,7 +73,7 @@
 %token TYPE_OPTION MS ENDTABLE IGNORE_BINS
 %token BUFIF1 FOR RETURN _NULL GLOBAL ILLEGAL_BINS
 %token UNIQUE0 RANDSEQUENCE LET EVENTUALLY
-%token EDGE ACCEPT_ON CONTINUE ENDSPECIFY PURE_VIRTUAL
+%token EDGE ACCEPT_ON CONTINUE ENDSPECIFY PURE_VIRTUAL INTERFACE_CLASS
 %token RECREM BREAK S_ALWAYS ENDGROUP RTRANIF1
 %token COVERPOINT CROSS FS WILDCARD RCMOS UNIT TOK_UPTO TOK_DNTO SUPER_NEW
 %token c_identifier escaped_identifier system_tf_identifier simple_identifier string_literal
@@ -139,7 +139,6 @@
 // A.1.2 SystemVerilog Source Text
 // ------------------------------------------------------------------------------------------------- 
 
-// FIXME
 source_text
     : timeunits_declaration_optional description_list { root = (ast_node_t *)$2; }
     ;
@@ -164,7 +163,6 @@ description
 //    | config_declaration
     ;
 
-// FIXME
 module_declaration
     : module_nonansi_header module_item_list ENDMODULE block_end_identifier_optional
     | module_ansi_header non_port_module_item_list ENDMODULE block_end_identifier_optional
@@ -174,6 +172,7 @@ module_declaration
 
 module_nonansi_header
     : attribute_instance_list module_keyword lifetime_optional identifier package_import_declaration_list parameter_port_list_optional list_of_ports ';'
+    | attribute_instance_list module_keyword lifetime_optional identifier package_import_declaration_list parameter_port_list_optional '(' '.' TOK_MUL ')' ';'
     ;
 
 module_ansi_header
@@ -338,14 +337,14 @@ modport_ports_declaration
     ;
 
 modport_tf_ports_declaration
-    : IMPORT modport_tf_port_list
-    //| EXPORT modport_tf_port_list
+    : IMPORT modport_tf_port //modport_tf_port_list // FIXME
+    | EXPORT modport_tf_port
     ;
 
-modport_tf_port_list
-    : modport_tf_port_list ',' modport_tf_port
-    | modport_tf_port
-    ;
+// modport_tf_port_list
+//     : modport_tf_port_list ',' modport_tf_port
+//     | modport_tf_port
+//     ;
 
 modport_tf_port
     : method_prototype
@@ -447,7 +446,7 @@ generate_item_list
 // FIXME
 generate_item
     : module_or_generate_item
-//    | extern_tf_declaration
+    | extern_tf_declaration
 //    | checker_or_generate_item
     ;
 
@@ -462,7 +461,7 @@ module_or_generate_item
 module_common_item
     : module_or_generate_item_declaration
     | generic_instantiation
-//    | assertion_item
+    | assertion_item
     | bind_directive
     | continuous_assign
     | net_alias
@@ -472,6 +471,233 @@ module_common_item
     | loop_generate_construct
     | if_generate_construct
     | case_generate_construct
+    ;
+
+assertion_item
+    // : concurrent_assertion_item FIXME
+    : deferred_immediate_assertion_item
+    ;
+
+deferred_immediate_assertion_item
+    : identifier ':' deferred_immediate_assertion_statement
+    | deferred_immediate_assertion_statement
+    ;
+
+// concurrent_assertion_item
+//     : identifier ':' concurrent_assertion_statement
+//     | checker_instantiation
+//     ;
+// 
+// concurrent_assertion_statement
+//     : assert_property_statement
+//     | assume_property_statement
+//     | cover_property_statement
+//     | cover_sequence_statement
+//     | restrict_property_statement
+//     ;
+// 
+// assert_property_statement
+//     : ASSERT PROPERTY '(' property_spec ')' action_block
+//     ;
+// 
+// assume_property_statement
+//     : ASSUME PROPERTY '(' property_spec ')' action_block
+//     ;
+// 
+// cover_property_statement
+//     : COVER PROPERTY '(' property_spec ')' statement
+//     ;
+// 
+// expect_property_statement
+//     : EXPECT '(' property_spec ')' action_block
+//     ;
+// 
+// cover_sequence_statement
+//     : COVER SEQUENCE '(' clocking_event DISABLE IFF '(' expression_or_dist ')' sequence_expr ')' statement
+//     | COVER SEQUENCE '(' clocking_event ')' sequence_expr ')' statement
+//     | COVER SEQUENCE '(' DISABLE IFF '(' expression_or_dist ')' sequence_expr ')' statement
+//     | COVER SEQUENCE '(' ')' sequence_expr ')' statement
+//     ;
+// 
+// restrict_property_statement
+//     : RESTRICT PROPERTY '(' property_spec ')' ';'
+//     ;
+// 
+// property_instance
+//     : ps_or_hierarchical_identifier '(' property_argument_list ')'
+//     | ps_or_hierarchical_identifier
+//     ;
+// 
+// property_argument_list
+//     : property_actual_arg_list identifier_property_actual_arg_list
+//     | identifier_property_actual_arg_list
+//     |
+//     ;
+// 
+// property_actual_arg_list
+//     : property_actual_arg_list ',' property_actual_arg
+//     | property_actual_arg
+//     ;
+// 
+// identifier_property_actual_arg_list
+//     : identifier_property_actual_arg_list ',' '.' identifier '(' property_actual_arg ')'
+//     | identifier_property_actual_arg_list ',' '.' identifier '(' ')'
+//     | '.' identifier '(' property_actual_arg ')'
+//     | '.' identifier '(' ')'
+//     ;
+// 
+// property_actual_arg
+//     : property_expr
+//     | sequence_actual_arg
+//     ;
+// 
+// assertion_item_declaration
+//     : property_declaration
+//     | sequence_declaration
+//     | let_declaration
+//     ;
+// 
+// property_declaration
+//     : PROPERTY identifier '(' property_port_list ')' ';' assertion_variable_declaration_list property_spec ';' ENDPROPERTY block_end_identifier_optional
+//     | PROPERTY identifier ';' assertion_variable_declaration_list property_spec ';' ENDPROPERTY block_end_identifier_optional
+//     ;
+// 
+// assertion_variable_declaration_list
+//     : assertion_variable_declaration_list assertion_variable_declaration
+//     |
+//     ;
+// 
+// property_port_list
+//     : property_port_list ',' property_port_item
+//     |
+//     ;
+// 
+// property_port_item
+//     : attribute_instance_list local_input_optional property_formal_type identifier variable_dimension_list_optional '=' property_actual_arg
+//     | attribute_instance_list local_input_optional property_formal_type identifier variable_dimension_list_optional
+//     ;
+// 
+// local_input_optional
+//     : LOCAL INPUT
+//     | LOCAL
+//     |
+//     ;
+// 
+// property_formal_type
+//     : sequence_formal_type
+//     | PROPERTY
+//     ;
+// 
+// property_spec
+//     : clocking_event DISABLE IFF '(' expression_or_dist ')' property_expr
+//     | clocking_event property_expr
+//     | DISABLE IFF '(' expression_or_dist ')' property_expr
+//     | property_expr
+//     ;
+// 
+// property_expr
+//     : sequence_expr
+//     | STRONG '(' sequence_expr ')'
+//     | WEAK '(' sequence_expr ')'
+//     | '(' property_expr ')'
+//     | NOT property_expr
+//     | property_expr OR property_expr
+//     | property_expr AND property_expr
+//     | sequence_expr TOK_IMP property_expr
+//     | sequence_expr TOK_IMP_NON_OVLP property_expr
+//     | IF '(' expression_or_dist ')' property_expr ELSE property_expr
+//     | IF '(' expression_or_dist ')' property_expr %prec THEN
+//     | CASE '(' expression_or_dist ')' property_case_item_list ENDCASE
+//     | sequence_expr #-# property_expr
+//     | sequence_expr #=# property_expr
+//     | NEXTTIME property_expr
+//     | NEXTTIME '[' expression ']' property_expr
+//     | S_NEXTTIME property_expr
+//     | S_NEXTTIME '[' expression ']' property_expr
+//     | ALWAYS property_expr
+//     | ALWAYS '[' cycle_delay_const_range_expression ']' property_expr
+//     | S_ALWAYS '[' part_select_range ']' property_expr
+//     | S_EVENTUALLY property_expr
+//     | EVENTUALLY '[' part_select_range ']' property_expr
+//     | S_EVENTUALLY '[' cycle_delay_const_range_expression ']' property_expr
+//     | property_expr UNTIL property_expr
+//     | property_expr S_UNTIL property_expr
+//     | property_expr UNTIL_WITH property_expr
+//     | property_expr S_UNTIL_WITH property_expr
+//     | property_expr IMPLIES property_expr
+//     | property_expr IFF property_expr
+//     | ACCEPT_ON '(' expression_or_dist ')' property_expr
+//     | REJECT_ON '(' expression_or_dist ')' property_expr
+//     | SYNC_ACCEPT_ON '(' expression_or_dist ')' property_expr
+//     | SYNC_REJECT_ON '(' expression_or_dist ')' property_expr
+//     | property_instance
+//     | clocking_event property_expr
+//     ;
+// 
+// property_case_item_list
+//     : property_case_item_list property_case_item
+//     | property_case_item
+//     ;
+// 
+// property_case_item
+//     : expression_or_dist_list ':' property_expr ';'
+//     | DEFAULT ':' property_expr ';'
+//     | DEFAULT property_expr ';'
+//     ;
+// 
+// expression_or_dist_list
+//     : expression_or_dist_list expression_or_dist
+//     | expression_or_dist
+//     ;
+
+procedural_assertion_statement
+    //: concurrent_assertion_statement FIXME
+    : immediate_assertion_statement
+    | generic_instantiation
+    ;
+
+immediate_assertion_statement
+    : simple_immediate_assertion_statement
+    | deferred_immediate_assertion_statement
+    ;
+
+simple_immediate_assertion_statement
+    : simple_immediate_assert_statement
+    | simple_immediate_assume_statement
+    | simple_immediate_cover_statement
+    ;
+
+simple_immediate_assert_statement
+    : ASSERT '(' expression ')' action_block
+    ;
+
+simple_immediate_assume_statement
+    : ASSUME '(' expression ')' action_block
+    ;
+
+simple_immediate_cover_statement
+    : COVER '(' expression ')' statement
+    ;
+
+deferred_immediate_assertion_statement
+    : deferred_immediate_assert_statement
+    | deferred_immediate_assume_statement
+    | deferred_immediate_cover_statement
+    ;
+
+deferred_immediate_assert_statement
+    : ASSERT HASH0 '(' expression ')' action_block
+    | ASSERT FINAL '(' expression ')' action_block
+    ;
+
+deferred_immediate_assume_statement
+    : ASSUME HASH0 '(' expression ')' action_block
+    | ASSUME FINAL '(' expression ')' action_block
+    ;
+
+deferred_immediate_cover_statement
+    : COVER HASH0 '(' expression ')' statement
+    | COVER FINAL '(' expression ')' statement
     ;
 
 if_generate_construct
@@ -925,12 +1151,38 @@ package_or_generate_item_declaration
 //    | dpi_import_export
 //    | extern_constraint_declaration
     | class_declaration
+    | interface_class_declaration
 //    | class_constructor_declaration
     | local_parameter_declaration ';'
     | parameter_declaration ';'
 //    | covergroup_declaration
 //    | overload_declaration
 //    | assertion_item_declaration
+    | ';'
+    ;
+
+interface_class_declaration
+    : INTERFACE_CLASS ps_or_normal_identifier interface_class_parameters EXTENDS interface_class_type_list ';' interface_class_item_list ENDCLASS block_end_identifier_optional
+    | INTERFACE_CLASS ps_or_normal_identifier interface_class_parameters ';' interface_class_item_list ENDCLASS block_end_identifier_optional
+    ;
+
+interface_class_parameters
+    : parameter_value_assignment parameter_port_list
+    | parameter_value_assignment // FIXME
+//    | parameter_port_list
+    |
+    ;
+
+interface_class_item_list
+    : interface_class_item_list interface_class_item
+    | interface_class_item
+    ;
+
+interface_class_item
+    : type_declaration
+    | PURE_VIRTUAL method_prototype ';'
+    | local_parameter_declaration ';'
+    | parameter_declaration ';'
     | ';'
     ;
 
@@ -960,7 +1212,7 @@ interface_class_type_list
     ;
 
 interface_class_type
-    : hierarchical_identifier parameter_value_assignment_optional
+    : ps_or_normal_identifier parameter_value_assignment_optional
     ;
 
 class_item_list
@@ -973,6 +1225,7 @@ class_item
     | class_method
     //| class_constraint
     | class_declaration
+    | interface_class_declaration
     // | covergroup_declaration
     | local_parameter_declaration ';'
     | parameter_declaration ';'
@@ -1116,7 +1369,7 @@ statement_item
     | procedural_timing_control_statement
     | seq_block
     | wait_statement
-//    | procedural_assertion_statement
+    | procedural_assertion_statement
 //    | clocking_drive ';'
 //    | randsequence_statement
 //    | randcase_statement
@@ -1406,7 +1659,28 @@ block_item_declaration
     | attribute_instance_list local_parameter_declaration ';'
     | attribute_instance_list parameter_declaration ';'
     | attribute_instance_list overload_declaration
-//    | attribute_instance_list let_declaration
+    | attribute_instance_list let_declaration
+    ;
+
+let_declaration
+    : LET identifier '(' let_port_list ')' '=' expression ';'
+    ;
+
+let_port_list
+    : let_port_list ',' let_port_item
+    | let_port_item
+    ;
+
+let_port_item
+    : attribute_instance_list let_formal_type identifier variable_dimension_list_optional '=' expression
+    | attribute_instance_list let_formal_type identifier variable_dimension_list_optional
+    | attribute_instance_list identifier variable_dimension_list_optional '=' expression
+    | attribute_instance_list identifier variable_dimension_list_optional
+    ;
+
+let_formal_type
+    : data_type
+    | UNTYPED
     ;
 
 overload_declaration
@@ -1537,7 +1811,7 @@ type_declaration
     | TYPEDEF STRUCT identifier ';'
     | TYPEDEF UNION identifier ';'
     | TYPEDEF CLASS identifier ';'
-    | TYPEDEF INTERFACE CLASS identifier ';'
+    | TYPEDEF INTERFACE_CLASS identifier ';'
     ;
 
 // FIXME
@@ -1643,22 +1917,51 @@ concatenation_expression_list
     | expression
     ;
 
+streaming_concatenation
+    : '{' stream_operator slice_size stream_concatenation '}'
+    | '{' stream_operator stream_concatenation '}'
+    ;
+
+stream_operator
+    : TOK_BIT_SL
+    | TOK_BIT_SR
+    ;
+
+slice_size
+    : simple_type
+    //| expression FIXME
+    ;
+
+stream_concatenation
+    : '{' stream_expression_list '}'
+    ;
+
+stream_expression_list
+    : stream_expression_list ',' stream_expression
+    | stream_expression
+    ;
+
+stream_expression
+    : expression WITH '[' part_select_range ']'
+    | expression
+    ;
+
 // FIXME
 primary
     : primary_literal
     | hierarchical_identifier
     | ps_identifier
     | '{' '}'
-//   | concatenation '[' range_expression ']'
+    | concatenation '[' part_select_range ']'
     | concatenation
-//   | multiple_concatenation '[' range_expression ']'
+    | multiple_concatenation '[' part_select_range ']'
     | multiple_concatenation
     | subroutine_call
-//    | let_expression
+//    | let_expression covered under func call?
     | '(' mintypmax_expression ')'
     | casting_type TOK_SING_QUOT '(' expression ')'
 //     | assignment_pattern_expression
-//     | streaming_concatenation
+    | streaming_concatenation
 //     | sequence_method_call
     | THIS
     | '$'
@@ -1741,6 +2044,11 @@ identifier_list
 ps_identifier
     : ps_identifier_tok identifier
     | '$' UNIT SCOPE identifier
+    ;
+
+ps_or_normal_identifier
+    : ps_identifier
+    | identifier
     ;
 
 ps_or_hierarchical_identifier
@@ -1843,16 +2151,43 @@ operator_assignment
 // FIXME
 lvalue
     : hierarchical_identifier
+    | concatenation // FIXME need to check semantics for lvlaues
+    | streaming_concatenation
+    ;
+
+lvalue_list
+    : lvalue_list ',' lvalue
+    | lvalue
     ;
 
 cond_predicate
-//    : expression_or_cond_pattern TOK_3AMP expression_or_cond_pattern
-    : expression_or_cond_pattern
+    : expression_or_cond_pattern TOK_3AMP expression_or_cond_pattern
+    | expression_or_cond_pattern
     ;
 
 expression_or_cond_pattern
     : expression
-    // | expression MATCHES pattern FIXME
+    | expression MATCHES pattern
+    ;
+
+pattern
+    : '.' identifier
+    | '.' TOK_MUL
+//    | expression // FIXME
+    | TAGGED identifier pattern
+    | TAGGED identifier
+    | TOK_SING_QUOT '{' pattern_list '}'
+    | TOK_SING_QUOT '{' identifier_pattern_list '}'
+    ;
+
+pattern_list
+    : pattern_list ',' pattern
+    | pattern
+    ;
+
+identifier_pattern_list
+    : identifier_pattern_list ',' identifier ':' pattern
+    | identifier ':' pattern
     ;
 
 value_range_list

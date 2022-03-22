@@ -19,6 +19,8 @@ else[ \t\n]+if                                  { return ELSE_IF; }
 virtual[ \t\n]+interface                        { return VIRTUAL_INTERFACE; }
 super\.new                                      { return SUPER_NEW; }
 pure[ \t\n]+virtual                             { return PURE_VIRTUAL; }
+interface[ \t\n]+class                          { return INTERFACE_CLASS; }
+#0                                              { return HASH0; }
 [ \t\n]+                                        { }
 \/\/.*|"/*"([^*]|\*+[^*/])*\*+"/"               { }
 ({NUM}?'d)[xXzX]*[0-9]+                         {

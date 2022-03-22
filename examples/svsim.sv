@@ -3,12 +3,17 @@
 package test_pkg;
     timeunit 10ps/10ps;
 
+    interface class abc;
+      parameter A = 10;
+      pure virtual function int abc(int a, string b);
+    endclass
+
     import chris_pkg::your_mom, that_pkg::thi, this_pkg::*;
     import mips_pkg::*;
 
     typedef logic [2:0] chris_t;
     typedef enum fwd_decl_e;
-    typedef interface class fwd_decl_intf_class;;;;
+    typedef interface class fwd_decl_intf_class;
 
     logic abc;
     const bit b;
@@ -140,5 +145,10 @@ module test_mod(a,b,c);
     
   endinterface : abc_intf
 
+  initial begin
+  assert(a == 2) begin
+    print("crap");
+  end;
+  end
 endmodule : test_mod
 
