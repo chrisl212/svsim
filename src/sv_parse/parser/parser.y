@@ -30,7 +30,7 @@
 %token PURE PACKAGE ENDPACKAGE TYPE RAND GENVAR
 %token INPUT OUTPUT INOUT REF DEFPARAM IMPORT
 %token FATAL ERROR WARNING INFO LIBLIST USE
-%token DEFAULT CLOCKING DISABLE IFF CONST EXPORT
+%token DEFAULT CLOCKING DISABLE CONST EXPORT
 %token CONFIG ENDCONFIG DESIGN INSTANCE CELL
 %token FORK JOIN FORKJOIN JOIN_ALL JOIN_ANY JOIN_NONE
 %token FUNCTION NEW STATIC PROTECTED LOCAL RANDC SUPER
@@ -47,7 +47,7 @@
 %token TASK ENDTASK DPIC DPI CONTEXT ASSERT PROPERTY
 %token ASSUME COVER COVERGROUP EXPECT SEQUENCE
 %token RESTRICT ENDPROPERTY NOT CASE ENDCASE
-%token OPTION _BEGIN PMOS TABLE UNTIL PRIORITY
+%token OPTION _BEGIN PMOS TABLE PRIORITY
 %token ENDFUNCTION ROOT PS POSEDGE WIDTH TRANIF0
 %token BUFIF0 FORCE ENDSEQUENCE REJECT_ON
 %token FULLSKEW S_EVENTUALLY WHILE NOSHOWCANCELLED
@@ -55,36 +55,37 @@
 %token DIST WAIT SHOWCANCELLED US SETUPHOLD
 %token RECOVERY XOR DEFAULT_SEQUENCE TRANIF1
 %token INSIDE DO SAMPLE S NOTIF0 ENDGENERATE
-%token UNTIL_WITH FINAL WAIT_ORDER WITHIN
+%token UNTIL_WITH FINAL WAIT_ORDER
 %token THROUGHOUT PULSESTYLE_ONDETECT XNOR
 %token RPMOS END FIRST_MATCH SYNC_REJECT_ON
 %token RTRANIF0 SIGNED CASEZ TIMEUNIT BUF
 %token MODPORT ASSIGN RELEASE ALWAYS NOCHANGE
 %token WEAK BINS TRAN BIND PRIMITIVE STRONG
 %token S_UNTIL PERIOD NOTIF1 REPEAT _INITIAL
-%token SETUP RTRAN ALWAYS_LATCH RNMOS INTERSECT
+%token SETUP RTRAN ALWAYS_LATCH RNMOS
 %token PULLDOWN MATCHES REMOVAL TIMESKEW ALWAYS_FF
 %token RANDCASE DEASSIGN CASEX TIMEPRECISION
-%token SKEW NS NMOS UNTYPED IMPLIES RANDOMIZE
+%token SKEW NS NMOS UNTYPED RANDOMIZE
 %token SPECIFY NEGEDGE S_NEXTTIME INCDIR ALWAYS_COMB
 %token ENDPRIMITIVE IFNONE BINSOF CMOS SYNC_ACCEPT_ON
-%token NOR PULSESTYLE_ONEVENT S_UNTIL_WITH
+%token NOR PULSESTYLE_ONEVENT
 %token STD ENDCLOCKING HOLD GENERATE PULLUP
 %token TYPE_OPTION MS ENDTABLE IGNORE_BINS
 %token BUFIF1 FOR RETURN _NULL GLOBAL ILLEGAL_BINS
 %token UNIQUE0 RANDSEQUENCE LET EVENTUALLY
 %token EDGE ACCEPT_ON CONTINUE ENDSPECIFY PURE_VIRTUAL INTERFACE_CLASS
-%token RECREM BREAK S_ALWAYS ENDGROUP RTRANIF1
+%token RECREM BREAK S_ALWAYS ENDGROUP RTRANIF1 COVER_SEQUENCE
 %token COVERPOINT CROSS FS WILDCARD RCMOS UNIT TOK_UPTO TOK_DNTO SUPER_NEW
 %token c_identifier escaped_identifier system_tf_identifier simple_identifier string_literal
 %token block_identifier class_identifier package_identifier type_identifier ps_identifier_tok
 %token binary_number octal_number hex_number decimal_number unsigned_number fixed_point_number
-%left TOK_LOG_XEQ TOK_LOG_XNEQ TOK_LOG_WEQ TOK_LOG_WNEQ TOK_BIT_SRA TOK_DLY
+%left TOK_LOG_XEQ TOK_LOG_XNEQ TOK_LOG_WEQ TOK_LOG_WNEQ TOK_BIT_SRA TOK_DLY INTERSECT WITHIN
 %left TOK_BIT_SLA TOK_EQUIV TOK_IMP_OVLP TOK_IMP_NON_OVLP TOK_IMP TOK_LOG_AND
 %left TOK_LOG_OR TOK_LOG_EQ TOK_LOG_NEQ TOK_LOG_LEQ TOK_LOG_GEQ TOK_BIT_SR OR AND
 %left TOK_BIT_SL TOK_BIT_NAND TOK_BIT_NOR TOK_BIT_XNOR TOK_PWR TOK_PLUS TOK_MINUS TOK_3AMP
 %left TOK_MUL TOK_DIV TOK_MOD TOK_LOG_NOT TOK_LOG_LT TOK_LOG_GT TOK_BIT_AND TOK_BIT_OR
-%left TOK_BIT_XOR TOK_BIT_NOT TOK_INC TOK_DEC SCOPE TOK_SING_QUOT
+%left TOK_BIT_XOR TOK_BIT_NOT TOK_INC TOK_DEC SCOPE TOK_SING_QUOT TOK_DIST_ASSIGN TOK_DIST_OVER
+%left UNTIL S_UNTIL UNTIL_WITH S_UNTIL_WITH IMPLIES IFF TOK_HASH_DASH_HASH TOK_HASH_EQ_HASH
 %token TOK_SL_EQ TOK_SR_EQ TOK_SLA_EQ TOK_SRA_EQ TOK_PLUS_EQ TOK_MINUS_EQ TOK_MUL_EQ
 %token TOK_DIV_EQ TOK_MOD_EQ TOK_AND_EQ TOK_OR_EQ TOK_XOR_EQ
 
@@ -474,8 +475,8 @@ module_common_item
     ;
 
 assertion_item
-    // : concurrent_assertion_item FIXME
-    : deferred_immediate_assertion_item
+    : concurrent_assertion_item
+    | deferred_immediate_assertion_item
     ;
 
 deferred_immediate_assertion_item
@@ -483,176 +484,317 @@ deferred_immediate_assertion_item
     | deferred_immediate_assertion_statement
     ;
 
-// concurrent_assertion_item
-//     : identifier ':' concurrent_assertion_statement
-//     | checker_instantiation
-//     ;
-// 
-// concurrent_assertion_statement
-//     : assert_property_statement
-//     | assume_property_statement
-//     | cover_property_statement
-//     | cover_sequence_statement
-//     | restrict_property_statement
-//     ;
-// 
-// assert_property_statement
-//     : ASSERT PROPERTY '(' property_spec ')' action_block
-//     ;
-// 
-// assume_property_statement
-//     : ASSUME PROPERTY '(' property_spec ')' action_block
-//     ;
-// 
-// cover_property_statement
-//     : COVER PROPERTY '(' property_spec ')' statement
-//     ;
-// 
-// expect_property_statement
-//     : EXPECT '(' property_spec ')' action_block
-//     ;
-// 
-// cover_sequence_statement
-//     : COVER SEQUENCE '(' clocking_event DISABLE IFF '(' expression_or_dist ')' sequence_expr ')' statement
-//     | COVER SEQUENCE '(' clocking_event ')' sequence_expr ')' statement
-//     | COVER SEQUENCE '(' DISABLE IFF '(' expression_or_dist ')' sequence_expr ')' statement
-//     | COVER SEQUENCE '(' ')' sequence_expr ')' statement
-//     ;
-// 
-// restrict_property_statement
-//     : RESTRICT PROPERTY '(' property_spec ')' ';'
-//     ;
-// 
-// property_instance
-//     : ps_or_hierarchical_identifier '(' property_argument_list ')'
-//     | ps_or_hierarchical_identifier
-//     ;
-// 
-// property_argument_list
-//     : property_actual_arg_list identifier_property_actual_arg_list
-//     | identifier_property_actual_arg_list
-//     |
-//     ;
-// 
-// property_actual_arg_list
-//     : property_actual_arg_list ',' property_actual_arg
-//     | property_actual_arg
-//     ;
-// 
-// identifier_property_actual_arg_list
-//     : identifier_property_actual_arg_list ',' '.' identifier '(' property_actual_arg ')'
-//     | identifier_property_actual_arg_list ',' '.' identifier '(' ')'
-//     | '.' identifier '(' property_actual_arg ')'
-//     | '.' identifier '(' ')'
-//     ;
-// 
-// property_actual_arg
-//     : property_expr
-//     | sequence_actual_arg
-//     ;
-// 
-// assertion_item_declaration
-//     : property_declaration
-//     | sequence_declaration
-//     | let_declaration
-//     ;
-// 
-// property_declaration
-//     : PROPERTY identifier '(' property_port_list ')' ';' assertion_variable_declaration_list property_spec ';' ENDPROPERTY block_end_identifier_optional
-//     | PROPERTY identifier ';' assertion_variable_declaration_list property_spec ';' ENDPROPERTY block_end_identifier_optional
-//     ;
-// 
-// assertion_variable_declaration_list
-//     : assertion_variable_declaration_list assertion_variable_declaration
-//     |
-//     ;
-// 
-// property_port_list
-//     : property_port_list ',' property_port_item
-//     |
-//     ;
-// 
-// property_port_item
-//     : attribute_instance_list local_input_optional property_formal_type identifier variable_dimension_list_optional '=' property_actual_arg
-//     | attribute_instance_list local_input_optional property_formal_type identifier variable_dimension_list_optional
-//     ;
-// 
-// local_input_optional
-//     : LOCAL INPUT
-//     | LOCAL
-//     |
-//     ;
-// 
-// property_formal_type
-//     : sequence_formal_type
-//     | PROPERTY
-//     ;
-// 
-// property_spec
-//     : clocking_event DISABLE IFF '(' expression_or_dist ')' property_expr
-//     | clocking_event property_expr
-//     | DISABLE IFF '(' expression_or_dist ')' property_expr
-//     | property_expr
-//     ;
-// 
-// property_expr
-//     : sequence_expr
-//     | STRONG '(' sequence_expr ')'
-//     | WEAK '(' sequence_expr ')'
-//     | '(' property_expr ')'
-//     | NOT property_expr
-//     | property_expr OR property_expr
-//     | property_expr AND property_expr
-//     | sequence_expr TOK_IMP property_expr
-//     | sequence_expr TOK_IMP_NON_OVLP property_expr
-//     | IF '(' expression_or_dist ')' property_expr ELSE property_expr
-//     | IF '(' expression_or_dist ')' property_expr %prec THEN
-//     | CASE '(' expression_or_dist ')' property_case_item_list ENDCASE
-//     | sequence_expr #-# property_expr
-//     | sequence_expr #=# property_expr
-//     | NEXTTIME property_expr
-//     | NEXTTIME '[' expression ']' property_expr
-//     | S_NEXTTIME property_expr
-//     | S_NEXTTIME '[' expression ']' property_expr
-//     | ALWAYS property_expr
-//     | ALWAYS '[' cycle_delay_const_range_expression ']' property_expr
-//     | S_ALWAYS '[' part_select_range ']' property_expr
-//     | S_EVENTUALLY property_expr
-//     | EVENTUALLY '[' part_select_range ']' property_expr
-//     | S_EVENTUALLY '[' cycle_delay_const_range_expression ']' property_expr
-//     | property_expr UNTIL property_expr
-//     | property_expr S_UNTIL property_expr
-//     | property_expr UNTIL_WITH property_expr
-//     | property_expr S_UNTIL_WITH property_expr
-//     | property_expr IMPLIES property_expr
-//     | property_expr IFF property_expr
-//     | ACCEPT_ON '(' expression_or_dist ')' property_expr
-//     | REJECT_ON '(' expression_or_dist ')' property_expr
-//     | SYNC_ACCEPT_ON '(' expression_or_dist ')' property_expr
-//     | SYNC_REJECT_ON '(' expression_or_dist ')' property_expr
-//     | property_instance
-//     | clocking_event property_expr
-//     ;
-// 
-// property_case_item_list
-//     : property_case_item_list property_case_item
-//     | property_case_item
-//     ;
-// 
-// property_case_item
-//     : expression_or_dist_list ':' property_expr ';'
-//     | DEFAULT ':' property_expr ';'
-//     | DEFAULT property_expr ';'
-//     ;
-// 
-// expression_or_dist_list
-//     : expression_or_dist_list expression_or_dist
-//     | expression_or_dist
-//     ;
+concurrent_assertion_item
+    : identifier ':' concurrent_assertion_statement
+    | concurrent_assertion_statement
+    // | checker_instantiation FIXME
+    ;
+
+concurrent_assertion_statement
+    : assert_property_statement
+    | assume_property_statement
+    | cover_property_statement
+    | cover_sequence_statement
+    | restrict_property_statement
+    ;
+
+assert_property_statement
+    : ASSERT PROPERTY '(' property_spec ')' action_block
+    ;
+
+assume_property_statement
+    : ASSUME PROPERTY '(' property_spec ')' action_block
+    ;
+
+cover_property_statement
+    : COVER PROPERTY '(' property_spec ')' statement
+    ;
+
+expect_property_statement
+    : EXPECT '(' property_spec ')' action_block
+    ;
+
+cover_sequence_statement
+    : COVER_SEQUENCE '(' clocking_event DISABLE IFF '(' expression_or_dist ')' sequence_expr ')' statement
+    | COVER_SEQUENCE '(' clocking_event ')' sequence_expr ')' statement
+    | COVER_SEQUENCE '(' DISABLE IFF '(' expression_or_dist ')' sequence_expr ')' statement
+    | COVER_SEQUENCE '(' ')' sequence_expr ')' statement
+    ;
+
+restrict_property_statement
+    : RESTRICT PROPERTY '(' property_spec ')' ';'
+    ;
+
+property_instance
+    : ps_or_hierarchical_identifier '(' property_argument_list ')'
+    | ps_or_hierarchical_identifier
+    ;
+
+property_argument_list
+    : property_actual_arg_list identifier_property_actual_arg_list
+    | identifier_property_actual_arg_list
+    |
+    ;
+
+property_actual_arg_list
+    : property_actual_arg_list ',' property_actual_arg
+    | property_actual_arg
+    ;
+
+identifier_property_actual_arg_list
+    : identifier_property_actual_arg_list ',' '.' identifier '(' property_actual_arg ')'
+    | identifier_property_actual_arg_list ',' '.' identifier '(' ')'
+    | '.' identifier '(' property_actual_arg ')'
+    | '.' identifier '(' ')'
+    ;
+
+property_actual_arg
+    : property_expr
+    | sequence_actual_arg
+    ;
+
+assertion_item_declaration
+    : property_declaration
+    | sequence_declaration
+    | let_declaration
+    ;
+
+property_declaration
+    : PROPERTY identifier '(' property_port_list ')' ';' assertion_variable_declaration_list property_spec ';' ENDPROPERTY block_end_identifier_optional
+    | PROPERTY identifier ';' assertion_variable_declaration_list property_spec ';' ENDPROPERTY block_end_identifier_optional
+    ;
+
+assertion_variable_declaration_list
+    : assertion_variable_declaration_list assertion_variable_declaration
+    |
+    ;
+
+property_port_list
+    : property_port_list ',' property_port_item
+    |
+    ;
+
+property_port_item
+    : attribute_instance_list local_input_optional property_formal_type identifier variable_dimension_list_optional '=' property_actual_arg
+    | attribute_instance_list local_input_optional property_formal_type identifier variable_dimension_list_optional
+    ;
+
+local_input_optional
+    : LOCAL INPUT
+    | LOCAL
+    |
+    ;
+
+property_formal_type
+    : sequence_formal_type
+    | PROPERTY
+    ;
+
+property_spec
+    : clocking_event DISABLE IFF '(' expression_or_dist ')' property_expr
+    | clocking_event property_expr
+    | DISABLE IFF '(' expression_or_dist ')' property_expr
+    | property_expr
+    ;
+
+// FIXME need just sequence_exrp
+property_expr
+    : STRONG '(' sequence_expr ')'
+    | WEAK '(' sequence_expr ')'
+    | '(' property_expr ')'
+    | NOT property_expr %prec THEN
+    | property_expr OR property_expr
+    | property_expr AND property_expr
+    // | sequence_expr TOK_IMP property_expr FIXME
+    | sequence_expr TOK_IMP_NON_OVLP property_expr
+    | IF '(' expression_or_dist ')' property_expr ELSE property_expr
+    | IF '(' expression_or_dist ')' property_expr %prec THEN
+    | CASE '(' expression_or_dist ')' property_case_item_list ENDCASE
+    | sequence_expr TOK_HASH_DASH_HASH property_expr
+    | sequence_expr TOK_HASH_EQ_HASH property_expr
+    | NEXTTIME property_expr %prec THEN
+    | NEXTTIME '[' expression ']' property_expr %prec THEN
+    | S_NEXTTIME property_expr %prec THEN
+    | S_NEXTTIME '[' expression ']' property_expr %prec THEN
+    | ALWAYS property_expr %prec THEN
+    | ALWAYS '[' part_select_range ']' property_expr %prec THEN
+    | S_ALWAYS '[' part_select_range ']' property_expr %prec THEN
+    | S_EVENTUALLY property_expr %prec THEN
+    | EVENTUALLY '[' part_select_range ']' property_expr %prec THEN
+    | S_EVENTUALLY '[' part_select_range ']' property_expr %prec THEN
+    | property_expr UNTIL property_expr
+    | property_expr S_UNTIL property_expr
+    | property_expr UNTIL_WITH property_expr
+    | property_expr S_UNTIL_WITH property_expr
+    | property_expr IMPLIES property_expr
+    | property_expr IFF property_expr
+    | ACCEPT_ON '(' expression_or_dist ')' property_expr %prec THEN
+    | REJECT_ON '(' expression_or_dist ')' property_expr %prec THEN
+    | SYNC_ACCEPT_ON '(' expression_or_dist ')' property_expr %prec THEN
+    | SYNC_REJECT_ON '(' expression_or_dist ')' property_expr %prec THEN
+    // | property_instance
+    // | clocking_event property_expr %prec THEN
+    ;
+
+property_case_item_list
+    : property_case_item_list property_case_item
+    | property_case_item
+    ;
+
+property_case_item
+    : expression_or_dist_list ':' property_expr ';'
+    | DEFAULT ':' property_expr ';'
+    | DEFAULT property_expr ';'
+    ;
+
+expression_or_dist_list
+    : expression_or_dist_list ',' expression_or_dist
+    | expression_or_dist
+    ;
+
+expression_or_dist
+    : expression DIST '{' dist_list '}'
+    | expression
+    ;
+
+dist_list
+    : dist_list ',' dist_item
+    | dist_item
+    ;
+
+dist_item
+    : value_range dist_weight
+    | value_range
+    ;
+
+dist_weight
+    : TOK_DIST_ASSIGN expression
+    | TOK_DIST_OVER expression
+    ;
+
+sequence_declaration
+    : SEQUENCE identifier '(' sequence_port_list ')' ';' assertion_variable_declaration_list sequence_expr ';' ENDSEQUENCE block_end_identifier_optional
+    | SEQUENCE identifier '(' ')' ';' assertion_variable_declaration_list sequence_expr ';' ENDSEQUENCE block_end_identifier_optional
+    | SEQUENCE identifier ';' assertion_variable_declaration_list sequence_expr ';' ENDSEQUENCE block_end_identifier_optional
+    ;
+
+sequence_port_list
+    : sequence_port_list ',' sequence_port_item
+    | sequence_port_item
+    ;
+
+sequence_port_item
+    : local_direction_optional sequence_formal_type identifier variable_dimension_list_optional '=' sequence_actual_arg
+    | local_direction_optional sequence_formal_type identifier variable_dimension_list_optional
+    | local_direction_optional identifier variable_dimension_list_optional '=' sequence_actual_arg
+    | local_direction_optional identifier variable_dimension_list_optional
+    ;
+
+local_direction_optional
+    : LOCAL INPUT
+    | LOCAL INOUT
+    | LOCAL OUTPUT
+    | LOCAL
+    |
+    ;
+
+sequence_formal_type
+    : data_type
+    | SEQUENCE
+    | UNTYPED
+    ;
+
+sequence_expr
+    : sequence_expr cycle_delay_range sequence_expr %prec AND
+    // | expression_or_dist boolean_abbrev
+    | expression_or_dist
+    // | sequence_instance sequence_abbrev FIXME
+    //| sequence_instance // covered under expression
+    // | '(' sequence_expr sequence_match_item_list ')' sequence_abbrev
+    // | '(' sequence_expr sequence_match_item_list ')'
+    | sequence_expr AND sequence_expr
+    | sequence_expr INTERSECT sequence_expr
+    | sequence_expr OR sequence_expr
+    | FIRST_MATCH '(' sequence_expr sequence_match_item_list ')'
+    | expression_or_dist THROUGHOUT sequence_expr %prec THEN
+    | sequence_expr WITHIN sequence_expr
+    | clocking_event sequence_expr %prec THEN
+    | cycle_delay_range sequence_expr %prec THEN
+    ;
+
+sequence_match_item_list
+    : sequence_match_item_list ',' sequence_match_item
+    |
+    ;
+
+cycle_delay_range
+    //: TOK_DLY primary FIXME
+    : TOK_DLY '[' part_select_range ']'
+    | TOK_DLY '[' TOK_MUL ']'
+    | TOK_DLY '[' TOK_PLUS ']'
+    ;
+
+sequence_match_item
+    : operator_assignment
+    | inc_or_dec_expression
+    | subroutine_call
+    ;
+
+sequence_argument_list
+    : sequence_actual_arg_list identifier_sequence_actual_arg_list
+    | identifier_sequence_actual_arg_list
+    |
+    ;
+
+sequence_actual_arg_list
+    : sequence_actual_arg_list ',' sequence_actual_arg
+    | sequence_actual_arg
+    ;
+
+identifier_sequence_actual_arg_list
+    : identifier_sequence_actual_arg_list ',' '.' identifier '(' sequence_actual_arg ')'
+    | identifier_sequence_actual_arg_list ',' '.' identifier '(' ')'
+    | '.' identifier '(' sequence_actual_arg ')'
+    | '.' identifier '(' ')'
+    ;
+
+sequence_actual_arg
+    : event_expression
+    | sequence_expr
+    ;
+
+boolean_abbrev
+    : consecutive_repetition
+    | non_consecutive_repetition
+    | goto_repetition
+    ;
+
+sequence_abbrev
+    : consecutive_repetition
+    ;
+
+consecutive_repetition
+    : '[' TOK_MUL part_select_range ']'
+    | '[' TOK_MUL ']'
+    | '[' TOK_PLUS ']'
+    ;
+
+non_consecutive_repetition
+    : '[' '=' part_select_range ']'
+    ;
+
+goto_repetition
+    : '[' TOK_IMP part_select_range ']'
+    ;
+
+assertion_variable_declaration
+    : VAR data_type variable_decl_assignment_list ';'
+    | data_type variable_decl_assignment_list ';'
+    ;
 
 procedural_assertion_statement
-    //: concurrent_assertion_statement FIXME
-    : immediate_assertion_statement
+    : concurrent_assertion_statement
+    | immediate_assertion_statement
     | generic_instantiation
     ;
 
@@ -876,7 +1018,21 @@ clocking_item_list
 
 // FIXME
 clocking_item
-    : ';'
+    : DEFAULT default_skew ';'
+    // | clocking_direction clocking_decl_assign_list ';'
+    //| assertion_item_declaration FIXME
+    ;
+
+default_skew
+    : INPUT clocking_skew
+    | OUTPUT clocking_skew
+    | INPUT clocking_skew OUTPUT clocking_skew
+    ;
+
+clocking_skew
+    : edge_identifier delay_control
+    | edge_identifier
+    | delay_control
     ;
 
 clocking_event

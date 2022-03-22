@@ -20,6 +20,7 @@ virtual[ \t\n]+interface                        { return VIRTUAL_INTERFACE; }
 super\.new                                      { return SUPER_NEW; }
 pure[ \t\n]+virtual                             { return PURE_VIRTUAL; }
 interface[ \t\n]+class                          { return INTERFACE_CLASS; }
+cover[ \t\n]+sequence                           { return COVER_SEQUENCE; }
 #0                                              { return HASH0; }
 [ \t\n]+                                        { }
 \/\/.*|"/*"([^*]|\*+[^*/])*\*+"/"               { }
@@ -86,10 +87,14 @@ interface[ \t\n]+class                          { return INTERFACE_CLASS; }
 "|->"                                           { return TOK_IMP_OVLP; }
 "|=>"                                           { return TOK_IMP_NON_OVLP; }
 "&&&"                                           { return TOK_3AMP; }
+"#-#"                                           { return TOK_HASH_DASH_HASH; }
+"#=#"                                           { return TOK_HASH_EQ_HASH; }
 "<<="                                           { return TOK_SL_EQ; }
 ">>="                                           { return TOK_SR_EQ; }
 "<<<="                                          { return TOK_SLA_EQ; }
 ">>>="                                          { return TOK_SRA_EQ; }
+":="                                            { return TOK_DIST_ASSIGN; }
+":/"                                            { return TOK_DIST_OVER; }
 "+="                                            { return TOK_PLUS_EQ; }
 "-="                                            { return TOK_MINUS_EQ; }
 "*="                                            { return TOK_MUL_EQ; }
