@@ -1,0 +1,952 @@
+Starting parse
+Entering state 0
+Reading a token
+Next token is token MODULE (1.1: )
+Reducing stack 0 by rule 872 (line 2190):
+-> $$ = nterm timeunits_declaration_optional (1.1: )
+Entering state 4
+Reducing stack 0 by rule 3 (line 151):
+-> $$ = nterm description_list (1.1: )
+Entering state 11
+Next token is token MODULE (1.1: )
+Shifting token MODULE (1.1: )
+Entering state 23
+Reducing stack 0 by rule 51 (line 259):
+   $1 = token MODULE (1.1: )
+-> $$ = nterm module_keyword (1.1: )
+Entering state 86
+Reading a token
+Next token is token STATIC (1.1: )
+Shifting token STATIC (1.1: )
+Entering state 33
+Reducing stack 0 by rule 1047 (line 2532):
+   $1 = token STATIC (1.1: )
+-> $$ = nterm lifetime (1.1: )
+Entering state 132
+Reducing stack 0 by rule 869 (line 2152):
+   $1 = nterm lifetime (1.1: )
+-> $$ = nterm lifetime_optional (1.1: )
+Entering state 171
+Reading a token
+Next token is token simple_identifier (1.1: )
+Shifting token simple_identifier (1.1: )
+Entering state 77
+Reducing stack 0 by rule 1049 (line 2537):
+   $1 = token simple_identifier (1.1: )
+-> $$ = nterm identifier (1.1: )
+Entering state 334
+Reducing stack 0 by rule 36 (line 222):
+-> $$ = nterm package_import_declaration_list (1.1: )
+Entering state 621
+Reading a token
+Next token is token IMPORT (1.1: )
+Shifting token IMPORT (1.1: )
+Entering state 30
+Reading a token
+Next token is token ps_identifier_tok (1.1: )
+Shifting token ps_identifier_tok (1.1: )
+Entering state 134
+Reading a token
+Next token is token TOK_MUL (1.1: )
+Shifting token TOK_MUL (1.1: )
+Entering state 210
+Reducing stack 0 by rule 866 (line 2143):
+   $1 = token ps_identifier_tok (1.1: )
+   $2 = token TOK_MUL (1.1: )
+-> $$ = nterm package_import_item (1.1: )
+Entering state 136
+Reducing stack 0 by rule 864 (line 2138):
+   $1 = nterm package_import_item (1.1: )
+-> $$ = nterm package_import_item_list (1.1: )
+Entering state 135
+Reading a token
+Next token is token ';' (1.1: )
+Shifting token ';' (1.1: )
+Entering state 212
+Reducing stack 0 by rule 862 (line 2133):
+   $1 = token IMPORT (1.1: )
+   $2 = nterm package_import_item_list (1.1: )
+   $3 = token ';' (1.1: )
+-> $$ = nterm package_import_declaration (1.1: )
+Entering state 751
+Reducing stack 0 by rule 35 (line 221):
+   $1 = nterm package_import_declaration_list (1.1: )
+   $2 = nterm package_import_declaration (1.1: )
+-> $$ = nterm package_import_declaration_list (1.1: )
+Entering state 621
+Reading a token
+Next token is token IMPORT (1.1: )
+Shifting token IMPORT (1.1: )
+Entering state 30
+Reading a token
+Next token is token ps_identifier_tok (1.1: )
+Shifting token ps_identifier_tok (1.1: )
+Entering state 134
+Reading a token
+Next token is token simple_identifier (1.1: )
+Shifting token simple_identifier (1.1: )
+Entering state 77
+Reducing stack 0 by rule 1049 (line 2537):
+   $1 = token simple_identifier (1.1: )
+-> $$ = nterm identifier (1.1: )
+Entering state 167
+Reducing stack 0 by rule 945 (line 2359):
+   $1 = token ps_identifier_tok (1.1: )
+   $2 = nterm identifier (1.1: )
+-> $$ = nterm ps_identifier (1.1: )
+Entering state 137
+Reducing stack 0 by rule 865 (line 2142):
+   $1 = nterm ps_identifier (1.1: )
+-> $$ = nterm package_import_item (1.1: )
+Entering state 136
+Reducing stack 0 by rule 864 (line 2138):
+   $1 = nterm package_import_item (1.1: )
+-> $$ = nterm package_import_item_list (1.1: )
+Entering state 135
+Reading a token
+Next token is token ';' (1.1: )
+Shifting token ';' (1.1: )
+Entering state 212
+Reducing stack 0 by rule 862 (line 2133):
+   $1 = token IMPORT (1.1: )
+   $2 = nterm package_import_item_list (1.1: )
+   $3 = token ';' (1.1: )
+-> $$ = nterm package_import_declaration (1.1: )
+Entering state 751
+Reducing stack 0 by rule 35 (line 221):
+   $1 = nterm package_import_declaration_list (1.1: )
+   $2 = nterm package_import_declaration (1.1: )
+-> $$ = nterm package_import_declaration_list (1.1: )
+Entering state 621
+Reading a token
+Next token is token '#' (1.1: )
+Shifting token '#' (1.1: )
+Entering state 489
+Reading a token
+Next token is token '(' (1.1: )
+Shifting token '(' (1.1: )
+Entering state 832
+Reading a token
+Next token is token TYPE (1.1: )
+Shifting token TYPE (1.1: )
+Entering state 1168
+Reducing stack 0 by rule 46 (line 249):
+   $1 = token TYPE (1.1: )
+-> $$ = nterm data_type_or_type (1.1: )
+Entering state 1174
+Reading a token
+Next token is token simple_identifier (1.1: )
+Shifting token simple_identifier (1.1: )
+Entering state 77
+Reducing stack 0 by rule 1049 (line 2537):
+   $1 = token simple_identifier (1.1: )
+-> $$ = nterm identifier (1.1: )
+Entering state 224
+Reading a token
+Next token is token '=' (1.1: )
+Shifting token '=' (1.1: )
+Entering state 226
+Reading a token
+Next token is token simple_identifier (1.1: )
+Shifting token simple_identifier (1.1: )
+Entering state 77
+Reducing stack 0 by rule 1049 (line 2537):
+   $1 = token simple_identifier (1.1: )
+-> $$ = nterm identifier (1.1: )
+Entering state 438
+Reading a token
+Next token is token ',' (1.1: )
+Reducing stack 0 by rule 429 (line 1160):
+-> $$ = nterm unpacked_dimension_list_optional (1.1: )
+Entering state 202
+Reducing stack 0 by rule 953 (line 2376):
+   $1 = nterm identifier (1.1: )
+   $2 = nterm unpacked_dimension_list_optional (1.1: )
+-> $$ = nterm hierarchical_identifier (1.1: )
+Entering state 433
+Next token is token ',' (1.1: )
+Reducing stack 0 by rule 897 (line 2266):
+   $1 = nterm hierarchical_identifier (1.1: )
+-> $$ = nterm primary (1.1: )
+Entering state 421
+Reducing stack 0 by rule 966 (line 2405):
+   $1 = nterm primary (1.1: )
+-> $$ = nterm expression (1.1: )
+Entering state 459
+Next token is token ',' (1.1: )
+Reducing stack 0 by rule 932 (line 2324):
+   $1 = nterm expression (1.1: )
+-> $$ = nterm mintypmax_expression (1.1: )
+Entering state 458
+Reducing stack 0 by rule 827 (line 2058):
+   $1 = nterm mintypmax_expression (1.1: )
+-> $$ = nterm constant_param_expression (1.1: )
+Entering state 457
+Reducing stack 0 by rule 825 (line 2053):
+   $1 = nterm identifier (1.1: )
+   $2 = token '=' (1.1: )
+   $3 = nterm constant_param_expression (1.1: )
+-> $$ = nterm param_assignment (1.1: )
+Entering state 1479
+Reducing stack 0 by rule 44 (line 244):
+   $1 = nterm data_type_or_type (1.1: )
+   $2 = nterm param_assignment (1.1: )
+-> $$ = nterm parameter_port_declaration (1.1: )
+Entering state 1173
+Reducing stack 0 by rule 43 (line 238):
+   $1 = nterm parameter_port_declaration (1.1: )
+-> $$ = nterm parameter_port_declaration_list (1.1: )
+Entering state 1172
+Next token is token ',' (1.1: )
+Shifting token ',' (1.1: )
+Entering state 1477
+Reading a token
+Next token is token INT (1.1: )
+Shifting token INT (1.1: )
+Entering state 48
+Reducing stack 0 by rule 924 (line 2310):
+   $1 = token INT (1.1: )
+-> $$ = nterm integer_atom_type (1.1: )
+Entering state 118
+Reading a token
+Next token is token simple_identifier (1.1: )
+Reducing stack 0 by rule 491 (line 1287):
+-> $$ = nterm signing_optional (1.1: )
+Entering state 193
+Reducing stack 0 by rule 479 (line 1266):
+   $1 = nterm integer_atom_type (1.1: )
+   $2 = nterm signing_optional (1.1: )
+-> $$ = nterm data_type_no_identifier (1.1: )
+Entering state 96
+Reducing stack 0 by rule 464 (line 1245):
+   $1 = nterm data_type_no_identifier (1.1: )
+-> $$ = nterm data_type (1.1: )
+Entering state 1175
+Reducing stack 0 by rule 45 (line 248):
+   $1 = nterm data_type (1.1: )
+-> $$ = nterm data_type_or_type (1.1: )
+Entering state 1174
+Next token is token simple_identifier (1.1: )
+Shifting token simple_identifier (1.1: )
+Entering state 77
+Reducing stack 0 by rule 1049 (line 2537):
+   $1 = token simple_identifier (1.1: )
+-> $$ = nterm identifier (1.1: )
+Entering state 224
+Reading a token
+Next token is token '=' (1.1: )
+Shifting token '=' (1.1: )
+Entering state 226
+Reading a token
+Next token is token unsigned_number (1.1: )
+Shifting token unsigned_number (1.1: )
+Entering state 396
+Reading a token
+Next token is token ')' (1.1: )
+Reducing stack 0 by rule 881 (line 2217):
+   $1 = token unsigned_number (1.1: )
+-> $$ = nterm primary_literal (1.1: )
+Entering state 417
+Next token is token ')' (1.1: )
+Reducing stack 0 by rule 896 (line 2265):
+   $1 = nterm primary_literal (1.1: )
+-> $$ = nterm primary (1.1: )
+Entering state 421
+Reducing stack 0 by rule 966 (line 2405):
+   $1 = nterm primary (1.1: )
+-> $$ = nterm expression (1.1: )
+Entering state 459
+Next token is token ')' (1.1: )
+Reducing stack 0 by rule 932 (line 2324):
+   $1 = nterm expression (1.1: )
+-> $$ = nterm mintypmax_expression (1.1: )
+Entering state 458
+Reducing stack 0 by rule 827 (line 2058):
+   $1 = nterm mintypmax_expression (1.1: )
+-> $$ = nterm constant_param_expression (1.1: )
+Entering state 457
+Reducing stack 0 by rule 825 (line 2053):
+   $1 = nterm identifier (1.1: )
+   $2 = token '=' (1.1: )
+   $3 = nterm constant_param_expression (1.1: )
+-> $$ = nterm param_assignment (1.1: )
+Entering state 1479
+Reducing stack 0 by rule 44 (line 244):
+   $1 = nterm data_type_or_type (1.1: )
+   $2 = nterm param_assignment (1.1: )
+-> $$ = nterm parameter_port_declaration (1.1: )
+Entering state 1688
+Reducing stack 0 by rule 42 (line 237):
+   $1 = nterm parameter_port_declaration_list (1.1: )
+   $2 = token ',' (1.1: )
+   $3 = nterm parameter_port_declaration (1.1: )
+-> $$ = nterm parameter_port_declaration_list (1.1: )
+Entering state 1172
+Next token is token ')' (1.1: )
+Shifting token ')' (1.1: )
+Entering state 1478
+Reducing stack 0 by rule 40 (line 232):
+   $1 = token '#' (1.1: )
+   $2 = token '(' (1.1: )
+   $3 = nterm parameter_port_declaration_list (1.1: )
+   $4 = token ')' (1.1: )
+-> $$ = nterm parameter_port_list (1.1: )
+Entering state 750
+Reducing stack 0 by rule 37 (line 226):
+   $1 = nterm parameter_port_list (1.1: )
+-> $$ = nterm parameter_port_list_optional (1.1: )
+Entering state 974
+Reading a token
+Next token is token '(' (1.1: )
+Shifting token '(' (1.1: )
+Entering state 1310
+Reading a token
+Next token is token simple_identifier (1.1: )
+Shifting token simple_identifier (1.1: )
+Entering state 77
+Reducing stack 0 by rule 1049 (line 2537):
+   $1 = token simple_identifier (1.1: )
+-> $$ = nterm identifier (1.1: )
+Entering state 1375
+Reading a token
+Next token is token ',' (1.1: )
+Reducing stack 0 by rule 463 (line 1236):
+   $1 = nterm identifier (1.1: )
+-> $$ = nterm port_list (1.1: )
+Entering state 1374
+Next token is token ',' (1.1: )
+Shifting token ',' (1.1: )
+Entering state 1627
+Reading a token
+Next token is token simple_identifier (1.1: )
+Shifting token simple_identifier (1.1: )
+Entering state 77
+Reducing stack 0 by rule 1049 (line 2537):
+   $1 = token simple_identifier (1.1: )
+-> $$ = nterm identifier (1.1: )
+Entering state 1798
+Reducing stack 0 by rule 462 (line 1234):
+   $1 = nterm port_list (1.1: )
+   $2 = token ',' (1.1: )
+   $3 = nterm identifier (1.1: )
+-> $$ = nterm port_list (1.1: )
+Entering state 1374
+Reading a token
+Next token is token ')' (1.1: )
+Shifting token ')' (1.1: )
+Entering state 1628
+Reducing stack 0 by rule 461 (line 1230):
+   $1 = token '(' (1.1: )
+   $2 = nterm port_list (1.1: )
+   $3 = token ')' (1.1: )
+-> $$ = nterm list_of_ports (1.1: )
+Entering state 1312
+Reading a token
+Next token is token ';' (1.1: )
+Shifting token ';' (1.1: )
+Entering state 1582
+Reducing stack 0 by rule 13 (line 175):
+   $1 = nterm module_keyword (1.1: )
+   $2 = nterm lifetime_optional (1.1: )
+   $3 = nterm identifier (1.1: )
+   $4 = nterm package_import_declaration_list (1.1: )
+   $5 = nterm parameter_port_list_optional (1.1: )
+   $6 = nterm list_of_ports (1.1: )
+   $7 = token ';' (1.1: )
+-> $$ = nterm module_nonansi_header (1.1: )
+Entering state 84
+Reducing stack 0 by rule 54 (line 265):
+-> $$ = nterm module_item_list (1.1: )
+Entering state 169
+Reading a token
+Next token is token TIMEUNIT (1.1: )
+Shifting token TIMEUNIT (1.1: )
+Entering state 1
+Reading a token
+Next token is token unsigned_number (1.1: )
+Shifting token unsigned_number (1.1: )
+Entering state 6
+Reading a token
+Next token is token PS (1.1: )
+Shifting token PS (1.1: )
+Entering state 12
+Reducing stack 0 by rule 1045 (line 2527):
+   $1 = token PS (1.1: )
+-> $$ = nterm time_unit (1.1: )
+Entering state 18
+Reducing stack 0 by rule 877 (line 2205):
+   $1 = token unsigned_number (1.1: )
+   $2 = nterm time_unit (1.1: )
+-> $$ = nterm time_literal (1.1: )
+Entering state 8
+Reading a token
+Next token is token TOK_DIV (1.1: )
+Shifting token TOK_DIV (1.1: )
+Entering state 20
+Reading a token
+Next token is token unsigned_number (1.1: )
+Shifting token unsigned_number (1.1: )
+Entering state 6
+Reading a token
+Next token is token PS (1.1: )
+Shifting token PS (1.1: )
+Entering state 12
+Reducing stack 0 by rule 1045 (line 2527):
+   $1 = token PS (1.1: )
+-> $$ = nterm time_unit (1.1: )
+Entering state 18
+Reducing stack 0 by rule 877 (line 2205):
+   $1 = token unsigned_number (1.1: )
+   $2 = nterm time_unit (1.1: )
+-> $$ = nterm time_literal (1.1: )
+Entering state 124
+Reading a token
+Next token is token ';' (1.1: )
+Shifting token ';' (1.1: )
+Entering state 205
+Reducing stack 0 by rule 873 (line 2194):
+   $1 = token TIMEUNIT (1.1: )
+   $2 = nterm time_literal (1.1: )
+   $3 = token TOK_DIV (1.1: )
+   $4 = nterm time_literal (1.1: )
+   $5 = token ';' (1.1: )
+-> $$ = nterm timeunits_declaration (1.1: )
+Entering state 329
+Reducing stack 0 by rule 66 (line 286):
+   $1 = nterm timeunits_declaration (1.1: )
+-> $$ = nterm non_port_module_item (1.1: )
+Entering state 284
+Reducing stack 0 by rule 58 (line 275):
+   $1 = nterm non_port_module_item (1.1: )
+-> $$ = nterm module_item (1.1: )
+Entering state 283
+Reducing stack 0 by rule 53 (line 264):
+   $1 = nterm module_item_list (1.1: )
+   $2 = nterm module_item (1.1: )
+-> $$ = nterm module_item_list (1.1: )
+Entering state 169
+Reading a token
+Next token is token TIMEUNIT (1.1: )
+Shifting token TIMEUNIT (1.1: )
+Entering state 1
+Reading a token
+Next token is token unsigned_number (1.1: )
+Shifting token unsigned_number (1.1: )
+Entering state 6
+Reading a token
+Next token is token NS (1.1: )
+Shifting token NS (1.1: )
+Entering state 15
+Reducing stack 0 by rule 1044 (line 2526):
+   $1 = token NS (1.1: )
+-> $$ = nterm time_unit (1.1: )
+Entering state 18
+Reducing stack 0 by rule 877 (line 2205):
+   $1 = token unsigned_number (1.1: )
+   $2 = nterm time_unit (1.1: )
+-> $$ = nterm time_literal (1.1: )
+Entering state 8
+Reading a token
+Next token is token ';' (1.1: )
+Shifting token ';' (1.1: )
+Entering state 21
+Reading a token
+Next token is token TIMEPRECISION (1.1: )
+Shifting token TIMEPRECISION (1.1: )
+Entering state 125
+Reading a token
+Next token is token unsigned_number (1.1: )
+Shifting token unsigned_number (1.1: )
+Entering state 6
+Reading a token
+Next token is token NS (1.1: )
+Shifting token NS (1.1: )
+Entering state 15
+Reducing stack 0 by rule 1044 (line 2526):
+   $1 = token NS (1.1: )
+-> $$ = nterm time_unit (1.1: )
+Entering state 18
+Reducing stack 0 by rule 877 (line 2205):
+   $1 = token unsigned_number (1.1: )
+   $2 = nterm time_unit (1.1: )
+-> $$ = nterm time_literal (1.1: )
+Entering state 206
+Reading a token
+Next token is token ';' (1.1: )
+Shifting token ';' (1.1: )
+Entering state 444
+Reducing stack 0 by rule 875 (line 2198):
+   $1 = token TIMEUNIT (1.1: )
+   $2 = nterm time_literal (1.1: )
+   $3 = token ';' (1.1: )
+   $4 = token TIMEPRECISION (1.1: )
+   $5 = nterm time_literal (1.1: )
+   $6 = token ';' (1.1: )
+-> $$ = nterm timeunits_declaration (1.1: )
+Entering state 329
+Reducing stack 0 by rule 66 (line 286):
+   $1 = nterm timeunits_declaration (1.1: )
+-> $$ = nterm non_port_module_item (1.1: )
+Entering state 284
+Reducing stack 0 by rule 58 (line 275):
+   $1 = nterm non_port_module_item (1.1: )
+-> $$ = nterm module_item (1.1: )
+Entering state 283
+Reducing stack 0 by rule 53 (line 264):
+   $1 = nterm module_item_list (1.1: )
+   $2 = nterm module_item (1.1: )
+-> $$ = nterm module_item_list (1.1: )
+Entering state 169
+Reading a token
+Next token is token LOGIC (1.1: )
+Shifting token LOGIC (1.1: )
+Entering state 53
+Reducing stack 0 by rule 502 (line 1359):
+   $1 = token LOGIC (1.1: )
+-> $$ = nterm integer_vector_type (1.1: )
+Entering state 98
+Reading a token
+Next token is token '[' (1.1: )
+Reducing stack 0 by rule 491 (line 1287):
+-> $$ = nterm signing_optional (1.1: )
+Entering state 182
+Next token is token '[' (1.1: )
+Shifting token '[' (1.1: )
+Entering state 194
+Reading a token
+Next token is token unsigned_number (1.1: )
+Shifting token unsigned_number (1.1: )
+Entering state 396
+Reading a token
+Next token is token ':' (1.1: )
+Reducing stack 0 by rule 881 (line 2217):
+   $1 = token unsigned_number (1.1: )
+-> $$ = nterm primary_literal (1.1: )
+Entering state 417
+Next token is token ':' (1.1: )
+Reducing stack 0 by rule 896 (line 2265):
+   $1 = nterm primary_literal (1.1: )
+-> $$ = nterm primary (1.1: )
+Entering state 421
+Reducing stack 0 by rule 966 (line 2405):
+   $1 = nterm primary (1.1: )
+-> $$ = nterm expression (1.1: )
+Entering state 435
+Next token is token ':' (1.1: )
+Shifting token ':' (1.1: )
+Entering state 735
+Reading a token
+Next token is token unsigned_number (1.1: )
+Shifting token unsigned_number (1.1: )
+Entering state 396
+Reading a token
+Next token is token ']' (1.1: )
+Reducing stack 0 by rule 881 (line 2217):
+   $1 = token unsigned_number (1.1: )
+-> $$ = nterm primary_literal (1.1: )
+Entering state 417
+Next token is token ']' (1.1: )
+Reducing stack 0 by rule 896 (line 2265):
+   $1 = nterm primary_literal (1.1: )
+-> $$ = nterm primary (1.1: )
+Entering state 421
+Reducing stack 0 by rule 966 (line 2405):
+   $1 = nterm primary (1.1: )
+-> $$ = nterm expression (1.1: )
+Entering state 1063
+Next token is token ']' (1.1: )
+Reducing stack 0 by rule 954 (line 2380):
+   $1 = nterm expression (1.1: )
+   $2 = token ':' (1.1: )
+   $3 = nterm expression (1.1: )
+-> $$ = nterm part_select_range (1.1: )
+Entering state 434
+Next token is token ']' (1.1: )
+Shifting token ']' (1.1: )
+Entering state 702
+Reducing stack 0 by rule 499 (line 1307):
+   $1 = token '[' (1.1: )
+   $2 = nterm part_select_range (1.1: )
+   $3 = token ']' (1.1: )
+-> $$ = nterm packed_dimension (1.1: )
+Entering state 197
+Reducing stack 0 by rule 497 (line 1302):
+   $1 = nterm packed_dimension (1.1: )
+-> $$ = nterm packed_dimension_list (1.1: )
+Entering state 196
+Reading a token
+Next token is token simple_identifier (1.1: )
+Reducing stack 0 by rule 492 (line 1291):
+   $1 = nterm packed_dimension_list (1.1: )
+-> $$ = nterm packed_dimension_list_optional (1.1: )
+Entering state 380
+Reducing stack 0 by rule 478 (line 1265):
+   $1 = nterm integer_vector_type (1.1: )
+   $2 = nterm signing_optional (1.1: )
+   $3 = nterm packed_dimension_list_optional (1.1: )
+-> $$ = nterm data_type_no_identifier (1.1: )
+Entering state 96
+Reducing stack 0 by rule 464 (line 1245):
+   $1 = nterm data_type_no_identifier (1.1: )
+-> $$ = nterm data_type (1.1: )
+Entering state 327
+Next token is token simple_identifier (1.1: )
+Shifting token simple_identifier (1.1: )
+Entering state 77
+Reducing stack 0 by rule 1049 (line 2537):
+   $1 = token simple_identifier (1.1: )
+-> $$ = nterm identifier (1.1: )
+Entering state 618
+Reading a token
+Next token is token ';' (1.1: )
+Reducing stack 0 by rule 435 (line 1175):
+-> $$ = nterm variable_dimension_list_optional (1.1: )
+Entering state 372
+Next token is token ';' (1.1: )
+Reducing stack 0 by rule 855 (line 2118):
+   $1 = nterm identifier (1.1: )
+   $2 = nterm variable_dimension_list_optional (1.1: )
+-> $$ = nterm variable_decl_assignment (1.1: )
+Entering state 179
+Reducing stack 0 by rule 853 (line 2113):
+   $1 = nterm variable_decl_assignment (1.1: )
+-> $$ = nterm variable_decl_assignment_list (1.1: )
+Entering state 178
+Next token is token ';' (1.1: )
+Shifting token ';' (1.1: )
+Entering state 370
+Reducing stack 0 by rule 836 (line 2078):
+   $1 = nterm data_type (1.1: )
+   $2 = nterm variable_decl_assignment_list (1.1: )
+   $3 = token ';' (1.1: )
+-> $$ = nterm data_declaration (1.1: )
+Entering state 111
+Reducing stack 0 by rule 509 (line 1382):
+   $1 = nterm data_declaration (1.1: )
+-> $$ = nterm package_or_generate_item_declaration (1.1: )
+Entering state 328
+Reducing stack 0 by rule 389 (line 1064):
+   $1 = nterm package_or_generate_item_declaration (1.1: )
+-> $$ = nterm module_or_generate_item_declaration (1.1: )
+Entering state 318
+Reducing stack 0 by rule 156 (line 513):
+   $1 = nterm module_or_generate_item_declaration (1.1: )
+-> $$ = nterm module_common_item (1.1: )
+Entering state 293
+Reducing stack 0 by rule 155 (line 508):
+   $1 = nterm module_common_item (1.1: )
+-> $$ = nterm module_or_generate_item (1.1: )
+Entering state 292
+Reducing stack 0 by rule 60 (line 280):
+   $1 = nterm module_or_generate_item (1.1: )
+-> $$ = nterm non_port_module_item (1.1: )
+Entering state 284
+Reducing stack 0 by rule 58 (line 275):
+   $1 = nterm non_port_module_item (1.1: )
+-> $$ = nterm module_item (1.1: )
+Entering state 283
+Reducing stack 0 by rule 53 (line 264):
+   $1 = nterm module_item_list (1.1: )
+   $2 = nterm module_item (1.1: )
+-> $$ = nterm module_item_list (1.1: )
+Entering state 169
+Reading a token
+Next token is token LOGIC (1.1: )
+Shifting token LOGIC (1.1: )
+Entering state 53
+Reducing stack 0 by rule 502 (line 1359):
+   $1 = token LOGIC (1.1: )
+-> $$ = nterm integer_vector_type (1.1: )
+Entering state 98
+Reading a token
+Next token is token '[' (1.1: )
+Reducing stack 0 by rule 491 (line 1287):
+-> $$ = nterm signing_optional (1.1: )
+Entering state 182
+Next token is token '[' (1.1: )
+Shifting token '[' (1.1: )
+Entering state 194
+Reading a token
+Next token is token unsigned_number (1.1: )
+Shifting token unsigned_number (1.1: )
+Entering state 396
+Reading a token
+Next token is token ':' (1.1: )
+Reducing stack 0 by rule 881 (line 2217):
+   $1 = token unsigned_number (1.1: )
+-> $$ = nterm primary_literal (1.1: )
+Entering state 417
+Next token is token ':' (1.1: )
+Reducing stack 0 by rule 896 (line 2265):
+   $1 = nterm primary_literal (1.1: )
+-> $$ = nterm primary (1.1: )
+Entering state 421
+Reducing stack 0 by rule 966 (line 2405):
+   $1 = nterm primary (1.1: )
+-> $$ = nterm expression (1.1: )
+Entering state 435
+Next token is token ':' (1.1: )
+Shifting token ':' (1.1: )
+Entering state 735
+Reading a token
+Next token is token unsigned_number (1.1: )
+Shifting token unsigned_number (1.1: )
+Entering state 396
+Reading a token
+Next token is token ']' (1.1: )
+Reducing stack 0 by rule 881 (line 2217):
+   $1 = token unsigned_number (1.1: )
+-> $$ = nterm primary_literal (1.1: )
+Entering state 417
+Next token is token ']' (1.1: )
+Reducing stack 0 by rule 896 (line 2265):
+   $1 = nterm primary_literal (1.1: )
+-> $$ = nterm primary (1.1: )
+Entering state 421
+Reducing stack 0 by rule 966 (line 2405):
+   $1 = nterm primary (1.1: )
+-> $$ = nterm expression (1.1: )
+Entering state 1063
+Next token is token ']' (1.1: )
+Reducing stack 0 by rule 954 (line 2380):
+   $1 = nterm expression (1.1: )
+   $2 = token ':' (1.1: )
+   $3 = nterm expression (1.1: )
+-> $$ = nterm part_select_range (1.1: )
+Entering state 434
+Next token is token ']' (1.1: )
+Shifting token ']' (1.1: )
+Entering state 702
+Reducing stack 0 by rule 499 (line 1307):
+   $1 = token '[' (1.1: )
+   $2 = nterm part_select_range (1.1: )
+   $3 = token ']' (1.1: )
+-> $$ = nterm packed_dimension (1.1: )
+Entering state 197
+Reducing stack 0 by rule 497 (line 1302):
+   $1 = nterm packed_dimension (1.1: )
+-> $$ = nterm packed_dimension_list (1.1: )
+Entering state 196
+Reading a token
+Next token is token simple_identifier (1.1: )
+Reducing stack 0 by rule 492 (line 1291):
+   $1 = nterm packed_dimension_list (1.1: )
+-> $$ = nterm packed_dimension_list_optional (1.1: )
+Entering state 380
+Reducing stack 0 by rule 478 (line 1265):
+   $1 = nterm integer_vector_type (1.1: )
+   $2 = nterm signing_optional (1.1: )
+   $3 = nterm packed_dimension_list_optional (1.1: )
+-> $$ = nterm data_type_no_identifier (1.1: )
+Entering state 96
+Reducing stack 0 by rule 464 (line 1245):
+   $1 = nterm data_type_no_identifier (1.1: )
+-> $$ = nterm data_type (1.1: )
+Entering state 327
+Next token is token simple_identifier (1.1: )
+Shifting token simple_identifier (1.1: )
+Entering state 77
+Reducing stack 0 by rule 1049 (line 2537):
+   $1 = token simple_identifier (1.1: )
+-> $$ = nterm identifier (1.1: )
+Entering state 618
+Reading a token
+Next token is token ';' (1.1: )
+Reducing stack 0 by rule 435 (line 1175):
+-> $$ = nterm variable_dimension_list_optional (1.1: )
+Entering state 372
+Next token is token ';' (1.1: )
+Reducing stack 0 by rule 855 (line 2118):
+   $1 = nterm identifier (1.1: )
+   $2 = nterm variable_dimension_list_optional (1.1: )
+-> $$ = nterm variable_decl_assignment (1.1: )
+Entering state 179
+Reducing stack 0 by rule 853 (line 2113):
+   $1 = nterm variable_decl_assignment (1.1: )
+-> $$ = nterm variable_decl_assignment_list (1.1: )
+Entering state 178
+Next token is token ';' (1.1: )
+Shifting token ';' (1.1: )
+Entering state 370
+Reducing stack 0 by rule 836 (line 2078):
+   $1 = nterm data_type (1.1: )
+   $2 = nterm variable_decl_assignment_list (1.1: )
+   $3 = token ';' (1.1: )
+-> $$ = nterm data_declaration (1.1: )
+Entering state 111
+Reducing stack 0 by rule 509 (line 1382):
+   $1 = nterm data_declaration (1.1: )
+-> $$ = nterm package_or_generate_item_declaration (1.1: )
+Entering state 328
+Reducing stack 0 by rule 389 (line 1064):
+   $1 = nterm package_or_generate_item_declaration (1.1: )
+-> $$ = nterm module_or_generate_item_declaration (1.1: )
+Entering state 318
+Reducing stack 0 by rule 156 (line 513):
+   $1 = nterm module_or_generate_item_declaration (1.1: )
+-> $$ = nterm module_common_item (1.1: )
+Entering state 293
+Reducing stack 0 by rule 155 (line 508):
+   $1 = nterm module_common_item (1.1: )
+-> $$ = nterm module_or_generate_item (1.1: )
+Entering state 292
+Reducing stack 0 by rule 60 (line 280):
+   $1 = nterm module_or_generate_item (1.1: )
+-> $$ = nterm non_port_module_item (1.1: )
+Entering state 284
+Reducing stack 0 by rule 58 (line 275):
+   $1 = nterm non_port_module_item (1.1: )
+-> $$ = nterm module_item (1.1: )
+Entering state 283
+Reducing stack 0 by rule 53 (line 264):
+   $1 = nterm module_item_list (1.1: )
+   $2 = nterm module_item (1.1: )
+-> $$ = nterm module_item_list (1.1: )
+Entering state 169
+Reading a token
+Next token is token ASSIGN (1.1: )
+Shifting token ASSIGN (1.1: )
+Entering state 271
+Reading a token
+Next token is token simple_identifier (1.1: )
+Shifting token simple_identifier (1.1: )
+Entering state 77
+Reducing stack 0 by rule 1049 (line 2537):
+   $1 = token simple_identifier (1.1: )
+-> $$ = nterm identifier (1.1: )
+Entering state 162
+Reading a token
+Next token is token '=' (1.1: )
+Reducing stack 0 by rule 429 (line 1160):
+-> $$ = nterm unpacked_dimension_list_optional (1.1: )
+Entering state 202
+Reducing stack 0 by rule 953 (line 2376):
+   $1 = nterm identifier (1.1: )
+   $2 = nterm unpacked_dimension_list_optional (1.1: )
+-> $$ = nterm hierarchical_identifier (1.1: )
+Entering state 533
+Next token is token '=' (1.1: )
+Reducing stack 0 by rule 1015 (line 2467):
+   $1 = nterm hierarchical_identifier (1.1: )
+-> $$ = nterm lvalue (1.1: )
+Entering state 607
+Next token is token '=' (1.1: )
+Shifting token '=' (1.1: )
+Entering state 948
+Reading a token
+Next token is token simple_identifier (1.1: )
+Shifting token simple_identifier (1.1: )
+Entering state 77
+Reducing stack 0 by rule 1049 (line 2537):
+   $1 = token simple_identifier (1.1: )
+-> $$ = nterm identifier (1.1: )
+Entering state 438
+Reading a token
+Next token is token ';' (1.1: )
+Reducing stack 0 by rule 429 (line 1160):
+-> $$ = nterm unpacked_dimension_list_optional (1.1: )
+Entering state 202
+Reducing stack 0 by rule 953 (line 2376):
+   $1 = nterm identifier (1.1: )
+   $2 = nterm unpacked_dimension_list_optional (1.1: )
+-> $$ = nterm hierarchical_identifier (1.1: )
+Entering state 433
+Next token is token ';' (1.1: )
+Reducing stack 0 by rule 897 (line 2266):
+   $1 = nterm hierarchical_identifier (1.1: )
+-> $$ = nterm primary (1.1: )
+Entering state 421
+Reducing stack 0 by rule 966 (line 2405):
+   $1 = nterm primary (1.1: )
+-> $$ = nterm expression (1.1: )
+Entering state 1277
+Next token is token ';' (1.1: )
+Reducing stack 0 by rule 773 (line 1946):
+   $1 = nterm lvalue (1.1: )
+   $2 = token '=' (1.1: )
+   $3 = nterm expression (1.1: )
+-> $$ = nterm variable_assignment (1.1: )
+Entering state 606
+Reducing stack 0 by rule 704 (line 1787):
+   $1 = nterm variable_assignment (1.1: )
+-> $$ = nterm variable_assignment_list (1.1: )
+Entering state 605
+Next token is token ';' (1.1: )
+Shifting token ';' (1.1: )
+Entering state 947
+Reducing stack 0 by rule 356 (line 980):
+   $1 = token ASSIGN (1.1: )
+   $2 = nterm variable_assignment_list (1.1: )
+   $3 = token ';' (1.1: )
+-> $$ = nterm continuous_assign (1.1: )
+Entering state 314
+Reducing stack 0 by rule 160 (line 517):
+   $1 = nterm continuous_assign (1.1: )
+-> $$ = nterm module_common_item (1.1: )
+Entering state 293
+Reducing stack 0 by rule 155 (line 508):
+   $1 = nterm module_common_item (1.1: )
+-> $$ = nterm module_or_generate_item (1.1: )
+Entering state 292
+Reducing stack 0 by rule 60 (line 280):
+   $1 = nterm module_or_generate_item (1.1: )
+-> $$ = nterm non_port_module_item (1.1: )
+Entering state 284
+Reducing stack 0 by rule 58 (line 275):
+   $1 = nterm non_port_module_item (1.1: )
+-> $$ = nterm module_item (1.1: )
+Entering state 283
+Reducing stack 0 by rule 53 (line 264):
+   $1 = nterm module_item_list (1.1: )
+   $2 = nterm module_item (1.1: )
+-> $$ = nterm module_item_list (1.1: )
+Entering state 169
+Reading a token
+Next token is token ENDMODULE (1.1: )
+Shifting token ENDMODULE (1.1: )
+Entering state 251
+Reading a token
+Next token is token ':' (1.1: )
+Shifting token ':' (1.1: )
+Entering state 494
+Reading a token
+Next token is token simple_identifier (1.1: )
+Shifting token simple_identifier (1.1: )
+Entering state 77
+Reducing stack 0 by rule 1049 (line 2537):
+   $1 = token simple_identifier (1.1: )
+-> $$ = nterm identifier (1.1: )
+Entering state 843
+Reducing stack 0 by rule 867 (line 2147):
+   $1 = token ':' (1.1: )
+   $2 = nterm identifier (1.1: )
+-> $$ = nterm block_end_identifier_optional (1.1: )
+Entering state 495
+Reducing stack 0 by rule 9 (line 168):
+   $1 = nterm module_nonansi_header (1.1: )
+   $2 = nterm module_item_list (1.1: )
+   $3 = token ENDMODULE (1.1: )
+   $4 = nterm block_end_identifier_optional (1.1: )
+-> $$ = nterm module_declaration (1.1: )
+Entering state 83
+Reducing stack 0 by rule 5 (line 159):
+   $1 = nterm module_declaration (1.1: )
+-> $$ = nterm description (1.1: )
+Entering state 82
+Reducing stack 0 by rule 2 (line 148):
+   $1 = nterm description_list (1.1: )
+   $2 = nterm description (1.1: )
+-> $$ = nterm description_list (1.1: )
+Entering state 11
+Reading a token
+Now at end of input.
+Reducing stack 0 by rule 1 (line 144):
+   $1 = nterm timeunits_declaration_optional (1.1: )
+   $2 = nterm description_list (1.1: )
+-> $$ = nterm source_text (1.1: )
+Entering state 3
+Now at end of input.
+Shifting token "end of file" (1.1: )
+Entering state 10
+Cleanup: popping token "end of file" (1.1: )
+Cleanup: popping nterm source_text (1.1: )

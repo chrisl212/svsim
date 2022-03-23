@@ -1,7 +1,8 @@
-TARGET			= svsim
+TARGET			= ./svsim
 
 SRCDIR			= src
 BUILDDIR		= build
+TESTDIR			= tests
 
 LEX				= flex
 YACC			= bison
@@ -15,6 +16,8 @@ LSRC			= $(shell find $(SRCDIR) -iname \*.l)
 LOBJ			= $(patsubst $(SRCDIR)/%.l, $(BUILDDIR)/%.yy.c, $(LSRC))
 YSRC			= $(shell find $(SRCDIR) -iname \*.y)
 YOBJ			= $(patsubst $(SRCDIR)/%.y, $(BUILDDIR)/%.tab.c, $(YSRC))
+TESTIN			= $(shell find $(TESTDIR) -iname \*.sv)
+TESTOUT			= $(patsubst $(TESTDIR)/%.sv, $(TESTDIR)/%.out, $(TESTIN))
 
 .PHONY				: all clean
 
@@ -30,5 +33,8 @@ $(BUILDDIR)/%.yy.c	: $(SRCDIR)/%.l $(YOBJ)
 $(BUILDDIR)/%.tab.c	: $(SRCDIR)/%.y
 	mkdir -p $(@D)
 	$(YACC) --color=always -v -d $< -o $@
+test				: $(TESTOUT)
+$(TESTDIR)/%.out	: $(TESTDIR)/%.sv $(TARGET)
+	@cat $< | $(TARGET) > $@ 2>&1 && echo "\033[0;32mTest $< passed\033[0m" || echo "\033[0;31mTest $< failed\033[0m"
 clean				:
-	rm -rf $(TARGET) $(BUILDDIR) *.dSYM
+	rm -rf $(TARGET) $(BUILDDIR) $(TESTOUT) *.dSYM

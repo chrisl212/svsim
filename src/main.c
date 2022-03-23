@@ -6,9 +6,9 @@
 ast_node_t *root;
 
 int main(int argc, char **argv) {
-    yyparse();
+    int rc = yyparse();
 
     ast_node_print(root);
 
-    return SV_OK;
+    return (rc) ? 1 : SV_OK;
 }

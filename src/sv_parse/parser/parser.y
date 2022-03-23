@@ -17,7 +17,7 @@
     extern ast_node_t *root;
 }
 
-%expect-rr 1
+%expect-rr 2
 %glr-parser
 %define parse.trace
 %define parse.error verbose
@@ -80,7 +80,7 @@
 %token block_identifier class_identifier package_identifier type_identifier ps_identifier_tok
 %token binary_number octal_number hex_number decimal_number unsigned_number fixed_point_number
 %left TOK_LOG_XEQ TOK_LOG_XNEQ TOK_LOG_WEQ TOK_LOG_WNEQ TOK_BIT_SRA TOK_DLY INTERSECT WITHIN
-%left TOK_BIT_SLA TOK_EQUIV TOK_IMP_OVLP TOK_IMP_NON_OVLP TOK_IMP TOK_LOG_AND
+%left TOK_BIT_SLA TOK_EQUIV TOK_IMP_NON_OVLP TOK_IMP_OVLP TOK_IMP TOK_LOG_AND
 %left TOK_LOG_OR TOK_LOG_EQ TOK_LOG_NEQ TOK_LOG_LEQ TOK_LOG_GEQ TOK_BIT_SR OR AND
 %left TOK_BIT_SL TOK_BIT_NAND TOK_BIT_NOR TOK_BIT_XNOR TOK_PWR TOK_PLUS TOK_MINUS TOK_3AMP
 %left TOK_MUL TOK_DIV TOK_MOD TOK_LOG_NOT TOK_LOG_LT TOK_LOG_GT TOK_BIT_AND TOK_BIT_OR
@@ -157,10 +157,10 @@ description
         { $$ = (ast_node_t *)$1; }
 //    | udp_declaration
     | module_declaration
-        { $$ = (ast_node_t *)$1; }
+        { $$ = (ast_node_t *)NULL; }
     | interface_declaration
-    | attribute_instance_list package_item
-    | attribute_instance_list bind_directive
+    | /* attribute_instance_list */ package_item
+    | /* attribute_instance_list */ bind_directive
 //    | config_declaration
     ;
 
@@ -172,12 +172,12 @@ module_declaration
     ;
 
 module_nonansi_header
-    : attribute_instance_list module_keyword lifetime_optional identifier package_import_declaration_list parameter_port_list_optional list_of_ports ';'
-    | attribute_instance_list module_keyword lifetime_optional identifier package_import_declaration_list parameter_port_list_optional '(' '.' TOK_MUL ')' ';'
+    : /* attribute_instance_list */ module_keyword lifetime_optional identifier package_import_declaration_list parameter_port_list_optional list_of_ports ';'
+    | /* attribute_instance_list */ module_keyword lifetime_optional identifier package_import_declaration_list parameter_port_list_optional '(' '.' TOK_MUL ')' ';'
     ;
 
 module_ansi_header
-    : attribute_instance_list module_keyword lifetime_optional identifier package_import_declaration_list parameter_port_list_optional port_declaration_list ';'
+    : /* attribute_instance_list */ module_keyword lifetime_optional identifier package_import_declaration_list parameter_port_list_optional port_declaration_list ';'
     ;
 
 port_declaration_list
@@ -229,20 +229,30 @@ parameter_port_list_optional
 
 parameter_port_list
     : '#' '(' param_assignment_list ')' // FIXME
-    | '#' '(' parameter_port_declaration ')' // FIXME
+    | '#' '(' parameter_port_declaration_list ')' // FIXME
     | '#' '(' ')'
     ;
 
-//parameter_port_declaration_list
-//    : parameter_port_declaration_list ',' parameter_port_declaration
-//    |
-//    ;
+parameter_port_declaration_list
+    : parameter_port_declaration_list ',' parameter_port_declaration
+    | parameter_port_declaration
+    ;
 
 parameter_port_declaration
-    : parameter_declaration
-    | local_parameter_declaration
-    | data_type param_assignment_list
-    | TYPE type_assignment_list
+    //: parameter_declaration
+    //| local_parameter_declaration dont support multiple decls
+    : data_type_or_param param_assignment
+    | PARAMETER TYPE type_assignment
+    | LOCALPARAM TYPE type_assignment
+    | TYPE type_assignment
+    ;
+
+data_type_or_param
+    : data_type
+    | PARAMETER data_type
+//    | PARAMETER need to support implicit types here
+    | LOCALPARAM data_type
+//    | LOCALPARAM
     ;
 
 module_keyword
@@ -265,32 +275,73 @@ module_item
     | non_port_module_item
     ;
 
-// FIXME
 non_port_module_item
     : generate_region
     | module_or_generate_item
     | specify_block
-    | attribute_instance_list specparam_declaration
-//   | program_declaration
+    | /* attribute_instance_list */ specparam_declaration
+    | program_declaration
     | module_declaration
     | interface_declaration
     | timeunits_declaration
     ;
 
+program_declaration
+    : program_nonansi_header timeunits_declaration_optional program_item_list ENDPROGRAM block_end_identifier_optional
+    | program_ansi_header timeunits_declaration_optional non_port_program_item_list ENDPROGRAM block_end_identifier_optional
+    | EXTERN program_nonansi_header
+    | EXTERN program_ansi_header
+    ;
+
+program_nonansi_header
+    : /* attribute_instance_list */ PROGRAM lifetime_optional identifier package_import_declaration_list parameter_port_list_optional list_of_ports ';'
+    | /* attribute_instance_list */ PROGRAM lifetime_optional identifier package_import_declaration_list parameter_port_list_optional '(' '.' TOK_MUL ')' ';'
+    ;
+
+program_ansi_header
+    : /* attribute_instance_list */ PROGRAM lifetime_optional identifier package_import_declaration_list parameter_port_list_optional port_declaration_list ';'
+    ;
+
+non_port_program_item_list
+    : non_port_program_item_list non_port_program_item
+    |
+    ;
+
+program_item_list
+    : program_item_list program_item
+    |
+    ;
+
+program_item
+    : port_declaration ';'
+    | non_port_program_item
+    ;
+
+non_port_program_item
+    : /* attribute_instance_list */ continuous_assign
+    | /* attribute_instance_list */ module_or_generate_item_declaration
+    | /* attribute_instance_list */ initial_construct
+    | /* attribute_instance_list */ final_construct
+    | /* attribute_instance_list */ concurrent_assertion_item
+    | loop_generate_construct
+    | conditional_generate_construct
+    | generate_region
+    ;
+
 interface_declaration
-    : interface_non_ansi_header timeunits_declaration_optional interface_item_list ENDINTERFACE block_end_identifier_optional
-    | interface_ansi_header timeunits_declaration_optional non_port_interface_item_list ENDINTERFACE block_end_identifier_optional
+    : interface_non_ansi_header interface_item_list ENDINTERFACE block_end_identifier_optional
+    | interface_ansi_header non_port_interface_item_list ENDINTERFACE block_end_identifier_optional
     | EXTERN interface_non_ansi_header
     | EXTERN interface_ansi_header
     ;
 
 interface_non_ansi_header
-    : attribute_instance_list INTERFACE lifetime_optional identifier package_import_declaration_list parameter_port_list_optional list_of_ports ';'
-    | attribute_instance_list INTERFACE lifetime_optional identifier package_import_declaration_list parameter_port_list_optional '(' '.' TOK_MUL ')' ';'
+    : /* attribute_instance_list */ INTERFACE lifetime_optional identifier package_import_declaration_list parameter_port_list_optional list_of_ports ';'
+    | /* attribute_instance_list */ INTERFACE lifetime_optional identifier package_import_declaration_list parameter_port_list_optional '(' '.' TOK_MUL ')' ';'
     ;
 
 interface_ansi_header
-    : attribute_instance_list INTERFACE lifetime_optional identifier package_import_declaration_list parameter_port_list_optional port_declaration_list ';'
+    : /* attribute_instance_list */ INTERFACE lifetime_optional identifier package_import_declaration_list parameter_port_list_optional port_declaration_list ';'
     ;
 
 interface_item_list
@@ -303,14 +354,13 @@ non_port_interface_item_list
     |
     ;
 
-// FIXME
 non_port_interface_item
     : generate_region
     | interface_or_generate_item
-//    | program_declaration
+    | program_declaration
     | modport_declaration
     | interface_declaration
-//    | timeunits_declaration
+    | timeunits_declaration
     ;
 
 modport_declaration
@@ -453,12 +503,12 @@ generate_item
 
 module_or_generate_item
     : parameter_override
-//    | attribute_instance_list gate_instantiation FIXME
-//    | attribute_instance_list udp_instantiation
+//    | /* attribute_instance_list */ gate_instantiation FIXME
+//    | /* attribute_instance_list */ udp_instantiation
     | module_common_item
+//    | checker_or_generate_item_declaration covered below in module_common_item
     ;
 
-// FIXME
 module_common_item
     : module_or_generate_item_declaration
     | generic_instantiation
@@ -466,12 +516,24 @@ module_common_item
     | bind_directive
     | continuous_assign
     | net_alias
-    | _INITIAL statement
-    | FINAL statement
+    | initial_construct
+    | final_construct
     | always_keyword statement
     | loop_generate_construct
-    | if_generate_construct
+    | conditional_generate_construct
+    ;
+
+conditional_generate_construct
+    : if_generate_construct
     | case_generate_construct
+    ;
+
+initial_construct
+    : _INITIAL statement
+    ;
+
+final_construct
+    : FINAL statement
     ;
 
 assertion_item
@@ -550,7 +612,7 @@ identifier_property_actual_arg_list
 
 property_actual_arg
     : property_expr
-    | sequence_actual_arg
+//    | sequence_actual_arg
     ;
 
 assertion_item_declaration
@@ -575,8 +637,8 @@ property_port_list
     ;
 
 property_port_item
-    : attribute_instance_list local_input_optional property_formal_type identifier variable_dimension_list_optional '=' property_actual_arg
-    | attribute_instance_list local_input_optional property_formal_type identifier variable_dimension_list_optional
+    : /* attribute_instance_list */ local_input_optional property_formal_type identifier variable_dimension_list_optional '=' property_actual_arg
+    | /* attribute_instance_list */ local_input_optional property_formal_type identifier variable_dimension_list_optional
     ;
 
 local_input_optional
@@ -592,12 +654,11 @@ property_formal_type
 
 property_spec
     : clocking_event DISABLE IFF '(' expression_or_dist ')' property_expr
-    | clocking_event property_expr
+//    | clocking_event property_expr
     | DISABLE IFF '(' expression_or_dist ')' property_expr
     | property_expr
     ;
 
-// FIXME need just sequence_exrp
 property_expr
     : STRONG '(' sequence_expr ')'
     | WEAK '(' sequence_expr ')'
@@ -605,7 +666,7 @@ property_expr
     | NOT property_expr %prec THEN
     | property_expr OR property_expr
     | property_expr AND property_expr
-    // | sequence_expr TOK_IMP property_expr FIXME
+    | sequence_expr TOK_IMP_OVLP property_expr
     | sequence_expr TOK_IMP_NON_OVLP property_expr
     | IF '(' expression_or_dist ')' property_expr ELSE property_expr
     | IF '(' expression_or_dist ')' property_expr %prec THEN
@@ -632,6 +693,7 @@ property_expr
     | REJECT_ON '(' expression_or_dist ')' property_expr %prec THEN
     | SYNC_ACCEPT_ON '(' expression_or_dist ')' property_expr %prec THEN
     | SYNC_REJECT_ON '(' expression_or_dist ')' property_expr %prec THEN
+    | sequence_expr %prec THEN
     // | property_instance
     // | clocking_event property_expr %prec THEN
     ;
@@ -654,7 +716,7 @@ expression_or_dist_list
 
 expression_or_dist
     : expression DIST '{' dist_list '}'
-    | expression
+    | expression %prec THEN
     ;
 
 dist_list
@@ -728,7 +790,7 @@ sequence_match_item_list
     ;
 
 cycle_delay_range
-    //: TOK_DLY primary FIXME
+//    : TOK_DLY primary FIXME
     : TOK_DLY '[' part_select_range ']'
     | TOK_DLY '[' TOK_MUL ']'
     | TOK_DLY '[' TOK_PLUS ']'
@@ -759,7 +821,7 @@ identifier_sequence_actual_arg_list
     ;
 
 sequence_actual_arg
-    : event_expression
+    : event_expression %prec THEN
     | sequence_expr
     ;
 
@@ -909,12 +971,13 @@ net_alias
 
 lvalue_list
     : lvalue_list '=' lvalue
-    | '=' lvalue
+    |
     ;
 
 // FIXME
 continuous_assign
-    : ASSIGN variable_assignment_list ';'
+    : ASSIGN delay_control variable_assignment_list ';'
+    | ASSIGN variable_assignment_list ';'
     ;
 
 bind_directive
@@ -922,7 +985,7 @@ bind_directive
     ;
 
 generic_instantiation
-    : data_type hierarchical_instance_list ';' // FIXME
+    : data_type hierarchical_instance_list ';' // parameters handled in data type
     ;
 
 hierarchical_instance_list
@@ -946,7 +1009,7 @@ ordered_port_connection_list
     ;
 
 ordered_port_connection
-    : attribute_instance_list expression
+    : /* attribute_instance_list */ expression
     ;
 
 named_port_connection_list
@@ -955,9 +1018,9 @@ named_port_connection_list
     ;
 
 named_port_connection
-    : attribute_instance_list '.' identifier '(' expression_optional ')'
-    | attribute_instance_list '.' identifier
-    | attribute_instance_list '.' TOK_MUL
+    : /* attribute_instance_list */ '.' identifier '(' expression_optional ')'
+    | /* attribute_instance_list */ '.' identifier
+    | /* attribute_instance_list */ '.' TOK_MUL
     ;
 
 parameter_value_assignment
@@ -997,12 +1060,15 @@ always_keyword
     | ALWAYS_FF
     ;
 
-// FIXME
 module_or_generate_item_declaration
     : package_or_generate_item_declaration
-    //| genvar_declaration
+    | genvar_declaration
     | clocking_declaration
     | DEFAULT CLOCKING identifier ';'
+    ;
+
+genvar_declaration
+    : GENVAR identifier_list ';'
     ;
 
 clocking_declaration
@@ -1020,7 +1086,7 @@ clocking_item_list
 clocking_item
     : DEFAULT default_skew ';'
     // | clocking_direction clocking_decl_assign_list ';'
-    //| assertion_item_declaration FIXME
+    | assertion_item_declaration
     ;
 
 default_skew
@@ -1059,11 +1125,11 @@ defparam_assignment
     ;
 
 port_declaration
-    : attribute_instance_list inout_declaration
-    | attribute_instance_list input_declaration
-    | attribute_instance_list output_declaration
-    | attribute_instance_list ref_declaration
-    //| attribute_instance_list interface_port_declaration
+    : /* attribute_instance_list */ inout_declaration
+    | /* attribute_instance_list */ input_declaration
+    | /* attribute_instance_list */ output_declaration
+    | /* attribute_instance_list */ ref_declaration
+    | /* attribute_instance_list */ hierarchical_identifier
     ;
 
 inout_declaration
@@ -1182,6 +1248,19 @@ data_type
     | identifier parameter_value_assignment
     ;
 
+data_type_no_param
+    : hierarchical_identifier // only select cases valid
+    | ps_identifier packed_dimension_list_optional
+    | integer_vector_type signing_optional packed_dimension_list_optional
+    | integer_atom_type signing_optional
+    | non_integer_type
+    | STRING
+    | CHANDLE
+    | virtual_interface_type identifier '.' identifier
+    | virtual_interface_type identifier
+    | EVENT
+    ;
+
 data_type_no_identifier
     : integer_vector_type signing_optional packed_dimension_list_optional
     | integer_atom_type signing_optional
@@ -1283,8 +1362,8 @@ integer_vector_type
 
 // FIXME
 package_declaration
-    : attribute_instance_list PACKAGE lifetime_optional identifier ';' timeunits_declaration_optional package_item_list_optional ENDPACKAGE block_end_identifier_optional
-        { $$ = ast_package_new($1, $3, $4, $6, NULL, $9); }
+    : /* attribute_instance_list */ PACKAGE lifetime_optional identifier ';' timeunits_declaration_optional package_item_list_optional ENDPACKAGE block_end_identifier_optional
+        { $$ = ast_package_new(NULL, $2, $3, $5, NULL, $8); }
     ;
 
 package_item_list_optional
@@ -1299,8 +1378,8 @@ package_item
 
 // FIXME
 package_or_generate_item_declaration
-    // : net_declaration
-    : data_declaration
+    : net_declaration
+    | data_declaration
     | task_declaration
     | function_declaration
 //    | checker_declaration
@@ -1313,8 +1392,87 @@ package_or_generate_item_declaration
     | parameter_declaration ';'
 //    | covergroup_declaration
 //    | overload_declaration
-//    | assertion_item_declaration
+    | assertion_item_declaration
     | ';'
+    ;
+
+net_declaration
+    : net_type drive_or_charge_strength_optional vectored_or_scalared_optional data_type_no_param delay3_optional variable_decl_assignment_list ';'
+    | net_type drive_or_charge_strength_optional vectored_or_scalared_optional delay3 variable_decl_assignment_list ';'
+    | net_type drive_or_charge_strength_optional vectored_or_scalared_optional variable_decl_assignment_list ';'
+    // | identifier delay_control variable_decl_assignment_list ';' FIXME need to disambiguate from params
+    | INTERCONNECT signing_optional packed_dimension_list_optional '#' delay_value identifier identifier_unpacked_dimension_list ';'
+    ;
+
+delay3_optional
+    : delay3
+    |
+    ;
+
+delay3
+    : '#' delay_value
+    | '#' '(' mintypmax_expression_list_3 ')'
+    ;
+
+delay2
+    : '#' delay_value
+    | '#' '(' mintypmax_expression_list_2 ')'
+    ;
+
+mintypmax_expression_list_3
+    : mintypmax_expression ',' mintypmax_expression ',' mintypmax_expression
+    | mintypmax_expression_list_2
+    ;
+
+mintypmax_expression_list_2
+    : mintypmax_expression ',' mintypmax_expression
+    | mintypmax_expression
+    ;
+
+identifier_unpacked_dimension_list
+    : identifier_unpacked_dimension_list ',' identifier unpacked_dimension_list_optional
+    | identifier unpacked_dimension_list_optional
+    ;
+
+drive_or_charge_strength_optional
+    : drive_strength
+    | charge_strength
+    |
+    ;
+
+vectored_or_scalared_optional
+    : VECTORED
+    | SCALARED
+    |
+    ;
+
+charge_strength
+    : '(' SMALL ')'
+    | '(' MEDIUM ')'
+    | '(' LARGE ')'
+    ;
+
+drive_strength
+    : '(' strength0 ',' strength1 ')'
+    | '(' strength1 ',' strength0 ')'
+    | '(' strength0 ',' HIGHZ1 ')'
+    | '(' strength1 ',' HIGHZ0 ')'
+    | '(' HIGHZ0 ',' strength1 ')'
+    | '(' HIGHZ1 ',' strength0 ')'
+    ;
+
+strength0
+    : SUPPLY0
+    | STRONG0
+    | PULL0
+    | WEAK0
+    ;
+
+strength1
+    : SUPPLY1
+    | STRONG1
+    | PULL1
+    | WEAK1
     ;
 
 interface_class_declaration
@@ -1474,10 +1632,10 @@ tf_port_list
     ;
 
 tf_port_item
-    : attribute_instance_list tf_port_direction VAR data_type identifier variable_dimension_list_optional equals_expression_optional
-    | attribute_instance_list tf_port_direction VAR data_type equals_expression_optional
-    | attribute_instance_list tf_port_direction data_type identifier variable_dimension_list_optional equals_expression_optional
-    | attribute_instance_list tf_port_direction data_type equals_expression_optional
+    : /* attribute_instance_list */ tf_port_direction VAR data_type identifier variable_dimension_list_optional equals_expression_optional
+    | /* attribute_instance_list */ tf_port_direction VAR data_type equals_expression_optional
+    | /* attribute_instance_list */ tf_port_direction data_type identifier variable_dimension_list_optional equals_expression_optional
+    | /* attribute_instance_list */ tf_port_direction data_type equals_expression_optional
     ;
 
 equals_expression_optional
@@ -1503,9 +1661,9 @@ function_data_type
 
 // FIXME
 statement
-    //: identifier ':' attribute_instance_list statement_item
-    : attribute_instance_list statement_item
-    | attribute_instance_list ';'
+    //: identifier ':' /* attribute_instance_list */ statement_item
+    : /* attribute_instance_list */ statement_item
+    | /* attribute_instance_list */ ';'
     ;
 
 // FIXME
@@ -1811,11 +1969,11 @@ tf_item_declaration
     ;
 
 block_item_declaration
-    : attribute_instance_list data_declaration
-    | attribute_instance_list local_parameter_declaration ';'
-    | attribute_instance_list parameter_declaration ';'
-    | attribute_instance_list overload_declaration
-    | attribute_instance_list let_declaration
+    : /* attribute_instance_list */ data_declaration
+    | /* attribute_instance_list */ local_parameter_declaration ';'
+    | /* attribute_instance_list */ parameter_declaration ';'
+    | /* attribute_instance_list */ overload_declaration
+    | /* attribute_instance_list */ let_declaration
     ;
 
 let_declaration
@@ -1828,10 +1986,10 @@ let_port_list
     ;
 
 let_port_item
-    : attribute_instance_list let_formal_type identifier variable_dimension_list_optional '=' expression
-    | attribute_instance_list let_formal_type identifier variable_dimension_list_optional
-    | attribute_instance_list identifier variable_dimension_list_optional '=' expression
-    | attribute_instance_list identifier variable_dimension_list_optional
+    : /* attribute_instance_list */ let_formal_type identifier variable_dimension_list_optional '=' expression
+    | /* attribute_instance_list */ let_formal_type identifier variable_dimension_list_optional
+    | /* attribute_instance_list */ identifier variable_dimension_list_optional '=' expression
+    | /* attribute_instance_list */ identifier variable_dimension_list_optional
     ;
 
 let_formal_type
@@ -1996,10 +2154,10 @@ lifetime_optional
     ;
 
 attribute_instance_list
-    : attribute_instance_list attribute_instance
+    : /* attribute_instance_list */ attribute_instance
         {
             if (!$$) $$ = ast_node_list_new();
-            ast_node_list_append($$, (ast_node_t *)$2);
+            ast_node_list_append($$, (ast_node_t *)$1);
         }
     |
         { $$ = NULL; }
@@ -2175,8 +2333,8 @@ subroutine_call
     ;
 
 tf_call
-    : ps_or_hierarchical_identifier attribute_instance_list '(' argument_list ')'
-    | implicit_class_handle '.' identifier attribute_instance_list '(' argument_list ')'
+    : ps_or_hierarchical_identifier /* attribute_instance_list */ '(' argument_list ')'
+    | implicit_class_handle '.' identifier /* attribute_instance_list */ '(' argument_list ')'
     ;
 
 implicit_class_handle
@@ -2186,10 +2344,10 @@ implicit_class_handle
     ;
 
 randomize_call
-    : RANDOMIZE attribute_instance_list
-    | RANDOMIZE attribute_instance_list '(' identifier_list ')'
-    | RANDOMIZE attribute_instance_list '(' ')'
-    | RANDOMIZE attribute_instance_list '(' _NULL ')'
+    //: RANDOMIZE attribute_instance_list FIXME
+    : RANDOMIZE /* attribute_instance_list */ '(' identifier_list ')'
+    | RANDOMIZE /* attribute_instance_list */ '(' ')'
+    | RANDOMIZE /* attribute_instance_list */ '(' _NULL ')'
     ;
 
 identifier_list
@@ -2323,17 +2481,22 @@ cond_predicate
 
 expression_or_cond_pattern
     : expression
-    | expression MATCHES pattern
+    | expression MATCHES pattern_no_expression
+    | expression MATCHES expression
     ;
 
-pattern
+pattern_no_expression
     : '.' identifier
     | '.' TOK_MUL
-//    | expression // FIXME
-    | TAGGED identifier pattern
+    | TAGGED identifier pattern_no_expression // expression variant covered in expression
     | TAGGED identifier
     | TOK_SING_QUOT '{' pattern_list '}'
     | TOK_SING_QUOT '{' identifier_pattern_list '}'
+    ;
+
+pattern
+    : pattern_no_expression
+    | expression
     ;
 
 pattern_list

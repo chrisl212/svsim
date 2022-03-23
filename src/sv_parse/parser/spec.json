@@ -1,0 +1,609 @@
+[
+    {
+        "title": "A.1 Source Text",
+        "items": [
+            {
+                "title": "A.1.1 Library source text",
+                "items": [
+                    "library_text",
+                    "library_description_list",
+                    "library_description",
+                    "library_declaration",
+                    "include_statement"
+                ]
+            },
+            {
+                "title": "A.1.2 SystemVerilog source text",
+                "items": [
+                    "source_text",
+                    "decsription",
+                    "description_list",
+                    "module_nonansi_header",
+                    "module_ansi_header",
+                    "module_declaration",
+                    "module_keyword",
+                    "interface_declaration",
+                    "interface_nonansi_header",
+                    "interface_ansi_header",
+                    "program_declaration",
+                    "program_nonansi_header",
+                    "program_ansi_header",
+                    "checker_declaration",
+                    "class_declaration",
+                    "interface_class_type",
+                    "interface_class_declaration",
+                    "interface_class_item",
+                    "interface_class_method",
+                    "package_declaration",
+                    "timeunits_declaration"
+                ]
+            },
+            {
+                "title": "A.1.3 Module parameters and ports",
+                "items": [
+                    "parameter_port_list",
+                    "parameter_port_declaration",
+                    "list_of_ports",
+                    "port_declaration_list",
+                    "port_declaration",
+                    "port",
+                    "port_expression",
+                    "port_reference",
+                    "port_direction",
+                    "net_port_header",
+                    "variable_port_header",
+                    "interface_port_header",
+                    "ansi_port_declaration"
+                ]
+            },
+            {
+                "title": "A.1.4 Module items",
+                "items": [
+                    "elaboration_system_task",
+                    "finish_number",
+                    "module_common_item",
+                    "module_item",
+                    "module_or_generate_item",
+                    "module_or_generate_item_declaration",
+                    "non_port_module_item",
+                    "parameter_override",
+                    "bind_directive",
+                    "bind_target_scope",
+                    "bind_target_instance",
+                    "bind_target_instance_list",
+                    "bind_instantiation",
+                    "generic_instantiation"
+                ]
+            },
+            {
+                "title": "A.1.5 Configuration source text",
+                "items": [
+                    "config_declaration",
+                    "design_statement",
+                    "config_rule_statement",
+                    "default_clause",
+                    "inst_clause",
+                    "inst_name",
+                    "cell_clause",
+                    "liblist_clause",
+                    "use_clause"
+                ]
+            },
+            {
+                "title": "A.1.6 Interface items",
+                "items": [
+                    "interface_or_generate_item",
+                    "extern_tf_declaration",
+                    "interface_item",
+                    "non_port_interface_item"
+                ]
+            },
+            {
+                "title": "A.1.7 Program items",
+                "items": [
+                    "program_item",
+                    "non_port_program_item",
+                    "program_generate_item",
+                ]
+            },
+            {
+                "title": "A.1.8 Checker items",
+                "items": [
+                    "checker_port_list",
+                    "checker_port_item",
+                    "checker_port_direction",
+                    "checker_or_generate_item",
+                    "checker_or_generate_item_declaration",
+                    "checker_generate_item"
+                ]
+            },
+            {
+                "title": "A.1.9 Class items",
+                "items": [
+                    "class_item",
+                    "class_property",
+                    "class_method",
+                    "class_constructor_prototype",
+                    "class_constraint",
+                    "class_item_qualifier",
+                    "property_qualifier",
+                    "random_qualifier",
+                    "method_qualifier",
+                    "method_prototype",
+                    "class_constructor_declaration"
+                ]
+            },
+            {
+                "title": "A.1.10 Constraints",
+                "items": [
+                    "constraint_declaration",
+                    "constraint_block",
+                    "constraint_block_item",
+                    "solve_before_list",
+                    "constraint_primary",
+                    "constraint_expression",
+                    "uniqueness_constraint",
+                    "constraint_set",
+                    "dist_list",
+                    "dist_item",
+                    "dist_weight",
+                    "constraint_prototype",
+                    "constraint_prototype_qualifier",
+                    "extern_constraint_declaration",
+                    "identifier_list"
+                ]
+            },
+            {
+                "title": "A.1.11 Package items",
+                "items": [
+                    "package_item",
+                    "package_or_generate_item_declaration",
+                    "anonymous_program",
+                    "anonymous_program_item"
+                ]
+            }
+        ]
+    },
+    {
+        "title": "A.2 Declarations",
+        "items": [
+            {
+                "title": "A.2.1 Declaration types",
+                "items": [
+                    {
+                        "title": "A.2.1.1 Module parameter declarations",
+                        "items": [
+                            "local_parameter_declaration",
+                            "parameter_declaration",
+                            "specparam_declaration"
+                        ]
+                    },
+                    {
+                        "title": "A.2.1.2 Port declarations",
+                        "items": [
+                            "inout_declaration",
+                            "input_declaration",
+                            "output_declaration",
+                            "interface_port_declaration",
+                            "ref_declaration"
+                        ]
+                    },
+                    {
+                        "title": "A.2.1.3 Type declarations",
+                        "items": [
+                            "data_declaration",
+                            "package_import_declaration",
+                            "package_import_item",
+                            "package_export_declaration",
+                            "genvar_declaration",
+                            "net_declaration",
+                            "type_declaration",
+                            "net_type_declaration",
+                            "lifetime"
+                        ]
+                    }
+                ]
+            },
+            {
+                "title": "A.2.2 Declaration data types",
+                "items": [
+                    {
+                        "title": "A.2.2.1 Net and variable types",
+                        "items": [
+                            "casting_type",
+                            "data_type",
+                            "data_type_or_implicit",
+                            "implicit_data_type",
+                            "enum_base_type",
+                            "enum_name_declaration",
+                            "class_scope",
+                            "class_type",
+                            "integer_type",
+                            "integer_atom_type",
+                            "integer_vector_type",
+                            "non_integer_type",
+                            "net_type",
+                            "net_port_type",
+                            "variable_port_type",
+                            "var_data_type",
+                            "signing",
+                            "simple_type",
+                            "struct_union_member",
+                            "data_type_or_void",
+                            "struct_union",
+                            "type_reference"
+                        ]
+                    },
+                    {
+                        "title": "A.2.2.2 Strengths",
+                        "items": [
+                            "drive_strength",
+                            "strength0",
+                            "strength1",
+                            "charge_strength"
+                        ]
+                    },
+                    {
+                        "title": "A.2.2.3 Delays",
+                        "items": [
+                            "delay3",
+                            "delay2",
+                            "delay_value"
+                        ]
+                    }
+                ]
+            },
+            {
+                "title": "A.2.3 Declaration lists",
+                "items": [
+                    "defparam_assignment_list",
+                    "genvar_identifier_list",
+                    "interface_identifier_list",
+                    "net_decl_assignment_list",
+                    "param_assignment_list",
+                    "port_identifier_list",
+                    "udp_port_identifier_list",
+                    "specparam_assignment_list",
+                    "tf_variable_identifier_list",
+                    "type_assignment_list",
+                    "variable_decl_assignment_list",
+                    "variable_identifier_list",
+                    "variable_port_identifier_list"
+                ]
+            },
+            {
+                "title": "A.2.4 Declaration assignments",
+                "items": [
+                    "defparam_assignment",
+                    "net_decl_assignment",
+                    "param_assignment",
+                    "specparam_assignment",
+                    "type_assignment",
+                    "pulse_control_specparam",
+                    "error_limit_value",
+                    "reject_limit_value",
+                    "limit_value",
+                    "variable_decl_assignment",
+                    "class_new",
+                    "dynamic_array_new"
+                ]
+            },
+            {
+                "title": "A.2.5 Declaration ranges",
+                "items": [
+                    "unpacked_dimension",
+                    "packed_dimension",
+                    "associative_dimension",
+                    "variable_dimension",
+                    "queue_dimension",
+                    "unsized_dimension"
+                ]
+            },
+            {
+                "title": "A.2.6 Function declarations",
+                "items": [
+                    "function_data_type_or_implicit",
+                    "function_declaration",
+                    "function_body_declaration",
+                    "function_prototype",
+                    "dpi_import_export",
+                    "dpi_spec_string",
+                    "dpi_function_import_property",
+                    "dpi_task_import_property",
+                    "dpi_function_proto",
+                    "dpi_task_proto"
+                ]
+            },
+            {
+                "title": "A.2.7 Task declarations",
+                "items": [
+                    "task_declaration",
+                    "task_body_declaration",
+                    "tf_item_declaration",
+                    "tf_port_list",
+                    "tf_port_item",
+                    "tf_port_direction",
+                    "tf_port_declaration",
+                    "task_prototype"
+                ]
+            },
+            {
+                "title": "A.2.8 Block item declarations",
+                "items": [
+                    "block_item_declaration",
+                    "overload_declaration",
+                    "overload_operator",
+                    "overload_proto_formals"
+                ]
+            },
+            {
+                "title": "A.2.9 Interface declarations",
+                "items": [
+                    "modport_declaration",
+                    "modport_item",
+                    "modport_ports_declaration",
+                    "modport_clocking_declaration",
+                    "modport_simple_ports_declaration",
+                    "modport_simple_port",
+                    "modport_tf_ports_declaration",
+                    "modport_tf_port",
+                    "import_export"
+                ]
+            },
+            {
+                "title": "A.2.10 Assertion declarations",
+                "items": [
+                    "concurrent_assertion_item",
+                    "concurrent_assertion_statement",
+                    "assert_property_statement",
+                    "assume_property_statement",
+                    "cover_property_statement",
+                    "expect_property_statement",
+                    "cover_sequence_statement",
+                    "restrict_property_statement",
+                    "property_instance",
+                    "property_argument_list",
+                    "property_actual_arg",
+                    "assertion_item_declaration",
+                    "property_declaration",
+                    "property_port_list",
+                    "property_port_item",
+                    "property_lvar_port_direction",
+                    "property_formal_type",
+                    "property_spec",
+                    "property_expr",
+                    "property_case_item",
+                    "sequence_declaration",
+                    "sequence_port_list",
+                    "sequence_port_item",
+                    "sequence_lvar_port_direction",
+                    "sequence_formal_type",
+                    "sequence_expr",
+                    "cycle_delay_range",
+                    "sequence_method_call",
+                    "sequence_match_item",
+                    "sequence_instance",
+                    "sequence_argument_list",
+                    "sequence_actual_arg",
+                    "boolean_abbrev",
+                    "sequence_abbrev",
+                    "consecutive_repetition",
+                    "non_consecutive_repetition",
+                    "goto_repetition",
+                    "const_or_range_expression",
+                    "cycle_delay_const_range_expression",
+                    "expression_or_dist",
+                    "assertion_variable_declaration",
+                    "let_declaration",
+                    "let_identifier",
+                    "let_port_list",
+                    "let_port_item",
+                    "let_formal_type",
+                    "let_expression",
+                    "let_argument_list",
+                    "let_actual_arg"
+                ]
+            },
+            {
+                "title": "A.2.11 Covergroup declarations",
+                "items": [
+                    "covergroup_declaration",
+                    "covergroup_spec_or_option",
+                    "covergroup_option",
+                    "coverage_spec",
+                    "coverage_event",
+                    "block_event_expression",
+                    "hierarchical_btf_identifier",
+                    "cover_point",
+                    "bins_or_empty",
+                    "bins_or_options",
+                    "bins_keyword",
+                    "trans_list",
+                    "trans_set",
+                    "trans_range_list",
+                    "trans_item",
+                    "repeat_range",
+                    "cover_cross",
+                    "cross_item_list",
+                    "cross_item",
+                    "cross_body",
+                    "cross_body_item",
+                    "bins_selection_or_option",
+                    "bins_selection",
+                    "select_expression",
+                    "select_condition",
+                    "bins_expression",
+                    "covergroup_range_list",
+                    "covergroup_value_range",
+                    "with_covergroup_expression",
+                    "set_covergroup_expression",
+                    "integer_covergroup_expression",
+                    "cross_set_expression",
+                    "covergroup_expression"
+                ]
+            }
+        ]
+    },
+    {
+        "title": "A.3 Primitive instances",
+        "items": [
+            {
+                "title": "A.3.1 Primitive instantiation and instances",
+                "items": [
+                    "gate_instantiation",
+                    "cmos_switch_instance",
+                    "enable_gate_instance",
+                    "mos_switch_instance",
+                    "n_input_gate_instance",
+                    "n_output_gate_instance",
+                    "pass_switch_instance",
+                    "pass_enable_switch_instance",
+                    "pull_gate_instance"
+                ]
+            },
+            {
+                "title": "A.3.2 Primitive strengths",
+                "items": [
+                    "pulldown_strength",
+                    "pullup_strength"
+                ]
+            },
+            {
+                "title": "A.3.3 Primitive terminals",
+                "items": [
+                    "enable_terminal",
+                    "inout_terminal",
+                    "input_terminal",
+                    "ncontrol_terminal",
+                    "output_terminal",
+                    "pcontrol_terminal"
+                ]
+            },
+            {
+                "title": "A.3.4 Primitive gate and switch types",
+                "items": [
+                    "cmos_switchtype",
+                    "enable_gatetype",
+                    "mos_switchtype",
+                    "n_input_gatetype",
+                    "n_output_gatetype",
+                    "pass_en_switchtype",
+                    "pass_switchtype"
+                ]
+            }
+        ]
+    },
+    {
+        "title": "A.4 Instantiations",
+        "items": [
+            {
+                "title": "A.4.1 Instantiation",
+                "items": [
+                    {
+                        "title": "A.4.1.1 Module instantiation",
+                        "items": [
+                            "module_instantiation",
+                            "parameter_value_assignment",
+                            "parameter_assignment_list",
+                            "ordered_parameter_assignment",
+                            "named_parameter_assignment",
+                            "hierarchical_instance",
+                            "name_of_instance",
+                            "port_connection_list",
+                            "ordered_port_connection",
+                            "named_port_connection"
+                        ]
+                    },
+                    {
+                        "title": "A.4.1.2 Interface instantiation",
+                        "items": [
+                            "interface_instantiation"
+                        ]
+                    },
+                    {
+                        "title": "A.4.1.3 Program instantiation",
+                        "items": [
+                            "program_instantiation"
+                        ]
+                    },
+                    {
+                        "title": "A.4.1.4 Checker instantiation",
+                        "items": [
+                            "checker_instantiation",
+                            "checker_port_connection_list",
+                            "ordered_checker_port_connection",
+                            "named_checker_port_connection"
+                        ]
+                    }
+                ]
+            },
+            {
+                "title": "A.4.2 Generated instantiation",
+                "items": [
+                    "generate_region",
+                    "loop_generate_construct",
+                    "genvar_initialization",
+                    "genvar_iteration",
+                    "conditional_generate_construct",
+                    "if_generate_construct",
+                    "case_generate_construct",
+                    "case_generate_item",
+                    "generate_block",
+                    "generate_item"
+                ]
+            }
+        ]
+    },
+    {
+        "title": "A.5 UDP declaration and instantiation",
+        "items": [
+            {
+                "title": "A.5.1 UDP declaration",
+                "items": [
+                    "udp_nonansi_declaration",
+                    "udp_ansi_declaration",
+                    "udp_declaration"
+                ]
+            },
+            {
+                "title": "A.5.2 UDP ports",
+                "items": [
+                    "udp_port_list",
+                    "udp_declaration_port_list",
+                    "udp_port_declaration",
+                    "udp_output_declaration",
+                    "udp_input_declaration",
+                    "udp_reg_declaration"
+                ]
+            },
+            {
+                "title": "A.5.3 UDP body",
+                "items": [
+                    "udp_body",
+                    "combinational_body",
+                    "combinational_entry",
+                    "sequential_body",
+                    "udp_initial_statement",
+                    "init_val",
+                    "sequential_entry",
+                    "seq_input_list",
+                    "level_input_list",
+                    "edge_input_list",
+                    "edge_indicator",
+                    "current_state",
+                    "next_state",
+                    "output_symbol",
+                    "level_symbol",
+                    "edge_symbol"
+                ]
+            },
+            {
+                "title": "A.5.4 UDP instantiation",
+                "items": [
+                    "udp_instantiation",
+                    "udp_instance"
+                ]
+            }
+        ]
+    }
+]
