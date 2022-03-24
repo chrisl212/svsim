@@ -122,15 +122,16 @@ if __name__ == '__main__':
 
     section = format_section(spec, prod)
 
-    section.append('//====================================================================================================\n')
-    section.append(f'// Uncategorized\n')
-    section.append('//====================================================================================================\n')
-    section.append('\n')
-    print('Not found in spec:')
-    for item in prod:
-        print(item)
-        section.extend(prod[item])
+    if len(prod) > 0:
+        section.append('//====================================================================================================\n')
+        section.append(f'// Uncategorized\n')
+        section.append('//====================================================================================================\n')
         section.append('\n')
+        print('Not found in spec:')
+        for item in prod:
+            print(item)
+            section.extend(prod[item])
+            section.append('\n')
 
     yacc[1] = section
 

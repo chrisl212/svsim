@@ -203,6 +203,10 @@
 %type <ast_node> value_range_list mintypmax_expression part_select_range constant_primary implicit_class_handle
 %type <ast_node> lvalue lvalue_list hierarchical_identifier hierarchical_identifier_list identifier_optional
 
+
+%type <ast_node> config_declaration local_parameter_declaration_list config_rule_statement_list design_statement design_hierarchical_identifier_list
+%type <ast_node> config_rule_statement default_clause inst_clause cell_clause liblist_clause use_clause
+
 %%
 
 //====================================================================================================
@@ -236,8 +240,8 @@ description
         { $$ = (ast_node_t *)NULL; }
     | /* attribute_instance_list */ bind_directive
         { $$ = (ast_node_t *)NULL; }
-//    | config_declaration
-//        { $$ = (ast_node_t *)NULL; }
+    | config_declaration
+        { $$ = (ast_node_t *)NULL; }
     ;
 
 description_list
@@ -670,6 +674,78 @@ generic_instantiation
 // A.1.5 Configuration source text
 //====================================================================================================
 
+config_declaration
+    : CONFIG identifier ';' local_parameter_declaration_list design_statement config_rule_statement_list ENDCONFIG block_end_identifier_optional
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+design_statement
+    : DESIGN hierarchical_identifier_list ';'
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+design_hierarchical_identifier_list
+    : design_hierarchical_identifier_list hierarchical_identifier
+        { $$ = (ast_node_t *)NULL; }
+    |
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+config_rule_statement
+    : default_clause liblist_clause ';'
+        { $$ = (ast_node_t *)NULL; }
+    | inst_clause liblist_clause ';'
+        { $$ = (ast_node_t *)NULL; }
+    | inst_clause use_clause ';'
+        { $$ = (ast_node_t *)NULL; }
+    | cell_clause liblist_clause ';'
+        { $$ = (ast_node_t *)NULL; }
+    | cell_clause use_clause ';'
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+config_rule_statement_list
+    : config_rule_statement_list config_rule_statement
+        { $$ = (ast_node_t *)NULL; }
+    |
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+default_clause
+    : DEFAULT
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+inst_clause
+    : INSTANCE hierarchical_identifier
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+cell_clause
+    : CELL hierarchical_identifier
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+liblist_clause
+    : LIBLIST identifier
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+use_clause
+    : USE hierarchical_identifier ':' CONFIG
+        { $$ = (ast_node_t *)NULL; }
+    | USE hierarchical_identifier
+        { $$ = (ast_node_t *)NULL; }
+    | USE named_parameter_assignment_list ':' CONFIG
+        { $$ = (ast_node_t *)NULL; }
+    | USE named_parameter_assignment_list
+        { $$ = (ast_node_t *)NULL; }
+    | USE hierarchical_identifier named_parameter_assignment_list ':' CONFIG
+        { $$ = (ast_node_t *)NULL; }
+    | USE hierarchical_identifier named_parameter_assignment_list
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
 //====================================================================================================
 // A.1.6 Interface items
 //====================================================================================================
@@ -994,6 +1070,13 @@ local_parameter_declaration
     | LOCALPARAM param_assignment_list
         { $$ = (ast_node_t *)NULL; }
     | LOCALPARAM TYPE type_assignment_list
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+local_parameter_declaration_list
+    : local_parameter_declaration_list local_parameter_declaration ';'
+        { $$ = (ast_node_t *)NULL; }
+    |
         { $$ = (ast_node_t *)NULL; }
     ;
 

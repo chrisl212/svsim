@@ -96,7 +96,9 @@
                     "items": [
                         "config_declaration",
                         "design_statement",
+                        "design_hierarchical_identifier_list",
                         "config_rule_statement",
+                        "config_rule_statement_list",
                         "default_clause",
                         "inst_clause",
                         "inst_name",
@@ -202,6 +204,7 @@
                             "title": "A.2.1.1 Module parameter declarations",
                             "items": [
                                 "local_parameter_declaration",
+                                "local_parameter_declaration_list",
                                 "parameter_declaration",
                                 "specparam_declaration"
                             ]
