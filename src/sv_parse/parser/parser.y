@@ -230,16 +230,17 @@ source_text
         { $$ = (ast_node_t *)NULL; }
     ;
 
-// FIXME
 description
-    : package_declaration
-        { $$ = (ast_node_t *)$1; }
-    | udp_declaration
+    : module_declaration
         { $$ = (ast_node_t *)NULL; }
-    | module_declaration
+    | udp_declaration
         { $$ = (ast_node_t *)NULL; }
     | interface_declaration
         { $$ = (ast_node_t *)NULL; }
+    | program_declaration
+        { $$ = (ast_node_t *)NULL; }
+    | package_declaration
+        { $$ = (ast_node_t *)$1; }
     | /* attribute_instance_list */ package_item
         { $$ = (ast_node_t *)NULL; }
     | /* attribute_instance_list */ bind_directive
