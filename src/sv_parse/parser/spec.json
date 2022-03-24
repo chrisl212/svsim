@@ -649,6 +649,8 @@
                         "udp_port_list",
                         "udp_declaration_port_list",
                         "udp_port_declaration",
+                        "udp_port_declaration_list",
+                        "udp_port_declaration_list_optional",
                         "udp_output_declaration",
                         "udp_input_declaration",
                         "udp_reg_declaration"
@@ -660,6 +662,7 @@
                         "udp_body",
                         "combinational_body",
                         "combinational_entry",
+                        "combinational_entry_list",
                         "sequential_body",
                         "udp_initial_statement",
                         "init_val",
@@ -672,6 +675,7 @@
                         "next_state",
                         "output_symbol",
                         "level_symbol",
+                        "level_symbol_list",
                         "edge_symbol"
                     ]
                 },
@@ -679,7 +683,8 @@
                     "title": "A.5.4 UDP instantiation",
                     "items": [
                         "udp_instantiation",
-                        "udp_instance"
+                        "udp_instance",
+                        "udp_instance_list"
                     ]
                 }
             ]

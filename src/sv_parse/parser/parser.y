@@ -202,10 +202,14 @@
 %type <ast_node> param_expression expression_list expression_optional equals_expression_optional value_range
 %type <ast_node> value_range_list mintypmax_expression part_select_range constant_primary implicit_class_handle
 %type <ast_node> lvalue lvalue_list hierarchical_identifier hierarchical_identifier_list identifier_optional
-
-
 %type <ast_node> config_declaration local_parameter_declaration_list config_rule_statement_list design_statement design_hierarchical_identifier_list
 %type <ast_node> config_rule_statement default_clause inst_clause cell_clause liblist_clause use_clause
+%type <ast_node> udp_nonansi_declaration udp_ansi_declaration udp_declaration udp_port_declaration_list udp_port_declaration_list_optional
+%type <ast_node> udp_port_list udp_declaration_port_list udp_port_declaration udp_output_declaration udp_input_declaration
+%type <ast_node> udp_reg_declaration udp_body combinational_body combinational_entry_list combinational_entry
+%type <ast_node> sequential_body seq_input_list level_input_list level_symbol_list edge_input_list
+%type <ast_node> edge_indicator current_state next_state output_symbol level_symbol edge_symbol
+%type <ast_node> udp_instantiation udp_instance udp_instance_list output_terminal input_terminal
 
 %%
 
@@ -230,8 +234,8 @@ source_text
 description
     : package_declaration
         { $$ = (ast_node_t *)$1; }
-//    | udp_declaration
-//        { $$ = (ast_node_t *)NULL; }
+    | udp_declaration
+        { $$ = (ast_node_t *)NULL; }
     | module_declaration
         { $$ = (ast_node_t *)NULL; }
     | interface_declaration
@@ -610,8 +614,8 @@ module_or_generate_item
         { $$ = (ast_node_t *)NULL; }
 //    | /* attribute_instance_list */ gate_instantiation FIXME
 //        { $$ = (ast_node_t *)NULL; }
-//    | /* attribute_instance_list */ udp_instantiation
-//        { $$ = (ast_node_t *)NULL; }
+    | /* attribute_instance_list */ udp_instantiation
+        { $$ = (ast_node_t *)NULL; }
     | module_common_item
         { $$ = (ast_node_t *)NULL; }
 //    | checker_or_generate_item_declaration covered below in module_common_item
@@ -680,7 +684,7 @@ config_declaration
     ;
 
 design_statement
-    : DESIGN hierarchical_identifier_list ';'
+    : DESIGN design_hierarchical_identifier_list ';'
         { $$ = (ast_node_t *)NULL; }
     ;
 
@@ -2535,6 +2539,16 @@ let_formal_type
 // A.3.3 Primitive terminals
 //====================================================================================================
 
+input_terminal
+    : expression
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+output_terminal
+    : lvalue
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
 //====================================================================================================
 // A.3.4 Primitive gate and switch types
 //====================================================================================================
@@ -2761,17 +2775,218 @@ generate_item_list
 // A.5.1 UDP declaration
 //====================================================================================================
 
+udp_nonansi_declaration
+    : /* attribute_instance_list */ PRIMITIVE identifier '(' udp_port_list ')' ';'
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+udp_ansi_declaration
+    : /* attribute_instance_list */ PRIMITIVE identifier '(' udp_declaration_port_list ')' ';'
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+udp_declaration
+    : udp_nonansi_declaration udp_port_declaration_list udp_body ENDPRIMITIVE block_end_identifier_optional
+        { $$ = (ast_node_t *)NULL; }
+    | udp_ansi_declaration udp_body ENDPRIMITIVE block_end_identifier_optional
+        { $$ = (ast_node_t *)NULL; }
+    | EXTERN udp_nonansi_declaration
+        { $$ = (ast_node_t *)NULL; }
+    | EXTERN udp_ansi_declaration
+        { $$ = (ast_node_t *)NULL; }
+    | /* attribute_instance_list */ PRIMITIVE identifier '(' '.' TOK_MUL ')' ';' udp_port_declaration_list_optional udp_body ENDPRIMITIVE block_end_identifier_optional
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
 //====================================================================================================
 // A.5.2 UDP ports
 //====================================================================================================
+
+udp_port_list
+    : identifier ',' identifier ',' identifier
+        { $$ = (ast_node_t *)NULL; }
+    | identifier ',' identifier
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+udp_declaration_port_list
+    : udp_output_declaration ',' udp_input_declaration ',' udp_input_declaration
+        { $$ = (ast_node_t *)NULL; }
+    | udp_output_declaration ',' udp_input_declaration
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+udp_port_declaration
+    : udp_output_declaration ';'
+        { $$ = (ast_node_t *)NULL; }
+    | udp_input_declaration ';'
+        { $$ = (ast_node_t *)NULL; }
+    | udp_reg_declaration ';'
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+udp_port_declaration_list
+    : udp_port_declaration_list udp_port_declaration
+        { $$ = (ast_node_t *)NULL; }
+    | udp_port_declaration
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+udp_port_declaration_list_optional
+    : udp_port_declaration_list_optional udp_port_declaration
+        { $$ = (ast_node_t *)NULL; }
+    |
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+udp_output_declaration
+    : /* attribute_instance_list */ OUTPUT identifier
+        { $$ = (ast_node_t *)NULL; }
+    | /* attribute_instance_list */ OUTPUT REG identifier '=' expression
+        { $$ = (ast_node_t *)NULL; }
+    | /* attribute_instance_list */ OUTPUT REG identifier
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+udp_input_declaration
+    : /* attribute_instance_list */ INPUT identifier // identifier_list FIXME
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+udp_reg_declaration
+    : /* attribute_instance_list */ REG identifier
+        { $$ = (ast_node_t *)NULL; }
+    ;
 
 //====================================================================================================
 // A.5.3 UDP body
 //====================================================================================================
 
+udp_body
+    : combinational_body
+        { $$ = (ast_node_t *)NULL; }
+    | sequential_body
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+combinational_body
+    : TABLE combinational_entry_list ENDTABLE
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+combinational_entry
+    : level_input_list ':' output_symbol ';'
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+combinational_entry_list
+    : combinational_entry_list combinational_entry
+        { $$ = (ast_node_t *)NULL; }
+    | combinational_entry
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+sequential_body
+    : seq_input_list ':' current_state ':' next_state ';'
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+seq_input_list
+    : level_input_list
+        { $$ = (ast_node_t *)NULL; }
+    | edge_input_list
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+level_input_list
+    : level_symbol_list
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+edge_input_list
+    : level_symbol edge_indicator level_symbol
+        { $$ = (ast_node_t *)NULL; }
+    | level_symbol edge_indicator
+        { $$ = (ast_node_t *)NULL; }
+    | edge_indicator level_symbol
+        { $$ = (ast_node_t *)NULL; }
+    | edge_indicator
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+edge_indicator
+    : '(' level_symbol level_symbol ')'
+        { $$ = (ast_node_t *)NULL; }
+    | edge_symbol
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+current_state
+    : level_symbol
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+next_state
+    : output_symbol
+        { $$ = (ast_node_t *)NULL; }
+    | '-'
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+output_symbol
+    : unsigned_number // FIXME
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+level_symbol
+    : unsigned_number // FIXME
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+level_symbol_list
+    : level_symbol_list level_symbol
+        { $$ = (ast_node_t *)NULL; }
+    | level_symbol
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+edge_symbol
+    : identifier // FIXME
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
 //====================================================================================================
 // A.5.4 UDP instantiation
 //====================================================================================================
+
+udp_instantiation
+    : identifier drive_strength delay2 udp_instance_list ';'
+        { $$ = (ast_node_t *)NULL; }
+    | identifier drive_strength udp_instance_list ';'
+        { $$ = (ast_node_t *)NULL; }
+//    | identifier delay2 udp_instance_list ';' // FIXME
+//        { $$ = (ast_node_t *)NULL; }
+//    | identifier udp_instance_list ';' // FIXME
+//        { $$ = (ast_node_t *)NULL; }
+    ;
+
+udp_instance
+    : name_of_instance '(' output_terminal ',' input_terminal ',' input_terminal ')'
+        { $$ = (ast_node_t *)NULL; }
+    | '(' output_terminal ',' input_terminal ',' input_terminal ')'
+        { $$ = (ast_node_t *)NULL; }
+    | name_of_instance '(' output_terminal ',' input_terminal ')'
+        { $$ = (ast_node_t *)NULL; }
+    | '(' output_terminal ',' input_terminal ')'
+        { $$ = (ast_node_t *)NULL; }
+    ;
+
+udp_instance_list
+    : udp_instance_list ',' udp_instance
+        { $$ = (ast_node_t *)NULL; }
+    | udp_instance
+        { $$ = (ast_node_t *)NULL; }
+    ;
 
 //====================================================================================================
 // A.6 Behavioral statements

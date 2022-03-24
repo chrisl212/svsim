@@ -103,12 +103,12 @@ def add_node_types(section: list, prod: dict) -> list:
                 if node in prod:
                     prod.pop(node)
 
-    line = ''
+    line = '%type <ast_node>'
     for i, node in enumerate(prod.keys()):
+        line += f' {node}'
         if i % 5 == 0:
             section.append(line + '\n')
             line = '%type <ast_node>'
-        line += f' {node}'
 
     return section
 
