@@ -32,12 +32,20 @@
                         "program_ansi_header",
                         "checker_declaration",
                         "class_declaration",
+                        "implements_interface_optional",
+                        "extends_class_optional",
+                        "virtual_optional",
                         "interface_class_type",
+                        "interface_class_type_list",
                         "interface_class_declaration",
                         "interface_class_item",
+                        "interface_class_item_list",
                         "interface_class_method",
+                        "interface_class_parameters",
                         "package_declaration",
-                        "timeunits_declaration"
+                        "timeunits_declaration",
+                        "timeunits_declaration_optional",
+                        "block_end_identifier_optional"
                     ]
                 },
                 {
@@ -51,6 +59,7 @@
                         "port_declaration_list",
                         "port_declaration",
                         "port",
+                        "port_list",
                         "port_expression",
                         "port_reference",
                         "port_direction",
@@ -132,6 +141,7 @@
                     "title": "A.1.9 Class items",
                     "items": [
                         "class_item",
+                        "class_item_list",
                         "class_property",
                         "class_method",
                         "class_constructor_prototype",
@@ -140,6 +150,12 @@
                         "property_qualifier",
                         "random_qualifier",
                         "method_qualifier",
+                        "method_qualifier_list",
+                        "class_method_qualifier_list",
+                        "method_variable_qualifier",
+                        "method_variable_qualifier_list",
+                        "variable_qualifier",
+                        "variable_qualifier_list",
                         "method_prototype",
                         "class_constructor_declaration"
                     ]
@@ -168,6 +184,7 @@
                     "title": "A.1.11 Package items",
                     "items": [
                         "package_item",
+                        "package_item_list_optional",
                         "package_or_generate_item_declaration",
                         "anonymous_program",
                         "anonymous_program_item"
@@ -206,12 +223,16 @@
                                 "package_import_declaration",
                                 "package_import_declaration_list",
                                 "package_import_item",
+                                "package_import_item_list",
                                 "package_export_declaration",
                                 "genvar_declaration",
                                 "net_declaration",
+                                "identifier_unpacked_dimension_list",
+                                "vectored_or_scalared_optional",
                                 "type_declaration",
                                 "net_type_declaration",
-                                "lifetime"
+                                "lifetime",
+                                "lifetime_optional"
                             ]
                         }
                     ]
@@ -226,6 +247,9 @@
                                 "data_type",
                                 "data_type_or_implicit",
                                 "data_type_or_param",
+                                "data_type_no_param",
+                                "data_type_no_identifier",
+                                "virtual_interface_type",
                                 "implicit_data_type",
                                 "enum_base_type",
                                 "enum_name_declaration",
@@ -240,6 +264,7 @@
                                 "variable_port_type",
                                 "var_data_type",
                                 "signing",
+                                "signing_optional",
                                 "simple_type",
                                 "struct_union_member",
                                 "data_type_or_void",
@@ -253,14 +278,18 @@
                                 "drive_strength",
                                 "strength0",
                                 "strength1",
-                                "charge_strength"
+                                "charge_strength",
+                                "drive_or_charge_strength_optional"
                             ]
                         },
                         {
                             "title": "A.2.2.3 Delays",
                             "items": [
                                 "delay3",
+                                "delay3_optional",
                                 "delay2",
+                                "mintypmax_expression_list_3",
+                                "mintypmax_expression_list_2",
                                 "delay_value"
                             ]
                         }
@@ -305,9 +334,15 @@
                     "title": "A.2.5 Declaration ranges",
                     "items": [
                         "unpacked_dimension",
+                        "unpacked_dimension_list",
+                        "unpacked_dimension_list_optional",
                         "packed_dimension",
+                        "packed_dimension_list",
+                        "packed_dimension_list_optional",
                         "associative_dimension",
                         "variable_dimension",
+                        "variable_dimension_list",
+                        "variable_dimension_list_optional",
                         "queue_dimension",
                         "unsized_dimension"
                     ]
@@ -318,6 +353,9 @@
                         "function_data_type_or_implicit",
                         "function_declaration",
                         "function_body_declaration",
+                        "function_data_type",
+                        "function_type_name",
+                        "function_block_end_identifier_optional",
                         "function_prototype",
                         "dpi_import_export",
                         "dpi_spec_string",
@@ -333,7 +371,9 @@
                         "task_declaration",
                         "task_body_declaration",
                         "tf_item_declaration",
+                        "tf_item_declaration_list",
                         "tf_port_list",
+                        "tf_port_list_optional",
                         "tf_port_item",
                         "tf_port_direction",
                         "tf_port_declaration",
@@ -344,6 +384,7 @@
                     "title": "A.2.8 Block item declarations",
                     "items": [
                         "block_item_declaration",
+                        "block_item_declaration_list",
                         "overload_declaration",
                         "overload_operator",
                         "overload_proto_formals"
@@ -354,12 +395,15 @@
                     "items": [
                         "modport_declaration",
                         "modport_item",
+                        "modport_item_list",
                         "modport_ports_declaration",
+                        "modport_ports_declaration_list",
                         "modport_clocking_declaration",
                         "modport_simple_ports_declaration",
                         "modport_simple_port",
                         "modport_tf_ports_declaration",
                         "modport_tf_port",
+                        "modport_tf_port_list",
                         "import_export"
                     ]
                 },
@@ -377,15 +421,20 @@
                         "property_instance",
                         "property_argument_list",
                         "property_actual_arg",
+                        "property_actual_arg_list",
+                        "identifier_property_actual_arg_list",
                         "assertion_item_declaration",
                         "property_declaration",
                         "property_port_list",
                         "property_port_item",
+                        "local_input_optional",
+                        "local_direction_optional",
                         "property_lvar_port_direction",
                         "property_formal_type",
                         "property_spec",
                         "property_expr",
                         "property_case_item",
+                        "property_case_item_list",
                         "sequence_declaration",
                         "sequence_port_list",
                         "sequence_port_item",
@@ -395,9 +444,12 @@
                         "cycle_delay_range",
                         "sequence_method_call",
                         "sequence_match_item",
+                        "sequence_match_item_list",
                         "sequence_instance",
                         "sequence_argument_list",
                         "sequence_actual_arg",
+                        "sequence_actual_arg_list",
+                        "identifier_sequence_actual_arg_list",
                         "boolean_abbrev",
                         "sequence_abbrev",
                         "consecutive_repetition",
@@ -406,7 +458,9 @@
                         "const_or_range_expression",
                         "cycle_delay_const_range_expression",
                         "expression_or_dist",
+                        "expression_or_dist_list",
                         "assertion_variable_declaration",
+                        "assertion_variable_declaration_list",
                         "let_declaration",
                         "let_identifier",
                         "let_port_list",
@@ -517,14 +571,20 @@
                             "items": [
                                 "module_instantiation",
                                 "parameter_value_assignment",
+                                "parameter_value_assignment_optional",
                                 "parameter_assignment_list",
                                 "ordered_parameter_assignment",
+                                "ordered_parameter_assignment_list",
                                 "named_parameter_assignment",
+                                "named_parameter_assignment_list",
                                 "hierarchical_instance",
+                                "hierarchical_instance_list",
                                 "name_of_instance",
                                 "port_connection_list",
                                 "ordered_port_connection",
-                                "named_port_connection"
+                                "ordered_port_connection_list",
+                                "named_port_connection",
+                                "named_port_connection_list"
                             ]
                         },
                         {
@@ -561,8 +621,10 @@
                         "if_generate_construct",
                         "case_generate_construct",
                         "case_generate_item",
+                        "case_generate_item_list",
                         "generate_block",
-                        "generate_item"
+                        "generate_item",
+                        "generate_item_list"
                     ]
                 }
             ]
@@ -661,6 +723,8 @@
                     "items": [
                         "statement_or_null",
                         "statement",
+                        "statement_list",
+                        "statement_list_optional",
                         "statement_item",
                         "function_statement",
                         "function_statement_or_null",
@@ -686,7 +750,9 @@
                     "title": "A.6.6 Conditional statements",
                     "items": [
                         "conditional_statement",
+                        "else_if_list",
                         "unique_priority",
+                        "unique_priority_optional",
                         "cond_predicate",
                         "expression_or_cond_pattern",
                         "cond_pattern"
@@ -699,6 +765,7 @@
                         "case_keyword",
                         "case_expression",
                         "case_item",
+                        "case_item_list",
                         "case_pattern_item",
                         "case_inside_item",
                         "case_item_expression",
@@ -710,6 +777,7 @@
                             "title": "A.6.7.1 Patterns",
                             "items": [
                                 "pattern",
+                                "pattern_no_expression",
                                 "pattern_list",
                                 "identifier_pattern_list",
                                 "assignment_pattern",
@@ -731,8 +799,10 @@
                         "loop_statement",
                         "for_initialization",
                         "for_variable_declaration",
+                        "for_variable_declaration_list",
                         "for_step",
                         "for_step_assignment",
+                        "for_step_assignment_list",
                         "loop_variables"
                     ]
                 },
@@ -765,6 +835,7 @@
                         "clocking_declaration",
                         "clocking_event",
                         "clocking_item",
+                        "clocking_item_list",
                         "default_skew",
                         "clocking_direction",
                         "clocking_decl_assign_list",
@@ -803,6 +874,7 @@
                     "items": [
                         "specify_block",
                         "specify_item",
+                        "specify_item_list",
                         "pulsestyle_declaration",
                         "showcancelled_declaration"
                     ]
@@ -908,6 +980,8 @@
                     "title": "A.8.1 Concatenations",
                     "items": [
                         "concatenation",
+                        "concatenation_expression",
+                        "concatenation_expression_list",
                         "constant_concatenation",
                         "constant_multiple_concatenation",
                         "module_path_concatenation",
@@ -918,6 +992,7 @@
                         "slice_size",
                         "stream_concatenation",
                         "stream_expression",
+                        "stream_expression_list",
                         "array_range_expression",
                         "empty_queue"
                     ]
@@ -931,6 +1006,7 @@
                         "subroutine_call",
                         "function_subroutine_call",
                         "argument_list",
+                        "identifier_expression_list",
                         "method_call",
                         "method_call_body",
                         "built_in_method_call",
@@ -954,7 +1030,9 @@
                         "constant_range",
                         "constant_indexed_range",
                         "expression",
+                        "expression_list",
                         "expression_optional",
+                        "equals_expression_optional",
                         "tagged_union_expression",
                         "inside_expression",
                         "value_range",
@@ -994,6 +1072,7 @@
                     "title": "A.8.5 Expression left-side values",
                     "items": [
                         "lvalue",
+                        "lvalue_list",
                         "net_lvalue",
                         "variable_lvalue",
                         "nonrange_variable_lvalue"
@@ -1026,6 +1105,7 @@
                     "items": [
                         "attribute_instance",
                         "attr_spec",
+                        "attr_spec_list",
                         "attr_name",
                         "attribute_instance_list"
                     ]
@@ -1034,9 +1114,12 @@
                     "title": "A.9.3 Identifiers",
                     "items": [
                         "hierarchical_identifier",
+                        "hierarchical_identifier_list",
                         "identifier",
+                        "identifier_optional",
                         "ps_identifier",
-                        "ps_or_hierarchical_identifier"
+                        "ps_or_hierarchical_identifier",
+                        "ps_or_normal_identifier"
                     ]
                 }
             ]

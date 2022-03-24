@@ -35,6 +35,6 @@ $(BUILDDIR)/%.tab.c	: $(SRCDIR)/%.y
 	$(YACC) --color=always -v -d $< -o $@
 test				: $(TESTOUT)
 $(TESTDIR)/%.out	: $(TESTDIR)/%.sv $(TARGET)
-	@cat $< | $(TARGET) > $@ 2>&1 && echo "\033[0;32mTest $< passed\033[0m" || echo "\033[0;31mTest $< failed\033[0m"
+	@cat $< | $(TARGET) > $@ 2>&1 && echo -e "\033[0;32mTest $< passed\033[0m" || echo -e "\033[0;31mTest $< failed\033[0m"
 clean				:
 	rm -rf $(TARGET) $(BUILDDIR) $(TESTOUT) *.dSYM

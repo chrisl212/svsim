@@ -45,8 +45,16 @@ def get_productions(section: list) -> dict:
                 ident = section[line].replace('//', '').strip()
 
             while section[line].strip() != '':
+                prev = section[line-1].replace('//', '').strip()
+                if prev != '' and prev[0] in [':', '|']:
+                    if section[line].replace('//', '').strip()[0] != '{':
+                        if section[line-1].strip().startswith('//'):
+                            prod.append('//        { $$ = (ast_node_t *)NULL; }\n')
+                        else:
+                            prod.append('        { $$ = (ast_node_t *)NULL; }\n')
                 prod.append(section[line])
                 line += 1
+
             prods[ident] = prod
         
         line += 1
@@ -74,11 +82,44 @@ def format_section(spec: list, prods: dict) -> list:
 
     return formatted_section
 
+def fill_out(spec: dict, not_found: dict) -> None:
+    for item in list(spec['items']):
+        if type(item) == dict:
+            fill_out(item, not_found)
+        else:
+            if f'{item}_optional' in not_found:
+                spec['items'].insert(spec['items'].index(item)+1, f'{item}_optional')
+            if f'{item}_list' in not_found:
+                spec['items'].insert(spec['items'].index(item)+1, f'{item}_list')
+
+def add_node_types(section: list, prod: dict) -> list:
+    existing = []
+
+    prod = dict(prod)
+    for line in section:
+        if line.startswith('%type'):
+            nodes = line.split(' ')[2:]
+            for node in [n.strip() for n in nodes]:
+                if node in prod:
+                    prod.pop(node)
+
+    line = ''
+    for i, node in enumerate(prod.keys()):
+        if i % 5 == 0:
+            section.append(line + '\n')
+            line = '%type <ast_node>'
+        line += f' {node}'
+
+    return section
+
 if __name__ == '__main__':
     spec = load_spec(spec_file)
     yacc = load_yacc_sections(yacc_file)
 
     prod = get_productions(yacc[1])
+
+    yacc[0] = add_node_types(yacc[0], prod)
+
     section = format_section(spec, prod)
 
     section.append('//====================================================================================================\n')
