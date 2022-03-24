@@ -1,0 +1,26 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "sv_ast/ast.h"
+
+static void _ast_NODE_NAME_print(ast_node_t *node);
+static void _ast_NODE_NAME_free(ast_node_t *node);
+
+ast_node_t* ast_NODE_NAME_new(NEW_ARGS) {
+    ast_NODE_NAME_t *NODE_NAME = calloc(1, sizeof(*NODE_NAME));
+
+    NODE_NAME->super.print = _ast_NODE_NAME_print;
+    NODE_NAME->super.free = _ast_NODE_NAME_free;
+
+STRUCT_ASSIGN
+    return NODE_NAME;
+}
+
+static void _ast_NODE_NAME_print(ast_node_t *node) {
+    ast_NODE_NAME_t *NODE_NAME = (ast_NODE_NAME_t *)node;
+
+STRUCT_PRINT}
+
+static void _ast_NODE_NAME_free(ast_node_t *node) {
+    ast_NODE_NAME_t *NODE_NAME = (ast_NODE_NAME_t *)node;
+
+STRUCT_FREE}

@@ -149,7 +149,7 @@ cover[ \t\n]+sequence                           { return COVER_SEQUENCE; }
 ":"                                             { return ':'; }
 "#"                                             { return '#'; }
 "$"                                             { return '$'; }
-"="                                             { return '='; }
+"="                                             { return TOK_EQ; }
 {ID}                                            {
                                                     int keyword;
 

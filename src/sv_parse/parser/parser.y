@@ -87,7 +87,7 @@
 %left TOK_BIT_XOR TOK_BIT_NOT TOK_INC TOK_DEC SCOPE TOK_SING_QUOT TOK_DIST_ASSIGN TOK_DIST_OVER
 %left UNTIL S_UNTIL UNTIL_WITH S_UNTIL_WITH IMPLIES IFF TOK_HASH_DASH_HASH TOK_HASH_EQ_HASH
 %token TOK_SL_EQ TOK_SR_EQ TOK_SLA_EQ TOK_SRA_EQ TOK_PLUS_EQ TOK_MINUS_EQ TOK_MUL_EQ
-%token TOK_DIV_EQ TOK_MOD_EQ TOK_AND_EQ TOK_OR_EQ TOK_XOR_EQ
+%token TOK_DIV_EQ TOK_MOD_EQ TOK_AND_EQ TOK_OR_EQ TOK_XOR_EQ TOK_EQ
 
 %right '?' ':'
 %left ','
@@ -226,8 +226,8 @@
 //====================================================================================================
 
 source_text
-    : timeunits_declaration_optional description_list { root = (ast_node_t *)$2; }
-        { $$ = (ast_node_t *)NULL; }
+    : timeunits_declaration_optional description_list
+        { root = (ast_node_t *)$2; }
     ;
 
 description
@@ -546,11 +546,11 @@ variable_port_header
     ;
 
 ansi_port_declaration
-    : net_port_header identifier unpacked_dimension_list_optional '=' expression
+    : net_port_header identifier unpacked_dimension_list_optional TOK_EQ expression
         { $$ = (ast_node_t *)NULL; }
     | net_port_header identifier unpacked_dimension_list_optional
         { $$ = (ast_node_t *)NULL; }
-    | variable_port_header identifier variable_dimension_list_optional '=' expression
+    | variable_port_header identifier variable_dimension_list_optional TOK_EQ expression
         { $$ = (ast_node_t *)NULL; }
     | variable_port_header identifier variable_dimension_list_optional
         { $$ = (ast_node_t *)NULL; }
@@ -1625,45 +1625,45 @@ variable_identifier_list
 //====================================================================================================
 
 defparam_assignment
-    : hierarchical_identifier '=' constant_mintypmax_expression
+    : hierarchical_identifier TOK_EQ constant_mintypmax_expression
         { $$ = (ast_node_t *)NULL; }
     ;
 
 // FIXME
 param_assignment
-    : identifier '=' constant_param_expression
+    : identifier TOK_EQ constant_param_expression
         { $$ = (ast_node_t *)NULL; }
     | identifier
         { $$ = (ast_node_t *)NULL; }
     ;
 
 specparam_assignment
-    : identifier '=' constant_mintypmax_expression
+    : identifier TOK_EQ constant_mintypmax_expression
         { $$ = (ast_node_t *)NULL; }
     | pulse_control_specparam
         { $$ = (ast_node_t *)NULL; }
     ;
 
 type_assignment
-    : identifier '=' data_type
+    : identifier TOK_EQ data_type
         { $$ = (ast_node_t *)NULL; }
     | identifier
         { $$ = (ast_node_t *)NULL; }
     ;
 
 pulse_control_specparam
-    : PATHPULSE'$' '=' '(' constant_mintypmax_expression ',' constant_mintypmax_expression ')'
+    : PATHPULSE'$' TOK_EQ '(' constant_mintypmax_expression ',' constant_mintypmax_expression ')'
         { $$ = (ast_node_t *)NULL; }
-    | PATHPULSE'$' '=' '(' constant_mintypmax_expression ')'
+    | PATHPULSE'$' TOK_EQ '(' constant_mintypmax_expression ')'
         { $$ = (ast_node_t *)NULL; }
-    | PATHPULSE'$' hierarchical_identifier '$' hierarchical_identifier '=' '(' constant_mintypmax_expression ',' constant_mintypmax_expression ')'
+    | PATHPULSE'$' hierarchical_identifier '$' hierarchical_identifier TOK_EQ '(' constant_mintypmax_expression ',' constant_mintypmax_expression ')'
         { $$ = (ast_node_t *)NULL; }
-    | PATHPULSE'$' hierarchical_identifier '$' hierarchical_identifier '=' '(' constant_mintypmax_expression ')'
+    | PATHPULSE'$' hierarchical_identifier '$' hierarchical_identifier TOK_EQ '(' constant_mintypmax_expression ')'
         { $$ = (ast_node_t *)NULL; }
     ;
 
 variable_decl_assignment
-    : identifier variable_dimension_list_optional '=' expression // FIXME
+    : identifier variable_dimension_list_optional TOK_EQ expression // FIXME
         { $$ = (ast_node_t *)NULL; }
     | identifier variable_dimension_list_optional
         { $$ = (ast_node_t *)NULL; }
@@ -1952,7 +1952,7 @@ overload_operator
         { $$ = (ast_node_t *)NULL; }
     | TOK_LOG_GEQ
         { $$ = (ast_node_t *)NULL; }
-    | '='
+    | TOK_EQ
         { $$ = (ast_node_t *)NULL; }
     ;
 
@@ -2162,7 +2162,7 @@ property_port_list
     ;
 
 property_port_item
-    : /* attribute_instance_list */ local_input_optional property_formal_type identifier variable_dimension_list_optional '=' property_actual_arg
+    : /* attribute_instance_list */ local_input_optional property_formal_type identifier variable_dimension_list_optional TOK_EQ property_actual_arg
         { $$ = (ast_node_t *)NULL; }
     | /* attribute_instance_list */ local_input_optional property_formal_type identifier variable_dimension_list_optional
         { $$ = (ast_node_t *)NULL; }
@@ -2316,11 +2316,11 @@ sequence_port_list
     ;
 
 sequence_port_item
-    : local_direction_optional sequence_formal_type identifier variable_dimension_list_optional '=' sequence_actual_arg
+    : local_direction_optional sequence_formal_type identifier variable_dimension_list_optional TOK_EQ sequence_actual_arg
         { $$ = (ast_node_t *)NULL; }
     | local_direction_optional sequence_formal_type identifier variable_dimension_list_optional
         { $$ = (ast_node_t *)NULL; }
-    | local_direction_optional identifier variable_dimension_list_optional '=' sequence_actual_arg
+    | local_direction_optional identifier variable_dimension_list_optional TOK_EQ sequence_actual_arg
         { $$ = (ast_node_t *)NULL; }
     | local_direction_optional identifier variable_dimension_list_optional
         { $$ = (ast_node_t *)NULL; }
@@ -2453,7 +2453,7 @@ consecutive_repetition
     ;
 
 non_consecutive_repetition
-    : '[' '=' part_select_range ']'
+    : '[' TOK_EQ part_select_range ']'
         { $$ = (ast_node_t *)NULL; }
     ;
 
@@ -2491,7 +2491,7 @@ assertion_variable_declaration_list
     ;
 
 let_declaration
-    : LET identifier '(' let_port_list ')' '=' expression ';'
+    : LET identifier '(' let_port_list ')' TOK_EQ expression ';'
         { $$ = (ast_node_t *)NULL; }
     ;
 
@@ -2503,11 +2503,11 @@ let_port_list
     ;
 
 let_port_item
-    : /* attribute_instance_list */ let_formal_type identifier variable_dimension_list_optional '=' expression
+    : /* attribute_instance_list */ let_formal_type identifier variable_dimension_list_optional TOK_EQ expression
         { $$ = (ast_node_t *)NULL; }
     | /* attribute_instance_list */ let_formal_type identifier variable_dimension_list_optional
         { $$ = (ast_node_t *)NULL; }
-    | /* attribute_instance_list */ identifier variable_dimension_list_optional '=' expression
+    | /* attribute_instance_list */ identifier variable_dimension_list_optional TOK_EQ expression
         { $$ = (ast_node_t *)NULL; }
     | /* attribute_instance_list */ identifier variable_dimension_list_optional
         { $$ = (ast_node_t *)NULL; }
@@ -2684,9 +2684,9 @@ loop_generate_construct
     ;
 
 genvar_initialization
-    : GENVAR identifier '=' expression
+    : GENVAR identifier TOK_EQ expression
         { $$ = (ast_node_t *)NULL; }
-    | identifier '=' expression
+    | identifier TOK_EQ expression
         { $$ = (ast_node_t *)NULL; }
     ;
 
@@ -2843,7 +2843,7 @@ udp_port_declaration_list_optional
 udp_output_declaration
     : /* attribute_instance_list */ OUTPUT identifier
         { $$ = (ast_node_t *)NULL; }
-    | /* attribute_instance_list */ OUTPUT REG identifier '=' expression
+    | /* attribute_instance_list */ OUTPUT REG identifier TOK_EQ expression
         { $$ = (ast_node_t *)NULL; }
     | /* attribute_instance_list */ OUTPUT REG identifier
         { $$ = (ast_node_t *)NULL; }
@@ -3013,7 +3013,7 @@ variable_assignment_list
     ;
 
 net_alias
-    : ALIAS lvalue '=' lvalue lvalue_list ';'
+    : ALIAS lvalue TOK_EQ lvalue lvalue_list ';'
         { $$ = (ast_node_t *)NULL; }
     ;
 
@@ -3044,9 +3044,9 @@ final_construct
 
 // FIXME
 blocking_assignment
-    : lvalue '=' delay_or_event_control expression
+    : lvalue TOK_EQ delay_or_event_control expression
         { $$ = (ast_node_t *)NULL; }
-    | lvalue assignment_operator dynamic_array_new // TODO: need to check semantics, should only be '='
+    | lvalue assignment_operator dynamic_array_new // TODO: need to check semantics, should only be TOK_EQ
         { $$ = (ast_node_t *)NULL; }
     | lvalue assignment_operator class_new // same
         { $$ = (ast_node_t *)NULL; }
@@ -3060,7 +3060,7 @@ operator_assignment
     ;
 
 assignment_operator
-    : '='
+    : TOK_EQ
         { $$ = (ast_node_t *)NULL; }
     | TOK_SL_EQ
         { $$ = (ast_node_t *)NULL; }
@@ -3107,7 +3107,7 @@ procedural_continuous_assignment
     ;
 
 variable_assignment
-    : lvalue '=' expression
+    : lvalue TOK_EQ expression
         { $$ = (ast_node_t *)NULL; }
     ;
 
@@ -3483,11 +3483,11 @@ for_initialization
     ;
 
 for_variable_declaration
-    : for_variable_declaration ',' identifier '=' expression
+    : for_variable_declaration ',' identifier TOK_EQ expression
         { $$ = (ast_node_t *)NULL; }
-    | VAR data_type identifier '=' expression
+    | VAR data_type identifier TOK_EQ expression
         { $$ = (ast_node_t *)NULL; }
-    | data_type identifier '=' expression
+    | data_type identifier TOK_EQ expression
         { $$ = (ast_node_t *)NULL; }
     ;
 
@@ -4128,7 +4128,7 @@ expression_optional
     ;
 
 equals_expression_optional
-    : '=' expression
+    : TOK_EQ expression
         { $$ = (ast_node_t *)NULL; }
     |
         { $$ = (ast_node_t *)NULL; }
@@ -4272,7 +4272,7 @@ lvalue
     ;
 
 lvalue_list
-    : lvalue_list '=' lvalue
+    : lvalue_list TOK_EQ lvalue
         { $$ = (ast_node_t *)NULL; }
     |
         { $$ = (ast_node_t *)NULL; }
@@ -4301,11 +4301,11 @@ attribute_instance
 
 // FIXME
 attr_spec_list
-    : attr_spec_list ',' identifier '=' constant_primary
+    : attr_spec_list ',' identifier TOK_EQ constant_primary
         { ast_node_list_append($1, (ast_node_t *)ast_attr_spec_new($3, NULL)); } // FIXME
     | attr_spec_list ',' identifier
         { ast_node_list_append($1, (ast_node_t *)ast_attr_spec_new($3, NULL)); }
-    | identifier '=' constant_primary
+    | identifier TOK_EQ constant_primary
         { 
             $$ = ast_node_list_new();
             ast_node_list_append($$, (ast_node_t *)ast_attr_spec_new($1, NULL)); // FIXME

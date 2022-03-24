@@ -1,0 +1,11 @@
+#include <stdio.h>
+#include "ast_ENUM_NAME.h"
+
+void ast_ENUM_NAME_print(ast_ENUM_NAME_t ENUM_NAME) {
+    const char *val;
+
+    switch (ENUM_NAME) {
+ENUM_SWITCH    }
+
+    printf("%s", val);
+}

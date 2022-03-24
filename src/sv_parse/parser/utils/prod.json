@@ -1,0 +1,2825 @@
+{
+    "ready": 1,
+    "items": [
+        {
+            "name": "source_text",
+            "type": "node",
+            "terminals": [
+                "timeunits_declaration",
+                "description_list"
+            ]
+        },
+        {
+            "name": "description",
+            "type": "pass-through"
+        },
+        {
+            "name": "description_list",
+            "type": "list"
+        },
+        {
+            "name": "module_nonansi_header",
+            "type": "node",
+            "terminals": [
+                "package_import_declaration_list",
+                "lifetime",
+                "parameter_port_list",
+                "identifier",
+                "module_keyword",
+                "list_of_ports"
+            ]
+        },
+        {
+            "name": "module_ansi_header",
+            "type": "node",
+            "terminals": [
+                "package_import_declaration_list",
+                "lifetime",
+                "parameter_port_list",
+                "identifier",
+                "module_keyword",
+                "port_declaration_list"
+            ]
+        },
+        {
+            "name": "module_declaration",
+            "type": "node",
+            "terminals": [
+                "module_item_list",
+                "non_port_module_item_list",
+                "module_ansi_header",
+                "module_nonansi_header",
+                "block_end_identifier"
+            ]
+        },
+        {
+            "name": "module_keyword",
+            "type": "enum",
+            "values": [
+                "MACROMODULE",
+                "MODULE"
+            ]
+        },
+        {
+            "name": "interface_declaration",
+            "type": "node",
+            "terminals": [
+                "interface_item_list",
+                "interface_ansi_header",
+                "non_port_interface_item_list",
+                "interface_non_ansi_header",
+                "block_end_identifier"
+            ]
+        },
+        {
+            "name": "interface_non_ansi_header",
+            "type": "node",
+            "terminals": [
+                "package_import_declaration_list",
+                "lifetime",
+                "parameter_port_list",
+                "identifier",
+                "list_of_ports"
+            ]
+        },
+        {
+            "name": "interface_ansi_header",
+            "type": "node",
+            "terminals": [
+                "package_import_declaration_list",
+                "lifetime",
+                "parameter_port_list",
+                "identifier",
+                "port_declaration_list"
+            ]
+        },
+        {
+            "name": "program_declaration",
+            "type": "node",
+            "terminals": [
+                "timeunits_declaration",
+                "non_port_program_item_list",
+                "program_ansi_header",
+                "program_item_list",
+                "block_end_identifier",
+                "program_nonansi_header"
+            ]
+        },
+        {
+            "name": "program_nonansi_header",
+            "type": "node",
+            "terminals": [
+                "package_import_declaration_list",
+                "lifetime",
+                "parameter_port_list",
+                "identifier",
+                "list_of_ports"
+            ]
+        },
+        {
+            "name": "program_ansi_header",
+            "type": "node",
+            "terminals": [
+                "package_import_declaration_list",
+                "lifetime",
+                "parameter_port_list",
+                "identifier",
+                "port_declaration_list"
+            ]
+        },
+        {
+            "name": "class_declaration",
+            "type": "node",
+            "terminals": [
+                "lifetime",
+                "implements_interface",
+                "parameter_port_list",
+                "identifier",
+                "block_end_identifier",
+                "virtual",
+                "class_item_list",
+                "extends_class"
+            ]
+        },
+        {
+            "name": "implements_interface_optional",
+            "type": "optional"
+        },
+        {
+            "name": "extends_class_optional",
+            "type": "optional"
+        },
+        {
+            "name": "virtual_optional",
+            "type": "optional"
+        },
+        {
+            "name": "interface_class_type",
+            "type": "node",
+            "terminals": [
+                "ps_or_normal_identifier",
+                "parameter_value_assignment"
+            ]
+        },
+        {
+            "name": "interface_class_type_list",
+            "type": "list"
+        },
+        {
+            "name": "interface_class_declaration",
+            "type": "node",
+            "terminals": [
+                "ps_or_normal_identifier",
+                "interface_class_type_list",
+                "interface_class_parameters",
+                "block_end_identifier",
+                "interface_class_item_list"
+            ]
+        },
+        {
+            "name": "interface_class_item",
+            "type": "pass-through"
+        },
+        {
+            "name": "interface_class_item_list",
+            "type": "list"
+        },
+        {
+            "name": "interface_class_parameters",
+            "type": "node",
+            "terminals": [
+                "parameter_port_list",
+                "parameter_value_assignment"
+            ]
+        },
+        {
+            "name": "package_declaration",
+            "type": "node",
+            "terminals": [
+                "timeunits_declaration",
+                "lifetime",
+                "identifier",
+                "block_end_identifier",
+                "package_item_list"
+            ]
+        },
+        {
+            "name": "timeunits_declaration",
+            "type": "node",
+            "terminals": [
+                "time_literal1",
+                "time_literal",
+                "time_literal0"
+            ]
+        },
+        {
+            "name": "timeunits_declaration_optional",
+            "type": "optional"
+        },
+        {
+            "name": "block_end_identifier_optional",
+            "type": "optional"
+        },
+        {
+            "name": "parameter_port_list",
+            "type": "list"
+        },
+        {
+            "name": "parameter_port_list_optional",
+            "type": "optional"
+        },
+        {
+            "name": "parameter_port_declaration",
+            "type": "node",
+            "terminals": [
+                "dont",
+                "multiple",
+                "parameter_declaration",
+                "support",
+                "type_assignment",
+                "data_type_or_param",
+                "param_assignment",
+                "local_parameter_declaration",
+                "decls"
+            ]
+        },
+        {
+            "name": "parameter_port_declaration_list",
+            "type": "list"
+        },
+        {
+            "name": "list_of_ports",
+            "type": "pass-through"
+        },
+        {
+            "name": "port_declaration_list",
+            "type": "list"
+        },
+        {
+            "name": "port_declaration",
+            "type": "pass-through"
+        },
+        {
+            "name": "port_list",
+            "type": "list"
+        },
+        {
+            "name": "port_direction",
+            "type": "enum",
+            "values": [
+                "INPUT",
+                "REF",
+                "OUTPUT",
+                "INOUT"
+            ]
+        },
+        {
+            "name": "net_port_header",
+            "type": "node",
+            "terminals": [
+                "net_port_type",
+                "port_direction"
+            ]
+        },
+        {
+            "name": "variable_port_header",
+            "type": "node",
+            "terminals": [
+                "port_direction",
+                "variable_port_type"
+            ]
+        },
+        {
+            "name": "ansi_port_declaration",
+            "type": "node",
+            "terminals": [
+                "variable_dimension_list",
+                "identifier",
+                "expression",
+                "net_port_header",
+                "variable_port_header",
+                "unpacked_dimension_list",
+                "port_direction"
+            ]
+        },
+        {
+            "name": "ansi_port_declaration_list",
+            "type": "list"
+        },
+        {
+            "name": "module_common_item",
+            "type": "node",
+            "terminals": [
+                "final_construct",
+                "always_keyword",
+                "statement",
+                "assertion_item",
+                "bind_directive",
+                "loop_generate_construct",
+                "module_or_generate_item_declaration",
+                "conditional_generate_construct",
+                "continuous_assign",
+                "initial_construct",
+                "generic_instantiation",
+                "net_alias"
+            ]
+        },
+        {
+            "name": "module_item",
+            "type": "pass-through"
+        },
+        {
+            "name": "module_item_list",
+            "type": "list"
+        },
+        {
+            "name": "module_or_generate_item",
+            "type": "node",
+            "terminals": [
+                "checker_or_generate_item_declaration",
+                "covered",
+                "udp_instantiation",
+                "in",
+                "module_common_item",
+                "gate_instantiation",
+                "below",
+                "parameter_override"
+            ]
+        },
+        {
+            "name": "module_or_generate_item_declaration",
+            "type": "pass-through"
+        },
+        {
+            "name": "non_port_module_item",
+            "type": "pass-through"
+        },
+        {
+            "name": "non_port_module_item_list",
+            "type": "list"
+        },
+        {
+            "name": "parameter_override",
+            "type": "pass-through"
+        },
+        {
+            "name": "bind_directive",
+            "type": "node",
+            "terminals": [
+                "hierarchical_identifier",
+                "generic_instantiation"
+            ]
+        },
+        {
+            "name": "generic_instantiation",
+            "type": "node",
+            "terminals": [
+                "data",
+                "in",
+                "parameters",
+                "type",
+                "data_type",
+                "hierarchical_instance_list",
+                "handled"
+            ]
+        },
+        {
+            "name": "config_declaration",
+            "type": "node",
+            "terminals": [
+                "config_rule_statement_list",
+                "identifier",
+                "design_statement",
+                "block_end_identifier",
+                "local_parameter_declaration_list"
+            ]
+        },
+        {
+            "name": "design_statement",
+            "type": "pass-through"
+        },
+        {
+            "name": "design_hierarchical_identifier_list",
+            "type": "list"
+        },
+        {
+            "name": "config_rule_statement",
+            "type": "node",
+            "terminals": [
+                "default_clause",
+                "inst_clause",
+                "liblist_clause",
+                "use_clause",
+                "cell_clause"
+            ]
+        },
+        {
+            "name": "config_rule_statement_list",
+            "type": "list"
+        },
+        {
+            "name": "default_clause",
+            "type": "enum",
+            "values": [
+                "DEFAULT"
+            ]
+        },
+        {
+            "name": "inst_clause",
+            "type": "pass-through"
+        },
+        {
+            "name": "cell_clause",
+            "type": "pass-through"
+        },
+        {
+            "name": "liblist_clause",
+            "type": "pass-through"
+        },
+        {
+            "name": "use_clause",
+            "type": "node",
+            "terminals": [
+                "hierarchical_identifier",
+                "named_parameter_assignment_list"
+            ]
+        },
+        {
+            "name": "interface_or_generate_item",
+            "type": "pass-through"
+        },
+        {
+            "name": "extern_tf_declaration",
+            "type": "pass-through"
+        },
+        {
+            "name": "interface_item",
+            "type": "pass-through"
+        },
+        {
+            "name": "interface_item_list",
+            "type": "list"
+        },
+        {
+            "name": "non_port_interface_item",
+            "type": "pass-through"
+        },
+        {
+            "name": "non_port_interface_item_list",
+            "type": "list"
+        },
+        {
+            "name": "program_item",
+            "type": "pass-through"
+        },
+        {
+            "name": "program_item_list",
+            "type": "list"
+        },
+        {
+            "name": "non_port_program_item",
+            "type": "pass-through"
+        },
+        {
+            "name": "non_port_program_item_list",
+            "type": "list"
+        },
+        {
+            "name": "class_item",
+            "type": "pass-through"
+        },
+        {
+            "name": "class_item_list",
+            "type": "list"
+        },
+        {
+            "name": "class_property",
+            "type": "node",
+            "terminals": [
+                "verify",
+                "modifiers",
+                "data_declaration",
+                "correct",
+                "only"
+            ]
+        },
+        {
+            "name": "class_method",
+            "type": "node",
+            "terminals": [
+                "method_prototype",
+                "class_method_qualifier_list",
+                "task_declaration",
+                "function_declaration"
+            ]
+        },
+        {
+            "name": "method_qualifier",
+            "type": "enum",
+            "values": [
+                "PURE",
+                "VIRTUAL"
+            ]
+        },
+        {
+            "name": "method_qualifier_list",
+            "type": "list"
+        },
+        {
+            "name": "class_method_qualifier_list",
+            "type": "list"
+        },
+        {
+            "name": "method_variable_qualifier",
+            "type": "pass-through"
+        },
+        {
+            "name": "method_variable_qualifier_list",
+            "type": "list"
+        },
+        {
+            "name": "variable_qualifier",
+            "type": "enum",
+            "values": [
+                "RAND",
+                "CONST",
+                "VAR",
+                "RANDC"
+            ]
+        },
+        {
+            "name": "variable_qualifier_list",
+            "type": "list"
+        },
+        {
+            "name": "method_prototype",
+            "type": "pass-through"
+        },
+        {
+            "name": "dist_list",
+            "type": "list"
+        },
+        {
+            "name": "dist_item",
+            "type": "node",
+            "terminals": [
+                "dist_weight",
+                "value_range"
+            ]
+        },
+        {
+            "name": "dist_weight",
+            "type": "pass-through"
+        },
+        {
+            "name": "identifier_list",
+            "type": "list"
+        },
+        {
+            "name": "package_item",
+            "type": "pass-through"
+        },
+        {
+            "name": "package_item_list_optional",
+            "type": "optional"
+        },
+        {
+            "name": "package_or_generate_item_declaration",
+            "type": "pass-through"
+        },
+        {
+            "name": "local_parameter_declaration",
+            "type": "node",
+            "terminals": [
+                "data_type",
+                "param_assignment_list",
+                "type_assignment_list"
+            ]
+        },
+        {
+            "name": "local_parameter_declaration_list",
+            "type": "list"
+        },
+        {
+            "name": "parameter_declaration",
+            "type": "node",
+            "terminals": [
+                "data_type",
+                "param_assignment_list",
+                "type_assignment_list"
+            ]
+        },
+        {
+            "name": "specparam_declaration",
+            "type": "node",
+            "terminals": [
+                "specparam_assignment_list",
+                "packed_dimension_list"
+            ]
+        },
+        {
+            "name": "inout_declaration",
+            "type": "node",
+            "terminals": [
+                "net_port_type",
+                "port_identifier_list"
+            ]
+        },
+        {
+            "name": "input_declaration",
+            "type": "node",
+            "terminals": [
+                "net_port_type",
+                "variable_identifier_list",
+                "port_identifier_list",
+                "variable_port_type"
+            ]
+        },
+        {
+            "name": "output_declaration",
+            "type": "node",
+            "terminals": [
+                "net_port_type",
+                "variable_identifier_list",
+                "port_identifier_list",
+                "variable_port_type"
+            ]
+        },
+        {
+            "name": "ref_declaration",
+            "type": "node",
+            "terminals": [
+                "variable_identifier_list",
+                "variable_port_type"
+            ]
+        },
+        {
+            "name": "data_declaration",
+            "type": "node",
+            "terminals": [
+                "variable_decl_assignment_list",
+                "method_variable_qualifier_list",
+                "variable_qualifier_list",
+                "data_type",
+                "type_declaration",
+                "package_import_declaration"
+            ]
+        },
+        {
+            "name": "package_import_declaration",
+            "type": "pass-through"
+        },
+        {
+            "name": "package_import_declaration_list",
+            "type": "list"
+        },
+        {
+            "name": "package_import_item",
+            "type": "pass-through"
+        },
+        {
+            "name": "package_import_item_list",
+            "type": "list"
+        },
+        {
+            "name": "genvar_declaration",
+            "type": "pass-through"
+        },
+        {
+            "name": "net_declaration",
+            "type": "node",
+            "terminals": [
+                "identifier_unpacked_dimension_list",
+                "net_type",
+                "vectored_or_scalared",
+                "need",
+                "identifier",
+                "delay3",
+                "params",
+                "variable_decl_assignment_list",
+                "drive_or_charge_strength",
+                "signing",
+                "delay_value",
+                "from",
+                "disambiguate",
+                "delay_control",
+                "data_type_no_param",
+                "to",
+                "packed_dimension_list"
+            ]
+        },
+        {
+            "name": "identifier_unpacked_dimension_list",
+            "type": "list"
+        },
+        {
+            "name": "vectored_or_scalared_optional",
+            "type": "optional"
+        },
+        {
+            "name": "type_declaration",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "data_type"
+            ]
+        },
+        {
+            "name": "lifetime",
+            "type": "enum",
+            "values": [
+                "AUTOMATIC",
+                "STATIC"
+            ]
+        },
+        {
+            "name": "lifetime_optional",
+            "type": "optional"
+        },
+        {
+            "name": "casting_type",
+            "type": "pass-through"
+        },
+        {
+            "name": "data_type",
+            "type": "node",
+            "terminals": [
+                "packed_dimension_list",
+                "ps_identifier",
+                "cases",
+                "identifier",
+                "hierarchical_identifier",
+                "data_type_no_identifier",
+                "parameter_value_assignment",
+                "select",
+                "only",
+                "valid"
+            ]
+        },
+        {
+            "name": "data_type_or_param",
+            "type": "node",
+            "terminals": [
+                "need",
+                "here",
+                "support",
+                "data_type",
+                "types",
+                "implicit",
+                "to"
+            ]
+        },
+        {
+            "name": "data_type_no_param",
+            "type": "node",
+            "terminals": [
+                "packed_dimension_list",
+                "ps_identifier",
+                "identifier1",
+                "cases",
+                "integer_atom_type",
+                "identifier",
+                "signing",
+                "hierarchical_identifier",
+                "virtual_interface_type",
+                "integer_vector_type",
+                "select",
+                "only",
+                "non_integer_type",
+                "identifier0",
+                "valid"
+            ]
+        },
+        {
+            "name": "data_type_no_identifier",
+            "type": "node",
+            "terminals": [
+                "identifier1",
+                "integer_atom_type",
+                "identifier",
+                "signing",
+                "virtual_interface_type",
+                "parameter_value_assignment",
+                "integer_vector_type",
+                "non_integer_type",
+                "identifier0",
+                "packed_dimension_list"
+            ]
+        },
+        {
+            "name": "virtual_interface_type",
+            "type": "enum",
+            "values": [
+                "VIRTUAL",
+                "VIRTUAL_INTERFACE"
+            ]
+        },
+        {
+            "name": "class_scope",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "parameter_value_assignment",
+                "ps_identifier_tok"
+            ]
+        },
+        {
+            "name": "integer_type",
+            "type": "pass-through"
+        },
+        {
+            "name": "integer_atom_type",
+            "type": "enum",
+            "values": [
+                "TIME",
+                "LONGINT",
+                "BYTE",
+                "SHORTINT",
+                "INTEGER",
+                "INT"
+            ]
+        },
+        {
+            "name": "integer_vector_type",
+            "type": "enum",
+            "values": [
+                "REG",
+                "BIT",
+                "LOGIC"
+            ]
+        },
+        {
+            "name": "non_integer_type",
+            "type": "enum",
+            "values": [
+                "SHORTREAL",
+                "REAL",
+                "REALTIME"
+            ]
+        },
+        {
+            "name": "net_type",
+            "type": "enum",
+            "values": [
+                "TRIOR",
+                "TRI1",
+                "TRI0",
+                "SUPPLY1",
+                "WOR",
+                "TRI",
+                "TRIAND",
+                "TRIREG",
+                "WIRE",
+                "SUPPLY0",
+                "WAND",
+                "UWIRE"
+            ]
+        },
+        {
+            "name": "net_port_type",
+            "type": "node",
+            "terminals": [
+                "net_type",
+                "signing",
+                "data_type",
+                "packed_dimension_list"
+            ]
+        },
+        {
+            "name": "variable_port_type",
+            "type": "pass-through"
+        },
+        {
+            "name": "signing",
+            "type": "enum",
+            "values": [
+                "UNSIGNED",
+                "SIGNED"
+            ]
+        },
+        {
+            "name": "signing_optional",
+            "type": "optional"
+        },
+        {
+            "name": "simple_type",
+            "type": "pass-through"
+        },
+        {
+            "name": "drive_strength",
+            "type": "node",
+            "terminals": [
+                "strength0",
+                "strength1"
+            ]
+        },
+        {
+            "name": "strength0",
+            "type": "enum",
+            "values": [
+                "WEAK0",
+                "PULL0",
+                "SUPPLY0",
+                "STRONG0"
+            ]
+        },
+        {
+            "name": "strength1",
+            "type": "enum",
+            "values": [
+                "PULL1",
+                "STRONG1",
+                "WEAK1",
+                "SUPPLY1"
+            ]
+        },
+        {
+            "name": "charge_strength",
+            "type": "enum",
+            "values": [
+                "LARGE",
+                "SMALL",
+                "MEDIUM"
+            ]
+        },
+        {
+            "name": "drive_or_charge_strength_optional",
+            "type": "optional"
+        },
+        {
+            "name": "delay3",
+            "type": "pass-through"
+        },
+        {
+            "name": "delay3_optional",
+            "type": "optional"
+        },
+        {
+            "name": "delay2",
+            "type": "pass-through"
+        },
+        {
+            "name": "mintypmax_expression_list_3",
+            "type": "node",
+            "terminals": [
+                "mintypmax_expression2",
+                "mintypmax_expression0",
+                "mintypmax_expression1",
+                "mintypmax_expression_list_2"
+            ]
+        },
+        {
+            "name": "mintypmax_expression_list_2",
+            "type": "node",
+            "terminals": [
+                "mintypmax_expression",
+                "mintypmax_expression0",
+                "mintypmax_expression1"
+            ]
+        },
+        {
+            "name": "delay_value",
+            "type": "pass-through"
+        },
+        {
+            "name": "defparam_assignment_list",
+            "type": "list"
+        },
+        {
+            "name": "param_assignment_list",
+            "type": "list"
+        },
+        {
+            "name": "port_identifier_list",
+            "type": "list"
+        },
+        {
+            "name": "specparam_assignment_list",
+            "type": "list"
+        },
+        {
+            "name": "type_assignment_list",
+            "type": "list"
+        },
+        {
+            "name": "variable_decl_assignment_list",
+            "type": "list"
+        },
+        {
+            "name": "variable_identifier_list",
+            "type": "list"
+        },
+        {
+            "name": "defparam_assignment",
+            "type": "node",
+            "terminals": [
+                "constant_mintypmax_expression",
+                "hierarchical_identifier"
+            ]
+        },
+        {
+            "name": "param_assignment",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "constant_param_expression"
+            ]
+        },
+        {
+            "name": "specparam_assignment",
+            "type": "node",
+            "terminals": [
+                "constant_mintypmax_expression",
+                "identifier",
+                "pulse_control_specparam"
+            ]
+        },
+        {
+            "name": "type_assignment",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "data_type"
+            ]
+        },
+        {
+            "name": "pulse_control_specparam",
+            "type": "node",
+            "terminals": [
+                "constant_mintypmax_expression",
+                "hierarchical_identifier0",
+                "constant_mintypmax_expression1",
+                "hierarchical_identifier1",
+                "constant_mintypmax_expression0"
+            ]
+        },
+        {
+            "name": "variable_decl_assignment",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "expression",
+                "variable_dimension_list"
+            ]
+        },
+        {
+            "name": "class_new",
+            "type": "node",
+            "terminals": [
+                "class_scope",
+                "expression",
+                "argument_list"
+            ]
+        },
+        {
+            "name": "dynamic_array_new",
+            "type": "node",
+            "terminals": [
+                "expression0",
+                "expression",
+                "expression1"
+            ]
+        },
+        {
+            "name": "unpacked_dimension",
+            "type": "pass-through"
+        },
+        {
+            "name": "unpacked_dimension_list",
+            "type": "list"
+        },
+        {
+            "name": "unpacked_dimension_list_optional",
+            "type": "optional"
+        },
+        {
+            "name": "packed_dimension",
+            "type": "pass-through"
+        },
+        {
+            "name": "packed_dimension_list",
+            "type": "list"
+        },
+        {
+            "name": "packed_dimension_list_optional",
+            "type": "optional"
+        },
+        {
+            "name": "associative_dimension",
+            "type": "pass-through"
+        },
+        {
+            "name": "variable_dimension",
+            "type": "pass-through"
+        },
+        {
+            "name": "variable_dimension_list",
+            "type": "list"
+        },
+        {
+            "name": "variable_dimension_list_optional",
+            "type": "optional"
+        },
+        {
+            "name": "unsized_dimension",
+            "type": "pass-through"
+        },
+        {
+            "name": "function_declaration",
+            "type": "node",
+            "terminals": [
+                "function_body_declaration",
+                "lifetime"
+            ]
+        },
+        {
+            "name": "function_body_declaration",
+            "type": "node",
+            "terminals": [
+                "statement_list",
+                "tf_port_list",
+                "tf_item_declaration_list",
+                "function_type_name",
+                "block_item_declaration_list",
+                "function_block_end_identifier"
+            ]
+        },
+        {
+            "name": "function_data_type",
+            "type": "pass-through"
+        },
+        {
+            "name": "function_type_name",
+            "type": "node",
+            "terminals": [
+                "ps_or_hierarchical_identifier",
+                "ps_identifier_tok",
+                "function_data_type"
+            ]
+        },
+        {
+            "name": "function_block_end_identifier_optional",
+            "type": "optional"
+        },
+        {
+            "name": "function_prototype",
+            "type": "node",
+            "terminals": [
+                "function_type_name",
+                "tf_port_list"
+            ]
+        },
+        {
+            "name": "task_declaration",
+            "type": "node",
+            "terminals": [
+                "task_body_declaration",
+                "lifetime"
+            ]
+        },
+        {
+            "name": "task_body_declaration",
+            "type": "node",
+            "terminals": [
+                "statement_list",
+                "tf_port_list",
+                "tf_item_declaration_list",
+                "ps_or_hierarchical_identifier",
+                "block_end_identifier",
+                "block_item_declaration_list"
+            ]
+        },
+        {
+            "name": "tf_item_declaration",
+            "type": "pass-through"
+        },
+        {
+            "name": "tf_item_declaration_list",
+            "type": "list"
+        },
+        {
+            "name": "tf_port_list",
+            "type": "list"
+        },
+        {
+            "name": "tf_port_list_optional",
+            "type": "optional"
+        },
+        {
+            "name": "tf_port_item",
+            "type": "node",
+            "terminals": [
+                "variable_dimension_list",
+                "identifier",
+                "equals_expression",
+                "tf_port_direction",
+                "data_type"
+            ]
+        },
+        {
+            "name": "tf_port_direction",
+            "type": "pass-through"
+        },
+        {
+            "name": "task_prototype",
+            "type": "node",
+            "terminals": [
+                "ps_or_hierarchical_identifier",
+                "tf_port_list"
+            ]
+        },
+        {
+            "name": "block_item_declaration",
+            "type": "pass-through"
+        },
+        {
+            "name": "block_item_declaration_list",
+            "type": "list"
+        },
+        {
+            "name": "overload_declaration",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "data_type",
+                "overload_proto_formals",
+                "overload_operator"
+            ]
+        },
+        {
+            "name": "overload_operator",
+            "type": "enum",
+            "values": [
+                "TOK_PLUS",
+                "TOK_INC",
+                "TOK_PWR",
+                "TOK_EQ",
+                "TOK_LOG_GT",
+                "TOK_MINUS",
+                "TOK_LOG_LT",
+                "TOK_MUL",
+                "TOK_LOG_LEQ",
+                "TOK_MOD",
+                "TOK_LOG_GEQ",
+                "TOK_LOG_NEQ",
+                "TOK_DIV",
+                "TOK_LOG_EQ",
+                "TOK_DEC"
+            ]
+        },
+        {
+            "name": "overload_proto_formals",
+            "type": "node",
+            "terminals": [
+                "data_type",
+                "overload_proto_formals"
+            ]
+        },
+        {
+            "name": "modport_declaration",
+            "type": "pass-through"
+        },
+        {
+            "name": "modport_item",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "modport_ports_declaration_list"
+            ]
+        },
+        {
+            "name": "modport_item_list",
+            "type": "list"
+        },
+        {
+            "name": "modport_ports_declaration",
+            "type": "pass-through"
+        },
+        {
+            "name": "modport_ports_declaration_list",
+            "type": "list"
+        },
+        {
+            "name": "modport_simple_ports_declaration",
+            "type": "node",
+            "terminals": [
+                "modport_simple_port",
+                "modport_simple_ports_declaration",
+                "port_direction"
+            ]
+        },
+        {
+            "name": "modport_simple_port",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "expression"
+            ]
+        },
+        {
+            "name": "modport_tf_ports_declaration",
+            "type": "node",
+            "terminals": [
+                "modport_tf_port",
+                "modport_tf_port_list"
+            ]
+        },
+        {
+            "name": "modport_tf_port",
+            "type": "pass-through"
+        },
+        {
+            "name": "modport_tf_port_list",
+            "type": "list"
+        },
+        {
+            "name": "concurrent_assertion_item",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "concurrent_assertion_statement",
+                "checker_instantiation"
+            ]
+        },
+        {
+            "name": "concurrent_assertion_statement",
+            "type": "pass-through"
+        },
+        {
+            "name": "assert_property_statement",
+            "type": "node",
+            "terminals": [
+                "action_block",
+                "property_spec"
+            ]
+        },
+        {
+            "name": "assume_property_statement",
+            "type": "node",
+            "terminals": [
+                "action_block",
+                "property_spec"
+            ]
+        },
+        {
+            "name": "cover_property_statement",
+            "type": "node",
+            "terminals": [
+                "property_spec",
+                "statement"
+            ]
+        },
+        {
+            "name": "expect_property_statement",
+            "type": "node",
+            "terminals": [
+                "action_block",
+                "property_spec"
+            ]
+        },
+        {
+            "name": "cover_sequence_statement",
+            "type": "node",
+            "terminals": [
+                "statement",
+                "expression_or_dist",
+                "sequence_expr",
+                "clocking_event"
+            ]
+        },
+        {
+            "name": "restrict_property_statement",
+            "type": "pass-through"
+        },
+        {
+            "name": "property_instance",
+            "type": "node",
+            "terminals": [
+                "ps_or_hierarchical_identifier",
+                "property_argument_list"
+            ]
+        },
+        {
+            "name": "property_argument_list",
+            "type": "list"
+        },
+        {
+            "name": "property_actual_arg",
+            "type": "pass-through"
+        },
+        {
+            "name": "property_actual_arg_list",
+            "type": "list"
+        },
+        {
+            "name": "identifier_property_actual_arg_list",
+            "type": "list"
+        },
+        {
+            "name": "assertion_item_declaration",
+            "type": "pass-through"
+        },
+        {
+            "name": "property_declaration",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "property_port_list",
+                "property_spec",
+                "assertion_variable_declaration_list",
+                "block_end_identifier"
+            ]
+        },
+        {
+            "name": "property_port_list",
+            "type": "list"
+        },
+        {
+            "name": "property_port_item",
+            "type": "node",
+            "terminals": [
+                "property_actual_arg",
+                "local_input",
+                "variable_dimension_list",
+                "property_formal_type",
+                "identifier"
+            ]
+        },
+        {
+            "name": "local_input_optional",
+            "type": "optional"
+        },
+        {
+            "name": "local_direction_optional",
+            "type": "optional"
+        },
+        {
+            "name": "property_formal_type",
+            "type": "pass-through"
+        },
+        {
+            "name": "property_spec",
+            "type": "node",
+            "terminals": [
+                "expression_or_dist",
+                "property_expr",
+                "clocking_event"
+            ]
+        },
+        {
+            "name": "property_expr",
+            "type": "node",
+            "terminals": [
+                "clocking_event",
+                "property_expr1",
+                "property_expr0",
+                "property_instance",
+                "property_expr",
+                "expression",
+                "part_select_range",
+                "expression_or_dist",
+                "sequence_expr",
+                "property_case_item_list"
+            ]
+        },
+        {
+            "name": "property_case_item",
+            "type": "node",
+            "terminals": [
+                "property_expr",
+                "expression_or_dist_list"
+            ]
+        },
+        {
+            "name": "property_case_item_list",
+            "type": "list"
+        },
+        {
+            "name": "sequence_declaration",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "assertion_variable_declaration_list",
+                "sequence_expr",
+                "block_end_identifier",
+                "sequence_port_list"
+            ]
+        },
+        {
+            "name": "sequence_port_list",
+            "type": "list"
+        },
+        {
+            "name": "sequence_port_item",
+            "type": "node",
+            "terminals": [
+                "variable_dimension_list",
+                "sequence_actual_arg",
+                "identifier",
+                "sequence_formal_type",
+                "local_direction"
+            ]
+        },
+        {
+            "name": "sequence_formal_type",
+            "type": "pass-through"
+        },
+        {
+            "name": "sequence_expr",
+            "type": "node",
+            "terminals": [
+                "cycle_delay_range",
+                "sequence_expr1",
+                "covered",
+                "sequence_instance",
+                "expression",
+                "sequence_abbrev",
+                "sequence_match_item_list",
+                "sequence_expr",
+                "boolean_abbrev",
+                "expression_or_dist",
+                "under",
+                "sequence_expr0",
+                "clocking_event"
+            ]
+        },
+        {
+            "name": "cycle_delay_range",
+            "type": "pass-through"
+        },
+        {
+            "name": "sequence_match_item",
+            "type": "pass-through"
+        },
+        {
+            "name": "sequence_match_item_list",
+            "type": "list"
+        },
+        {
+            "name": "sequence_argument_list",
+            "type": "list"
+        },
+        {
+            "name": "sequence_actual_arg",
+            "type": "pass-through"
+        },
+        {
+            "name": "sequence_actual_arg_list",
+            "type": "list"
+        },
+        {
+            "name": "identifier_sequence_actual_arg_list",
+            "type": "list"
+        },
+        {
+            "name": "boolean_abbrev",
+            "type": "pass-through"
+        },
+        {
+            "name": "sequence_abbrev",
+            "type": "pass-through"
+        },
+        {
+            "name": "consecutive_repetition",
+            "type": "pass-through"
+        },
+        {
+            "name": "non_consecutive_repetition",
+            "type": "pass-through"
+        },
+        {
+            "name": "goto_repetition",
+            "type": "pass-through"
+        },
+        {
+            "name": "expression_or_dist",
+            "type": "node",
+            "terminals": [
+                "dist_list",
+                "expression"
+            ]
+        },
+        {
+            "name": "expression_or_dist_list",
+            "type": "list"
+        },
+        {
+            "name": "assertion_variable_declaration",
+            "type": "node",
+            "terminals": [
+                "data_type",
+                "variable_decl_assignment_list"
+            ]
+        },
+        {
+            "name": "assertion_variable_declaration_list",
+            "type": "list"
+        },
+        {
+            "name": "let_declaration",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "expression",
+                "let_port_list"
+            ]
+        },
+        {
+            "name": "let_port_list",
+            "type": "list"
+        },
+        {
+            "name": "let_port_item",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "expression",
+                "let_formal_type",
+                "variable_dimension_list"
+            ]
+        },
+        {
+            "name": "let_formal_type",
+            "type": "pass-through"
+        },
+        {
+            "name": "input_terminal",
+            "type": "pass-through"
+        },
+        {
+            "name": "output_terminal",
+            "type": "pass-through"
+        },
+        {
+            "name": "parameter_value_assignment",
+            "type": "pass-through"
+        },
+        {
+            "name": "parameter_value_assignment_optional",
+            "type": "optional"
+        },
+        {
+            "name": "ordered_parameter_assignment",
+            "type": "pass-through"
+        },
+        {
+            "name": "ordered_parameter_assignment_list",
+            "type": "list"
+        },
+        {
+            "name": "named_parameter_assignment",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "param_expression"
+            ]
+        },
+        {
+            "name": "named_parameter_assignment_list",
+            "type": "list"
+        },
+        {
+            "name": "hierarchical_instance",
+            "type": "node",
+            "terminals": [
+                "name_of_instance",
+                "ordered_port_connection_list",
+                "named_port_connection_list"
+            ]
+        },
+        {
+            "name": "hierarchical_instance_list",
+            "type": "list"
+        },
+        {
+            "name": "name_of_instance",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "unpacked_dimension_list"
+            ]
+        },
+        {
+            "name": "ordered_port_connection",
+            "type": "pass-through"
+        },
+        {
+            "name": "ordered_port_connection_list",
+            "type": "list"
+        },
+        {
+            "name": "named_port_connection",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "expression"
+            ]
+        },
+        {
+            "name": "named_port_connection_list",
+            "type": "list"
+        },
+        {
+            "name": "generate_region",
+            "type": "pass-through"
+        },
+        {
+            "name": "loop_generate_construct",
+            "type": "node",
+            "terminals": [
+                "generate_block",
+                "genvar_initialization",
+                "expression",
+                "genvar_iteration"
+            ]
+        },
+        {
+            "name": "genvar_initialization",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "expression"
+            ]
+        },
+        {
+            "name": "genvar_iteration",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "assignment_operator",
+                "expression"
+            ]
+        },
+        {
+            "name": "conditional_generate_construct",
+            "type": "pass-through"
+        },
+        {
+            "name": "if_generate_construct",
+            "type": "node",
+            "terminals": [
+                "generate_block0",
+                "expression",
+                "generate_block",
+                "generate_block1"
+            ]
+        },
+        {
+            "name": "case_generate_construct",
+            "type": "node",
+            "terminals": [
+                "case_generate_item_list",
+                "expression"
+            ]
+        },
+        {
+            "name": "case_generate_item",
+            "type": "node",
+            "terminals": [
+                "expression_list",
+                "generate_block"
+            ]
+        },
+        {
+            "name": "case_generate_item_list",
+            "type": "list"
+        },
+        {
+            "name": "generate_block",
+            "type": "node",
+            "terminals": [
+                "identifier1",
+                "generate_item_list",
+                "identifier",
+                "generate_item",
+                "block_end_identifier",
+                "identifier0"
+            ]
+        },
+        {
+            "name": "generate_item",
+            "type": "pass-through"
+        },
+        {
+            "name": "generate_item_list",
+            "type": "list"
+        },
+        {
+            "name": "udp_nonansi_declaration",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "udp_port_list"
+            ]
+        },
+        {
+            "name": "udp_ansi_declaration",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "udp_declaration_port_list"
+            ]
+        },
+        {
+            "name": "udp_declaration",
+            "type": "node",
+            "terminals": [
+                "udp_ansi_declaration",
+                "udp_nonansi_declaration",
+                "udp_body",
+                "identifier",
+                "block_end_identifier",
+                "udp_port_declaration_list"
+            ]
+        },
+        {
+            "name": "udp_port_list",
+            "type": "list"
+        },
+        {
+            "name": "udp_declaration_port_list",
+            "type": "list"
+        },
+        {
+            "name": "udp_port_declaration",
+            "type": "pass-through"
+        },
+        {
+            "name": "udp_port_declaration_list",
+            "type": "list"
+        },
+        {
+            "name": "udp_port_declaration_list_optional",
+            "type": "optional"
+        },
+        {
+            "name": "udp_output_declaration",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "expression"
+            ]
+        },
+        {
+            "name": "udp_input_declaration",
+            "type": "node",
+            "terminals": [
+                "identifier_list",
+                "identifier"
+            ]
+        },
+        {
+            "name": "udp_reg_declaration",
+            "type": "pass-through"
+        },
+        {
+            "name": "udp_body",
+            "type": "pass-through"
+        },
+        {
+            "name": "combinational_body",
+            "type": "pass-through"
+        },
+        {
+            "name": "combinational_entry",
+            "type": "node",
+            "terminals": [
+                "output_symbol",
+                "level_input_list"
+            ]
+        },
+        {
+            "name": "combinational_entry_list",
+            "type": "list"
+        },
+        {
+            "name": "sequential_body",
+            "type": "node",
+            "terminals": [
+                "next_state",
+                "current_state",
+                "seq_input_list"
+            ]
+        },
+        {
+            "name": "seq_input_list",
+            "type": "list"
+        },
+        {
+            "name": "level_input_list",
+            "type": "list"
+        },
+        {
+            "name": "edge_input_list",
+            "type": "list"
+        },
+        {
+            "name": "edge_indicator",
+            "type": "node",
+            "terminals": [
+                "edge_symbol",
+                "level_symbol0",
+                "level_symbol1"
+            ]
+        },
+        {
+            "name": "current_state",
+            "type": "pass-through"
+        },
+        {
+            "name": "next_state",
+            "type": "pass-through"
+        },
+        {
+            "name": "output_symbol",
+            "type": "pass-through"
+        },
+        {
+            "name": "level_symbol",
+            "type": "pass-through"
+        },
+        {
+            "name": "level_symbol_list",
+            "type": "list"
+        },
+        {
+            "name": "edge_symbol",
+            "type": "pass-through"
+        },
+        {
+            "name": "udp_instantiation",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "delay2",
+                "drive_strength",
+                "udp_instance_list"
+            ]
+        },
+        {
+            "name": "udp_instance",
+            "type": "node",
+            "terminals": [
+                "output_terminal",
+                "input_terminal",
+                "input_terminal1",
+                "name_of_instance",
+                "input_terminal0"
+            ]
+        },
+        {
+            "name": "udp_instance_list",
+            "type": "list"
+        },
+        {
+            "name": "continuous_assign",
+            "type": "node",
+            "terminals": [
+                "delay_control",
+                "variable_assignment_list"
+            ]
+        },
+        {
+            "name": "variable_assignment_list",
+            "type": "list"
+        },
+        {
+            "name": "net_alias",
+            "type": "node",
+            "terminals": [
+                "lvalue1",
+                "lvalue0",
+                "lvalue_list"
+            ]
+        },
+        {
+            "name": "initial_construct",
+            "type": "pass-through"
+        },
+        {
+            "name": "always_keyword",
+            "type": "enum",
+            "values": [
+                "ALWAYS_COMB",
+                "ALWAYS_FF",
+                "ALWAYS",
+                "ALWAYS_LATCH"
+            ]
+        },
+        {
+            "name": "final_construct",
+            "type": "pass-through"
+        },
+        {
+            "name": "blocking_assignment",
+            "type": "node",
+            "terminals": [
+                "assignment_operator",
+                "be",
+                "semantics,",
+                "need",
+                "lvalue",
+                "operator_assignment",
+                "expression",
+                "check",
+                "delay_or_event_control",
+                "should",
+                "same",
+                "dynamic_array_new",
+                "class_new",
+                "only",
+                "to"
+            ]
+        },
+        {
+            "name": "operator_assignment",
+            "type": "node",
+            "terminals": [
+                "lvalue",
+                "assignment_operator",
+                "expression"
+            ]
+        },
+        {
+            "name": "assignment_operator",
+            "type": "enum",
+            "values": [
+                "TOK_SRA_EQ",
+                "TOK_EQ",
+                "TOK_PLUS_EQ",
+                "TOK_MOD_EQ",
+                "TOK_SR_EQ",
+                "TOK_AND_EQ",
+                "TOK_DIV_EQ",
+                "TOK_MUL_EQ",
+                "TOK_OR_EQ",
+                "TOK_SLA_EQ",
+                "TOK_SL_EQ",
+                "TOK_XOR_EQ",
+                "TOK_MINUS_EQ"
+            ]
+        },
+        {
+            "name": "nonblocking_assignment",
+            "type": "node",
+            "terminals": [
+                "lvalue",
+                "expression",
+                "delay_or_event_control"
+            ]
+        },
+        {
+            "name": "procedural_continuous_assignment",
+            "type": "pass-through"
+        },
+        {
+            "name": "variable_assignment",
+            "type": "node",
+            "terminals": [
+                "lvalue",
+                "expression"
+            ]
+        },
+        {
+            "name": "action_block",
+            "type": "node",
+            "terminals": [
+                "statement1",
+                "statement",
+                "statement0"
+            ]
+        },
+        {
+            "name": "seq_block",
+            "type": "node",
+            "terminals": [
+                "statement_list",
+                "block_end_identifier1",
+                "block_item_declaration_list",
+                "block_end_identifier0"
+            ]
+        },
+        {
+            "name": "par_block",
+            "type": "node",
+            "terminals": [
+                "statement_list",
+                "join_keyword",
+                "block_end_identifier0",
+                "block_end_identifier1",
+                "block_item_declaration_list"
+            ]
+        },
+        {
+            "name": "join_keyword",
+            "type": "enum",
+            "values": [
+                "JOIN_ANY",
+                "JOIN_NONE",
+                "JOIN"
+            ]
+        },
+        {
+            "name": "statement",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "statement_item"
+            ]
+        },
+        {
+            "name": "statement_list",
+            "type": "list"
+        },
+        {
+            "name": "statement_list_optional",
+            "type": "optional"
+        },
+        {
+            "name": "statement_item",
+            "type": "pass-through"
+        },
+        {
+            "name": "procedural_timing_control_statement",
+            "type": "node",
+            "terminals": [
+                "statement",
+                "procedural_timing_control"
+            ]
+        },
+        {
+            "name": "delay_or_event_control",
+            "type": "node",
+            "terminals": [
+                "delay_control",
+                "event_control",
+                "expression"
+            ]
+        },
+        {
+            "name": "delay_control",
+            "type": "pass-through"
+        },
+        {
+            "name": "event_control",
+            "type": "pass-through"
+        },
+        {
+            "name": "event_expression",
+            "type": "node",
+            "terminals": [
+                "event_expression1",
+                "expression0",
+                "edge_identifier",
+                "expression",
+                "event_expression",
+                "event_expression0",
+                "expression1"
+            ]
+        },
+        {
+            "name": "procedural_timing_control",
+            "type": "pass-through"
+        },
+        {
+            "name": "jump_statement",
+            "type": "pass-through"
+        },
+        {
+            "name": "wait_statement",
+            "type": "node",
+            "terminals": [
+                "action_block",
+                "expression",
+                "hierarchical_identifier_list",
+                "statement"
+            ]
+        },
+        {
+            "name": "event_trigger",
+            "type": "pass-through"
+        },
+        {
+            "name": "disable_statement",
+            "type": "pass-through"
+        },
+        {
+            "name": "conditional_statement",
+            "type": "node",
+            "terminals": [
+                "else_if_list",
+                "statement",
+                "cond_predicate",
+                "unique_priority",
+                "statement0",
+                "statement1"
+            ]
+        },
+        {
+            "name": "else_if_list",
+            "type": "list"
+        },
+        {
+            "name": "unique_priority_optional",
+            "type": "optional"
+        },
+        {
+            "name": "cond_predicate",
+            "type": "node",
+            "terminals": [
+                "expression_or_cond_pattern",
+                "expression_or_cond_pattern0",
+                "expression_or_cond_pattern1"
+            ]
+        },
+        {
+            "name": "expression_or_cond_pattern",
+            "type": "node",
+            "terminals": [
+                "expression0",
+                "expression",
+                "pattern_no_expression",
+                "expression1"
+            ]
+        },
+        {
+            "name": "case_statement",
+            "type": "node",
+            "terminals": [
+                "case_inside_item_list",
+                "case_pattern_item_list",
+                "expression",
+                "unique_priority",
+                "case_keyword",
+                "case_item_list"
+            ]
+        },
+        {
+            "name": "case_keyword",
+            "type": "enum",
+            "values": [
+                "CASE",
+                "CASEX",
+                "CASEZ"
+            ]
+        },
+        {
+            "name": "case_item",
+            "type": "node",
+            "terminals": [
+                "expression_list",
+                "statement"
+            ]
+        },
+        {
+            "name": "case_item_list",
+            "type": "list"
+        },
+        {
+            "name": "case_pattern_item",
+            "type": "pass-through"
+        },
+        {
+            "name": "pattern",
+            "type": "pass-through"
+        },
+        {
+            "name": "pattern_no_expression",
+            "type": "node",
+            "terminals": [
+                "covered",
+                "pattern_no_expression",
+                "in",
+                "identifier",
+                "expression0",
+                "identifier_pattern_list",
+                "variant",
+                "expression1",
+                "pattern_list"
+            ]
+        },
+        {
+            "name": "pattern_list",
+            "type": "list"
+        },
+        {
+            "name": "identifier_pattern_list",
+            "type": "list"
+        },
+        {
+            "name": "loop_statement",
+            "type": "node",
+            "terminals": [
+                "identifier_list",
+                "statement",
+                "identifier",
+                "expression",
+                "for_step",
+                "for_initialization"
+            ]
+        },
+        {
+            "name": "for_initialization",
+            "type": "pass-through"
+        },
+        {
+            "name": "for_variable_declaration",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "data_type",
+                "for_variable_declaration",
+                "expression"
+            ]
+        },
+        {
+            "name": "for_variable_declaration_list",
+            "type": "list"
+        },
+        {
+            "name": "for_step",
+            "type": "pass-through"
+        },
+        {
+            "name": "for_step_assignment",
+            "type": "pass-through"
+        },
+        {
+            "name": "for_step_assignment_list",
+            "type": "list"
+        },
+        {
+            "name": "subroutine_call_statement",
+            "type": "pass-through"
+        },
+        {
+            "name": "assertion_item",
+            "type": "pass-through"
+        },
+        {
+            "name": "deferred_immediate_assertion_item",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "deferred_immediate_assertion_statement"
+            ]
+        },
+        {
+            "name": "procedural_assertion_statement",
+            "type": "pass-through"
+        },
+        {
+            "name": "immediate_assertion_statement",
+            "type": "pass-through"
+        },
+        {
+            "name": "simple_immediate_assertion_statement",
+            "type": "pass-through"
+        },
+        {
+            "name": "simple_immediate_assert_statement",
+            "type": "node",
+            "terminals": [
+                "action_block",
+                "expression"
+            ]
+        },
+        {
+            "name": "simple_immediate_assume_statement",
+            "type": "node",
+            "terminals": [
+                "action_block",
+                "expression"
+            ]
+        },
+        {
+            "name": "simple_immediate_cover_statement",
+            "type": "node",
+            "terminals": [
+                "expression",
+                "statement"
+            ]
+        },
+        {
+            "name": "deferred_immediate_assertion_statement",
+            "type": "pass-through"
+        },
+        {
+            "name": "deferred_immediate_assert_statement",
+            "type": "node",
+            "terminals": [
+                "action_block",
+                "expression"
+            ]
+        },
+        {
+            "name": "deferred_immediate_assume_statement",
+            "type": "node",
+            "terminals": [
+                "action_block",
+                "expression"
+            ]
+        },
+        {
+            "name": "deferred_immediate_cover_statement",
+            "type": "node",
+            "terminals": [
+                "expression",
+                "statement"
+            ]
+        },
+        {
+            "name": "clocking_declaration",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "block_end_identifier",
+                "clocking_item_list",
+                "clocking_event"
+            ]
+        },
+        {
+            "name": "clocking_event",
+            "type": "pass-through"
+        },
+        {
+            "name": "clocking_item",
+            "type": "node",
+            "terminals": [
+                "default_skew",
+                "clocking_direction",
+                "clocking_decl_assign_list",
+                "assertion_item_declaration"
+            ]
+        },
+        {
+            "name": "clocking_item_list",
+            "type": "list"
+        },
+        {
+            "name": "default_skew",
+            "type": "node",
+            "terminals": [
+                "clocking_skew0",
+                "clocking_skew1",
+                "clocking_skew"
+            ]
+        },
+        {
+            "name": "clocking_skew",
+            "type": "node",
+            "terminals": [
+                "delay_control",
+                "edge_identifier"
+            ]
+        },
+        {
+            "name": "cycle_delay",
+            "type": "pass-through"
+        },
+        {
+            "name": "specify_block",
+            "type": "pass-through"
+        },
+        {
+            "name": "specify_item",
+            "type": "pass-through"
+        },
+        {
+            "name": "specify_item_list",
+            "type": "list"
+        },
+        {
+            "name": "pulsestyle_declaration",
+            "type": "pass-through"
+        },
+        {
+            "name": "showcancelled_declaration",
+            "type": "pass-through"
+        },
+        {
+            "name": "path_output_list",
+            "type": "list"
+        },
+        {
+            "name": "edge_identifier",
+            "type": "enum",
+            "values": [
+                "NEGEDGE",
+                "EDGE",
+                "POSEDGE"
+            ]
+        },
+        {
+            "name": "specify_terminal_descriptor",
+            "type": "pass-through"
+        },
+        {
+            "name": "concatenation",
+            "type": "pass-through"
+        },
+        {
+            "name": "concatenation_expression_list",
+            "type": "list"
+        },
+        {
+            "name": "multiple_concatenation",
+            "type": "node",
+            "terminals": [
+                "concatenation",
+                "expression"
+            ]
+        },
+        {
+            "name": "streaming_concatenation",
+            "type": "node",
+            "terminals": [
+                "stream_operator",
+                "slice_size",
+                "stream_concatenation"
+            ]
+        },
+        {
+            "name": "stream_operator",
+            "type": "enum",
+            "values": [
+                "TOK_BIT_SL",
+                "TOK_BIT_SR"
+            ]
+        },
+        {
+            "name": "slice_size",
+            "type": "pass-through"
+        },
+        {
+            "name": "stream_concatenation",
+            "type": "pass-through"
+        },
+        {
+            "name": "stream_expression",
+            "type": "node",
+            "terminals": [
+                "expression",
+                "part_select_range"
+            ]
+        },
+        {
+            "name": "stream_expression_list",
+            "type": "list"
+        },
+        {
+            "name": "tf_call",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "ps_or_hierarchical_identifier",
+                "implicit_class_handle",
+                "argument_list"
+            ]
+        },
+        {
+            "name": "subroutine_call",
+            "type": "pass-through"
+        },
+        {
+            "name": "argument_list",
+            "type": "list"
+        },
+        {
+            "name": "identifier_expression_list",
+            "type": "list"
+        },
+        {
+            "name": "randomize_call",
+            "type": "pass-through"
+        },
+        {
+            "name": "inc_or_dec_expression",
+            "type": "pass-through"
+        },
+        {
+            "name": "constant_expression",
+            "type": "node",
+            "terminals": [
+                "constant_expression0",
+                "constant_expression1",
+                "constant_expression2",
+                "constant_primary"
+            ]
+        },
+        {
+            "name": "constant_mintypmax_expression",
+            "type": "node",
+            "terminals": [
+                "expression0",
+                "expression",
+                "expression2",
+                "expression1"
+            ]
+        },
+        {
+            "name": "constant_param_expression",
+            "type": "pass-through"
+        },
+        {
+            "name": "param_expression",
+            "type": "pass-through"
+        },
+        {
+            "name": "expression",
+            "type": "node",
+            "terminals": [
+                "inc_or_dec_expression",
+                "operator_assignment",
+                "expression0",
+                "expression",
+                "identifier",
+                "value_range_list",
+                "expression2",
+                "expression1",
+                "primary"
+            ]
+        },
+        {
+            "name": "expression_list",
+            "type": "list"
+        },
+        {
+            "name": "expression_optional",
+            "type": "optional"
+        },
+        {
+            "name": "equals_expression_optional",
+            "type": "optional"
+        },
+        {
+            "name": "value_range",
+            "type": "node",
+            "terminals": [
+                "expression0",
+                "expression",
+                "expression1"
+            ]
+        },
+        {
+            "name": "value_range_list",
+            "type": "list"
+        },
+        {
+            "name": "mintypmax_expression",
+            "type": "node",
+            "terminals": [
+                "expression0",
+                "expression",
+                "expression2",
+                "expression1"
+            ]
+        },
+        {
+            "name": "part_select_range",
+            "type": "node",
+            "terminals": [
+                "expression0",
+                "expression",
+                "expression1"
+            ]
+        },
+        {
+            "name": "constant_primary",
+            "type": "pass-through"
+        },
+        {
+            "name": "primary",
+            "type": "node",
+            "terminals": [
+                "let_expression",
+                "ps_identifier",
+                "covered",
+                "streaming_concatenation",
+                "sequence_method_call",
+                "casting_type",
+                "expression",
+                "primary_literal",
+                "func",
+                "part_select_range",
+                "multiple_concatenation",
+                "hierarchical_identifier",
+                "assignment_pattern_expression",
+                "mintypmax_expression",
+                "concatenation",
+                "subroutine_call",
+                "under",
+                "call?"
+            ]
+        },
+        {
+            "name": "primary_literal",
+            "type": "pass-through"
+        },
+        {
+            "name": "time_literal",
+            "type": "node",
+            "terminals": [
+                "unsigned_number",
+                "time_unit",
+                "fixed_point_number"
+            ]
+        },
+        {
+            "name": "time_unit",
+            "type": "enum",
+            "values": [
+                "US",
+                "FS",
+                "S",
+                "PS",
+                "MS",
+                "NS"
+            ]
+        },
+        {
+            "name": "implicit_class_handle",
+            "type": "enum",
+            "values": [
+                "THIS",
+                "SUPER",
+                "FIXME"
+            ]
+        },
+        {
+            "name": "lvalue",
+            "type": "node",
+            "terminals": [
+                "streaming_concatenation",
+                "need",
+                "for",
+                "check",
+                "hierarchical_identifier",
+                "semantics",
+                "concatenation",
+                "lvlaues",
+                "to"
+            ]
+        },
+        {
+            "name": "lvalue_list",
+            "type": "list"
+        },
+        {
+            "name": "attribute_instance",
+            "type": "pass-through"
+        },
+        {
+            "name": "attr_spec_list",
+            "type": "list"
+        },
+        {
+            "name": "attribute_instance_list",
+            "type": "list"
+        },
+        {
+            "name": "hierarchical_identifier",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "hierarchical_identifier",
+                "unpacked_dimension_list"
+            ]
+        },
+        {
+            "name": "hierarchical_identifier_list",
+            "type": "list"
+        },
+        {
+            "name": "identifier",
+            "type": "pass-through"
+        },
+        {
+            "name": "identifier_optional",
+            "type": "optional"
+        },
+        {
+            "name": "ps_identifier",
+            "type": "node",
+            "terminals": [
+                "identifier",
+                "ps_identifier_tok"
+            ]
+        },
+        {
+            "name": "ps_or_hierarchical_identifier",
+            "type": "node",
+            "terminals": [
+                "ps_identifier",
+                "identifier1",
+                "hierarchical_identifier",
+                "parameter_value_assignment",
+                "identifier0"
+            ]
+        },
+        {
+            "name": "ps_or_normal_identifier",
+            "type": "pass-through"
+        }
+    ]
+}

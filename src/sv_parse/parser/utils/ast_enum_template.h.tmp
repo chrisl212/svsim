@@ -1,0 +1,8 @@
+#ifndef AST_ENUM_NAME_CAPS_H
+#define AST_ENUM_NAME_CAPS_H
+
+typedef enum {ENUM_MEMBERS} ast_ENUM_NAME_t;
+
+void ast_ENUM_NAME_print(ast_ENUM_NAME_t ENUM_NAME);
+
+#endif

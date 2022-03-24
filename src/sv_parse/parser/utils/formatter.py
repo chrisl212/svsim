@@ -1,65 +1,9 @@
 #!/usr/bin/env python3
 
-import json
-import re
-from pprint import pprint as pp
+from common import *
 
 spec_file = 'spec.json'
-yacc_file = 'parser.y'
-
-def load_spec(fpath: str) -> list:
-    with open(fpath, 'r') as f:
-        return json.loads(f.read())
-
-def load_yacc_sections(fpath: str) -> list:
-    with open(fpath, 'r') as f:
-        contents = f.readlines()
-
-    sections = []
-    current_section = []
-    for line in contents:
-        if line.strip() == '%%':
-            sections.append(current_section)
-            current_section = []
-        else:
-            current_section.append(line)
-    sections.append(current_section)
-
-    return sections
-
-def get_productions(section: list) -> dict:
-    rgx = re.compile(r'[A-Za-z_0-9]+$')
-
-    prods = {}
-    line = 0
-    while line < len(section):
-        prod = []
-        stripped = section[line].replace('//', '')
-        stripped = stripped.strip()
-
-        if rgx.match(stripped) and stripped != 'Uncategorized':
-            ident = stripped
-            if ident == 'FIXME':
-                prod.append(section[line])
-                line += 1
-                ident = section[line].replace('//', '').strip()
-
-            while section[line].strip() != '':
-                prev = section[line-1].replace('//', '').strip()
-                if prev != '' and prev[0] in [':', '|']:
-                    if section[line].replace('//', '').strip()[0] != '{':
-                        if section[line-1].strip().startswith('//'):
-                            prod.append('//        { $$ = (ast_node_t *)NULL; }\n')
-                        else:
-                            prod.append('        { $$ = (ast_node_t *)NULL; }\n')
-                prod.append(section[line])
-                line += 1
-
-            prods[ident] = prod
-        
-        line += 1
-
-    return prods
+yacc_file = '../parser.y'
 
 def format_section(spec: list, prods: dict) -> list:
     formatted_section = []
