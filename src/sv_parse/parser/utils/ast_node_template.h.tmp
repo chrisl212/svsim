@@ -3,6 +3,7 @@
 
 typedef struct _ast_node ast_node_t;
 
+ENUM_INCLUDES
 typedef struct {
     ast_node_t super;
 STRUCT_MEMBERS} ast_NODE_NAME_t;

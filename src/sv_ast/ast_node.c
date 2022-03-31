@@ -6,13 +6,13 @@ ast_node_t* ast_node_new(void) {
     return node;
 }
 
-void ast_node_print(ast_node_t *node) {
+void ast_node_print(ast_node_t *node, int indent, int indent_incr) {
     if (!node) {
         return;
     }
 
     if (node->print) {
-        node->print(node);
+        node->print(node, indent, indent_incr);
     }
 }
 

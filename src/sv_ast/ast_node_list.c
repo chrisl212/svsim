@@ -1,9 +1,9 @@
 #include <stdlib.h>
 #include "ast_node_list.h"
 
-static void _ast_node_list_print(ast_node_t *node);
+static void _ast_node_list_print(ast_node_t *node, int indent, int indent_incr);
 static void _ast_node_list_free(ast_node_t *node);
-static void _ast_node_list_item_print(ast_node_list_item_t *item);
+static void _ast_node_list_item_print(ast_node_list_item_t *item, int indent, int indent_incr);
 static void _ast_node_list_item_free(ast_node_list_item_t *item);
 
 ast_node_list_t* ast_node_list_new(void) {
@@ -28,9 +28,9 @@ void ast_node_list_append(ast_node_list_t *list, ast_node_t *node) {
     }
 }
 
-static void _ast_node_list_print(ast_node_t *node) {
+static void _ast_node_list_print(ast_node_t *node, int indent, int indent_incr) {
     ast_node_list_t *list = (ast_node_list_t *)node;
-    _ast_node_list_item_print(list->first);
+    _ast_node_list_item_print(list->first, indent, indent_incr);
 }
 
 static void _ast_node_list_free(ast_node_t *node) {
@@ -45,13 +45,13 @@ static void _ast_node_list_free(ast_node_t *node) {
     free(list);
 }
 
-static void _ast_node_list_item_print(ast_node_list_item_t *item) {
+static void _ast_node_list_item_print(ast_node_list_item_t *item, int indent, int indent_incr) {
     if (!item) {
         return;
     }
 
-    ast_node_print(item->node);
-    _ast_node_list_item_print(item->next);
+    ast_node_print(item->node, indent, indent_incr);
+    _ast_node_list_item_print(item->next, indent, indent_incr);
 }
 
 static void _ast_node_list_item_free(ast_node_list_item_t *item) {

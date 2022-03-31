@@ -70,7 +70,7 @@ def gen_prod_file(prods: dict) -> None:
         f.write(json.dumps(prod_data, indent=4))
 
 def gen_ast(prods: list) -> None:
-    ast_dir = './sv_ast'
+    ast_dir = '../../../sv_ast'
     mkdir(ast_dir)
 
     with open('ast_enum_template.h.tmp', 'r') as f:
@@ -82,6 +82,7 @@ def gen_ast(prods: list) -> None:
     with open('ast_node_template.c.tmp', 'r') as f:
         ast_node_template_c = f.read()
 
+    ast_h = '#ifndef AST_H\n#define AST_H\n\n#include "ast_node.h"\n#include "ast_node_list.h"\n'
     for prod in prods:
         if not prod['type'] in ['node', 'enum']:
             continue
@@ -99,24 +100,28 @@ def gen_ast(prods: list) -> None:
             struct_assign = ''
             struct_free = ''
             struct_print = ''
+            enum_includes = ''
             for i, member in enumerate(prod['terminals']):
                 member_prod = [p for p in prods if p['name'] == member]
                 member_type = member_prod[0]['type'] if len(member_prod) > 0 else 'node'
 
-                if member_type in ['node', 'pass-through', 'optional']:
+                if member_type in ['node', 'pass-through', 'optional', 'list']:
+                    if len(new_args) > 0:
+                        new_args += ', '
                     member_str += f'    ast_node_t *{member};\n'
                     new_args += f'ast_node_t *{member}'
-                    struct_print += f'    ast_node_print({prod["name"]}->{member});\n'
+                    struct_print += f'    ast_node_print({prod["name"]}->{member}, indent, indent_incr);\n'
                     struct_free += f'    ast_node_free({prod["name"]}->{member});\n'
                 elif member_type == 'enum':
+                    if len(new_args) > 0:
+                        new_args += ', '
                     member_str += f'    ast_{member}_t {member};\n'
                     new_args += f'ast_{member}_t {member}'
                     struct_print += f'    ast_{member}_print({prod["name"]}->{member});\n'
+                    enum_includes += f'#include "sv_ast/ast_{member}/ast_{member}.h"\n'
                 struct_assign += f'    {prod["name"]}->{member} = {member};\n'
-                
-                if i != len(prod['terminals']) - 1:
-                    new_args += ', '
 
+            ast_node_h = ast_node_h.replace('ENUM_INCLUDES', enum_includes)
             ast_node_h = ast_node_h.replace('STRUCT_MEMBERS', member_str)
             ast_node_h = ast_node_h.replace('NEW_ARGS', new_args)
             ast_node_c = ast_node_c.replace('NEW_ARGS', new_args)
@@ -130,6 +135,7 @@ def gen_ast(prods: list) -> None:
                 f.write(ast_node_h)
             with open(ast_node_c_path, 'w') as f:
                 f.write(ast_node_c)
+            ast_h += f'#include "ast_{prod["name"]}/ast_{prod["name"]}.h"\n'
 
         elif prod['type'] == 'enum':
             ast_enum_h = ast_enum_template_h.replace('ENUM_NAME_CAPS', prod['name'].upper())
@@ -151,9 +157,15 @@ def gen_ast(prods: list) -> None:
             ast_enum_path = os.path.join(prod_dir, f'ast_{prod["name"]}.h')
             with open(ast_enum_path, 'w') as f:
                 f.write(ast_enum_h)
+            ast_h += f'#include "ast_{prod["name"]}/ast_{prod["name"]}.h"\n'
+            
             ast_enum_path = os.path.join(prod_dir, f'ast_{prod["name"]}.c')
             with open(ast_enum_path, 'w') as f:
                 f.write(ast_enum_c)
+            
+    ast_h += '\n#endif'
+    with open(os.path.join(ast_dir, 'ast.h'), 'w') as f:
+        f.write(ast_h)
 
 if __name__ == '__main__':
     spec = load_spec(spec_file)

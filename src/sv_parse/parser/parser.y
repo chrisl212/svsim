@@ -99,39 +99,24 @@
 %precedence ELSE ELSE_IF VIRTUAL_INTERFACE
 
 %union {
-    ast_node_t *    ast_node;
-    ast_node_list_t * ast_node_list;
-    ast_expr_t *ast_expr;
-    ast_time_unit_t ast_time_unit;
-    ast_lifetime_t  ast_lifetime;
-    ast_package_t * ast_package;
-    ast_module_t *ast_module;
-    ast_timeunits_decl_t * ast_timeunits_decl;
-    ast_time_literal_t * ast_time_literal;
-    ast_identifier_t * ast_identifier;
-    double      fval;
-    int         ival;
-    char        *sval;
+    ast_node_t          *ast_node;
+    ast_lifetime_t      ast_lifetime;
+    ast_time_unit_t     ast_time_unit;
+    ast_module_keyword_t ast_module_keyword;
+    double              fval;
+    int                 ival;
+    char                *sval;
 }
 
-%type <ast_node> source_text description primary_literal primary
-%type <ast_node_list> description_list attribute_instance attr_spec_list attribute_instance_list
-%type <ast_node_list> list_of_ports port_list
-%type <ast_package> package_declaration
-%type <ast_module> module_declaration
-%type <ast_expr> expression
-%type <ast_timeunits_decl> timeunits_declaration timeunits_declaration_optional
-%type <ast_time_literal> time_literal
-%type <ast_time_unit> time_unit
-%type <ast_lifetime> lifetime lifetime_optional
-%type <ast_identifier> identifier block_end_identifier_optional ps_identifier ps_or_hierarchical_identifier ps_or_normal_identifier
 %type <fval> fixed_point_number
 %type <ival> unsigned_number 
 %type <sval> c_identifier escaped_identifier system_tf_identifier simple_identifier string_literal
 %type <sval> block_identifier class_identifier package_identifier type_identifier ps_identifier_tok 
 
-
-%type <ast_node> module_nonansi_header module_ansi_header module_keyword interface_declaration interface_non_ansi_header
+%type <ast_lifetime> lifetime lifetime_optional
+%type <ast_time_unit> time_unit
+%type <ast_module_keyword> module_keyword
+%type <ast_node> module_nonansi_header module_ansi_header interface_declaration interface_non_ansi_header
 %type <ast_node> interface_ansi_header program_declaration program_nonansi_header program_ansi_header class_declaration
 %type <ast_node> implements_interface_optional extends_class_optional virtual_optional interface_class_type interface_class_type_list
 %type <ast_node> interface_class_declaration interface_class_item interface_class_item_list interface_class_parameters parameter_port_list
@@ -211,6 +196,13 @@
 %type <ast_node> edge_indicator current_state next_state output_symbol level_symbol edge_symbol
 %type <ast_node> udp_instantiation udp_instance udp_instance_list output_terminal input_terminal
 
+%type <ast_node> source_text
+%type <ast_node> description description_list module_declaration package_declaration timeunits_declaration
+%type <ast_node> timeunits_declaration_optional block_end_identifier_optional list_of_ports port_list
+%type <ast_node> modport_tf_port_list case_pattern_item constant_expression expression
+%type <ast_node> primary primary_literal time_literal attribute_instance
+%type <ast_node> attr_spec_list attribute_instance_list identifier ps_identifier ps_or_hierarchical_identifier ps_or_normal_identifier
+
 %%
 
 //====================================================================================================
@@ -227,63 +219,63 @@
 
 source_text
     : timeunits_declaration_optional description_list
-        { root = (ast_node_t *)$2; }
+        { root = (ast_node_t *)ast_source_text_new($1, $2); }
     ;
 
 description
     : module_declaration
-        { $$ = (ast_node_t *)NULL; }
+        { $$ = $1; }
     | udp_declaration
-        { $$ = (ast_node_t *)NULL; }
+        { $$ = $1; }
     | interface_declaration
-        { $$ = (ast_node_t *)NULL; }
+        { $$ = $1; }
     | program_declaration
-        { $$ = (ast_node_t *)NULL; }
+        { $$ = $1; }
     | package_declaration
-        { $$ = (ast_node_t *)$1; }
+        { $$ = $1; }
     | /* attribute_instance_list */ package_item
-        { $$ = (ast_node_t *)NULL; }
+        { $$ = $1; }
     | /* attribute_instance_list */ bind_directive
-        { $$ = (ast_node_t *)NULL; }
+        { $$ = $1; }
     | config_declaration
-        { $$ = (ast_node_t *)NULL; }
+        { $$ = $1; }
     ;
 
 description_list
     : description_list description
-        { ast_node_list_append($1, $2); }
+        { ast_node_list_append((ast_node_list_t *)$1, $2); }
     |
-        { $$ = ast_node_list_new(); }
+        { $$ = (ast_node_t *)ast_node_list_new(); }
     ;
 
 module_nonansi_header
     : /* attribute_instance_list */ module_keyword lifetime_optional identifier package_import_declaration_list parameter_port_list_optional list_of_ports ';'
-        { $$ = (ast_node_t *)NULL; }
+        { $$ = ast_module_nonansi_header_new($4, $2, $5, $3, $1, $6); }
     | /* attribute_instance_list */ module_keyword lifetime_optional identifier package_import_declaration_list parameter_port_list_optional '(' '.' TOK_MUL ')' ';'
-        { $$ = (ast_node_t *)NULL; }
+        { $$ = ast_module_nonansi_header_new($4, $2, $5, $3, $1, NULL); }
     ;
 
 module_ansi_header
     : /* attribute_instance_list */ module_keyword lifetime_optional identifier package_import_declaration_list parameter_port_list_optional port_declaration_list ';'
-        { $$ = (ast_node_t *)NULL; }
+        { $$ = ast_module_ansi_header_new($4, $2, $5, $3, $1, $6); }
     ;
 
 module_declaration
     : module_nonansi_header module_item_list ENDMODULE block_end_identifier_optional
-        { $$ = (ast_module_t *)NULL; }
+        { $$ = ast_module_declaration_new($2, NULL, NULL, $1, $4, 0); }
     | module_ansi_header non_port_module_item_list ENDMODULE block_end_identifier_optional
-        { $$ = (ast_module_t *)NULL; }
+        { $$ = ast_module_declaration_new(NULL, $2, $1, NULL, $4, 0); }
     | EXTERN module_nonansi_header
-        { $$ = (ast_module_t *)NULL; }
+        { $$ = ast_module_declaration_new(NULL, NULL, NULL, $2, NULL, 1); }
     | EXTERN module_ansi_header
-        { $$ = (ast_module_t *)NULL; }
+        { $$ = ast_module_declaration_new(NULL, NULL, $2, NULL, NULL, 1); }
     ;
 
 module_keyword
     : MODULE
-        { $$ = (ast_node_t *)NULL; }
+        { $$ = AST_MODULE_KEYWORD_MODULE; }
     | MACROMODULE
-        { $$ = (ast_node_t *)NULL; }
+        { $$ = AST_MODULE_KEYWORD_MACROMODULE; }
     ;
 
 interface_declaration
@@ -413,18 +405,18 @@ interface_class_parameters
 // FIXME
 package_declaration
     : /* attribute_instance_list */ PACKAGE lifetime_optional identifier ';' timeunits_declaration_optional package_item_list_optional ENDPACKAGE block_end_identifier_optional
-        { $$ = ast_package_new(NULL, $2, $3, $5, NULL, $8); }
+        { $$ = (ast_node_t *)NULL; }
     ;
 
 timeunits_declaration
     : TIMEUNIT time_literal TOK_DIV time_literal ';'
-        { $$ = ast_timeunits_decl_new($2, $4); }
+        { $$ = (ast_node_t *)NULL; }
     | TIMEPRECISION time_literal ';' %prec TIMEUNIT
-        { $$ = ast_timeunits_decl_new(NULL, $2); }
+        { $$ = (ast_node_t *)NULL; }
     | TIMEUNIT time_literal ';' TIMEPRECISION time_literal ';'
-        { $$ = ast_timeunits_decl_new($2, $5); }
+        { $$ = (ast_node_t *)NULL; }
     | TIMEPRECISION time_literal ';' TIMEUNIT time_literal ';'
-        { $$ = ast_timeunits_decl_new($5, $2); }
+        { $$ = (ast_node_t *)NULL; }
     ;
 
 timeunits_declaration_optional
@@ -512,11 +504,11 @@ port_declaration
 
 port_list
     : port_list ',' identifier
-        { ast_node_list_append($1, (ast_node_t *)$3); }
+        { ast_node_list_append((ast_node_list_t *)$1, (ast_node_t *)$3); }
     | identifier
         {
-            $$ = ast_node_list_new();
-            ast_node_list_append($$, (ast_node_t *)$1);
+            $$ = (ast_node_t *)ast_node_list_new();
+            ast_node_list_append((ast_node_list_t *)$$, (ast_node_t *)$1);
         }
     ;
 
@@ -4022,95 +4014,95 @@ param_expression
 // FIXME
 expression
     : primary
-        { $$ = (ast_expr_t *)ast_expr_primary_new($1); }
+        { $$ = (ast_node_t *)NULL; }
     | TOK_PLUS primary
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | TOK_MINUS primary
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | TOK_LOG_NOT primary
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | TOK_BIT_NOT primary
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | TOK_BIT_AND primary
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | TOK_BIT_NAND primary
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | TOK_BIT_OR primary
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | TOK_BIT_NOR primary
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | TOK_BIT_XOR primary
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | TOK_BIT_XNOR primary
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | inc_or_dec_expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | '(' operator_assignment ')'
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_PLUS expression
-        { $$ = (ast_expr_t *)ast_expr_binary_new($1, AST_OP_BIN_PLUS, $3); }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_MINUS expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_MUL expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_DIV expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_MOD expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_LOG_EQ expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_LOG_NEQ expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_LOG_XEQ expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_LOG_XNEQ expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_LOG_WEQ expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_LOG_WNEQ expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_LOG_AND expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_LOG_OR expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_PWR expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_LOG_LT expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_LOG_LEQ expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_LOG_GT expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_LOG_GEQ expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_BIT_AND expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_BIT_OR expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_BIT_XOR expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_BIT_XNOR expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_BIT_SR expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_BIT_SL expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_BIT_SRA expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_BIT_SLA expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_IMP expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression TOK_EQUIV expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression '?' expression ':' expression 
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | expression INSIDE '{' value_range_list '}'
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | TAGGED identifier expression
-        { $$ = (ast_expr_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     //| TAGGED identifier
-//        { $$ = (ast_expr_t *)NULL; }
+//        { $$ = (ast_node_t *)NULL; }
     ;
 
 expression_list
@@ -4221,16 +4213,16 @@ primary_literal
     : time_literal
         { $$ = (ast_node_t *)$1; }
     | string_literal
-        { $$ = (ast_node_t *)ast_string_literal_new($1); }
+        { $$ = (ast_node_t *)NULL; }
     | unsigned_number
-        { $$ = (ast_node_t *)ast_unsigned_int_literal_new($1); }
+        { $$ = (ast_node_t *)NULL; }
     ;
 
 time_literal
     : unsigned_number time_unit
-        { $$ = ast_time_literal_new($1, $2); }
+        { $$ = (ast_node_t *)NULL; }
     | fixed_point_number time_unit
-        { $$ = ast_time_literal_new($1, $2); }
+        { $$ = (ast_node_t *)NULL; }
     ;
 
 time_unit
@@ -4296,32 +4288,28 @@ lvalue_list
 
 attribute_instance
     : '(' TOK_MUL attr_spec_list TOK_MUL ')'
-        { $$ = $3; }
+        { $$ = (ast_node_t *)NULL; }
     ;
 
 // FIXME
 attr_spec_list
     : attr_spec_list ',' identifier TOK_EQ constant_primary
-        { ast_node_list_append($1, (ast_node_t *)ast_attr_spec_new($3, NULL)); } // FIXME
+        { $$ = (ast_node_t *)NULL; }
     | attr_spec_list ',' identifier
-        { ast_node_list_append($1, (ast_node_t *)ast_attr_spec_new($3, NULL)); }
+        { $$ = (ast_node_t *)NULL; }
     | identifier TOK_EQ constant_primary
-        { 
-            $$ = ast_node_list_new();
-            ast_node_list_append($$, (ast_node_t *)ast_attr_spec_new($1, NULL)); // FIXME
-        }
+        { $$ = (ast_node_t *)NULL; }
     | identifier
-        { 
-            $$ = ast_node_list_new();
-            ast_node_list_append($$, (ast_node_t *)ast_attr_spec_new($1, NULL));
-        }
+        { $$ = (ast_node_t *)NULL; }
     ;
 
 attribute_instance_list
     : /* attribute_instance_list */ attribute_instance
         {
-            if (!$$) $$ = ast_node_list_new();
-            ast_node_list_append($$, (ast_node_t *)$1);
+            if (!$$) {
+                $$ = (ast_node_t *)ast_node_list_new();
+            }
+            ast_node_list_append((ast_node_list_t *)$$, $1);
         }
     |
         { $$ = NULL; }
@@ -4340,9 +4328,9 @@ hierarchical_identifier
 
 hierarchical_identifier_list
     : hierarchical_identifier_list ',' hierarchical_identifier
-        { $$ = (ast_node_t *)NULL; }
+        { ast_node_list_append((ast_node_list_t *)$$, $1); }
     | hierarchical_identifier
-        { $$ = (ast_node_t *)NULL; }
+        { $$ = (ast_node_t *)ast_node_list_new(); ast_node_list_append((ast_node_list_t *)$$, $1); }
     ;
 
 identifier
@@ -4354,32 +4342,32 @@ identifier
 
 identifier_optional
     : identifier
-        { $$ = (ast_node_t *)NULL; }
+        { $$ = $1; }
     |
         { $$ = (ast_node_t *)NULL; }
     ;
 
 ps_identifier
     : ps_identifier_tok identifier
-        { $$ = (ast_identifier_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | '$' UNIT SCOPE identifier
-        { $$ = (ast_identifier_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     ;
 
 ps_or_hierarchical_identifier
     : ps_identifier
-        { $$ = (ast_identifier_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | identifier parameter_value_assignment SCOPE identifier
-        { $$ = (ast_identifier_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | hierarchical_identifier
-        { $$ = (ast_identifier_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     ;
 
 ps_or_normal_identifier
     : ps_identifier
-        { $$ = (ast_identifier_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     | identifier
-        { $$ = (ast_identifier_t *)NULL; }
+        { $$ = (ast_node_t *)NULL; }
     ;
 
 %%

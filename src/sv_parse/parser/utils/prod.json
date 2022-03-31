@@ -692,19 +692,14 @@
                 "identifier_unpacked_dimension_list",
                 "net_type",
                 "vectored_or_scalared",
-                "need",
                 "identifier",
                 "delay3",
-                "params",
                 "variable_decl_assignment_list",
                 "drive_or_charge_strength",
                 "signing",
                 "delay_value",
-                "from",
-                "disambiguate",
                 "delay_control",
                 "data_type_no_param",
-                "to",
                 "packed_dimension_list"
             ]
         },
@@ -760,13 +755,7 @@
             "name": "data_type_or_param",
             "type": "node",
             "terminals": [
-                "need",
-                "here",
-                "support",
-                "data_type",
-                "types",
-                "implicit",
-                "to"
+                "data_type"
             ]
         },
         {
@@ -1269,11 +1258,7 @@
         },
         {
             "name": "overload_proto_formals",
-            "type": "node",
-            "terminals": [
-                "data_type",
-                "overload_proto_formals"
-            ]
+            "type": "list"
         },
         {
             "name": "modport_declaration",
@@ -1304,7 +1289,6 @@
             "type": "node",
             "terminals": [
                 "modport_simple_port",
-                "modport_simple_ports_declaration",
                 "port_direction"
             ]
         },
@@ -1474,7 +1458,6 @@
                 "property_expr1",
                 "property_expr0",
                 "property_instance",
-                "property_expr",
                 "expression",
                 "part_select_range",
                 "expression_or_dist",
@@ -1535,7 +1518,6 @@
                 "expression",
                 "sequence_abbrev",
                 "sequence_match_item_list",
-                "sequence_expr",
                 "boolean_abbrev",
                 "expression_or_dist",
                 "under",
@@ -2015,20 +1997,12 @@
             "type": "node",
             "terminals": [
                 "assignment_operator",
-                "be",
-                "semantics,",
-                "need",
                 "lvalue",
                 "operator_assignment",
                 "expression",
-                "check",
                 "delay_or_event_control",
-                "should",
-                "same",
                 "dynamic_array_new",
-                "class_new",
-                "only",
-                "to"
+                "class_new"
             ]
         },
         {
@@ -2172,7 +2146,6 @@
                 "expression0",
                 "edge_identifier",
                 "expression",
-                "event_expression",
                 "event_expression0",
                 "expression1"
             ]
@@ -2288,7 +2261,6 @@
             "type": "node",
             "terminals": [
                 "covered",
-                "pattern_no_expression",
                 "in",
                 "identifier",
                 "expression0",
@@ -2324,13 +2296,7 @@
         },
         {
             "name": "for_variable_declaration",
-            "type": "node",
-            "terminals": [
-                "identifier",
-                "data_type",
-                "for_variable_declaration",
-                "expression"
-            ]
+            "type": "list"
         },
         {
             "name": "for_variable_declaration_list",
@@ -2632,7 +2598,6 @@
                 "inc_or_dec_expression",
                 "operator_assignment",
                 "expression0",
-                "expression",
                 "identifier",
                 "value_range_list",
                 "expression2",
@@ -2694,22 +2659,18 @@
             "terminals": [
                 "let_expression",
                 "ps_identifier",
-                "covered",
                 "streaming_concatenation",
                 "sequence_method_call",
                 "casting_type",
                 "expression",
                 "primary_literal",
-                "func",
                 "part_select_range",
                 "multiple_concatenation",
                 "hierarchical_identifier",
                 "assignment_pattern_expression",
                 "mintypmax_expression",
                 "concatenation",
-                "subroutine_call",
-                "under",
-                "call?"
+                "subroutine_call"
             ]
         },
         {
@@ -2751,14 +2712,9 @@
             "type": "node",
             "terminals": [
                 "streaming_concatenation",
-                "need",
-                "for",
-                "check",
                 "hierarchical_identifier",
-                "semantics",
                 "concatenation",
-                "lvlaues",
-                "to"
+                "lvlaues"
             ]
         },
         {
@@ -2782,7 +2738,6 @@
             "type": "node",
             "terminals": [
                 "identifier",
-                "hierarchical_identifier",
                 "unpacked_dimension_list"
             ]
         },

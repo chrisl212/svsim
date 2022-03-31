@@ -8,7 +8,7 @@ ast_node_t *root;
 int main(int argc, char **argv) {
     int rc = yyparse();
 
-    ast_node_print(root);
+    ast_node_print(root, 0, 2);
 
     return (rc) ? 1 : SV_OK;
 }
