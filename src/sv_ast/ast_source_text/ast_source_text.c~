@@ -21,7 +21,7 @@ static void _ast_source_text_print(ast_node_t *node, int indent, int indent_incr
     ast_source_text_t *source_text = (ast_source_text_t *)node;
 
     ast_node_print(source_text->timeunits_declaration, indent, indent_incr);
-    ast_node_list_print((ast_node_list_t *)source_text->description_list, indent, indent_incr, "\n\n");
+    ast_node_print(source_text->description_list, indent, indent_incr);
 }
 
 static void _ast_source_text_free(ast_node_t *node) {

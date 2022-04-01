@@ -1145,7 +1145,7 @@ data_declaration
 // FIXME
 package_import_declaration
     : IMPORT package_import_item_list ';'
-        { $$ = ast_package_import_declaration_new($2); }
+        { $$ = $2; }
     ;
 
 package_import_declaration_list

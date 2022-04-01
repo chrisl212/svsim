@@ -17,5 +17,6 @@ typedef struct _ast_node_list {
 
 ast_node_list_t* ast_node_list_new(void);
 void             ast_node_list_append(ast_node_list_t *list, ast_node_t *node);
+void             ast_node_list_print(ast_node_list_t *list, int indent, int indent_incr, const char *sep);
 
 #endif

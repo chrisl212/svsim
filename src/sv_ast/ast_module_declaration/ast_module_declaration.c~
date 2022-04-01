@@ -38,6 +38,7 @@ static void _ast_module_declaration_print(ast_node_t *node, int indent, int inde
             ast_node_print(module_declaration->block_end_identifier, indent, indent_incr);
         }
     }
+    printf("\n\n");
 }
 
 static void _ast_module_declaration_free(ast_node_t *node) {

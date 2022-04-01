@@ -10,6 +10,6 @@ typedef struct {
     ast_node_t *identifier;
 } ast_ps_identifier_t;
 
-ast_node_t* ast_ps_identifier_new(ast_node_t *scope, ast_node_t *identifier);
+ast_node_t* ast_ps_identifier_new(ast_node_t *identifier, ast_node_t *ps_identifier_tok);
 
 #endif
