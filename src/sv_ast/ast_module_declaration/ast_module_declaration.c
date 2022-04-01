@@ -29,8 +29,9 @@ static void _ast_module_declaration_print(ast_node_t *node, int indent, int inde
     }
     ast_node_print(module_declaration->module_ansi_header, indent, indent_incr);
     ast_node_print(module_declaration->module_nonansi_header, indent, indent_incr);
-    ast_node_print(module_declaration->module_item_list, indent + indent_incr, indent_incr);
-    ast_node_print(module_declaration->non_port_module_item_list, indent + indent_incr, indent_incr);
+    printf("\n%s", node->next_indent);
+    ast_node_list_print((ast_node_list_t *)module_declaration->module_item_list, indent + indent_incr, indent_incr, "\n");
+    ast_node_list_print((ast_node_list_t *)module_declaration->non_port_module_item_list, indent + indent_incr, indent_incr, "\n");
     if (!module_declaration->_extern) {
         printf("\nendmodule");
         if (module_declaration->block_end_identifier) {

@@ -31,6 +31,9 @@ void ast_node_list_append(ast_node_list_t *list, ast_node_t *node) {
 }
 
 void ast_node_list_print(ast_node_list_t *list, int indent, int indent_incr, const char *sep) {
+    if (!list) {
+        return;
+    }
     _ast_node_list_item_print(list->first, indent, indent_incr, sep);
 }
 

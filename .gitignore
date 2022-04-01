@@ -1,0 +1,7 @@
+*~
+build/*
+*.DS_STORE*
+*__pycache__*
+*.dSYM
+svsim
+tests/*out

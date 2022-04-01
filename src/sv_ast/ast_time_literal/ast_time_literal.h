@@ -7,11 +7,10 @@ typedef struct _ast_node ast_node_t;
 
 typedef struct {
     ast_node_t super;
-    ast_node_t *unsigned_number;
+    double literal;
     ast_time_unit_t time_unit;
-    ast_node_t *fixed_point_number;
 } ast_time_literal_t;
 
-ast_node_t* ast_time_literal_new(ast_node_t *unsigned_number, ast_time_unit_t time_unit, ast_node_t *fixed_point_number);
+ast_node_t* ast_time_literal_new(double literal, ast_time_unit_t time_unit);
 
 #endif

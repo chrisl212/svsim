@@ -410,13 +410,13 @@ package_declaration
 
 timeunits_declaration
     : TIMEUNIT time_literal TOK_DIV time_literal ';'
-        { $$ = (ast_node_t *)NULL; }
+        { $$ = ast_timeunits_declaration_new($2, $4); }
     | TIMEPRECISION time_literal ';' %prec TIMEUNIT
-        { $$ = (ast_node_t *)NULL; }
+        { $$ = ast_timeunits_declaration_new(NULL, $2); }
     | TIMEUNIT time_literal ';' TIMEPRECISION time_literal ';'
-        { $$ = (ast_node_t *)NULL; }
+        { $$ = ast_timeunits_declaration_new($2, $5); }
     | TIMEPRECISION time_literal ';' TIMEUNIT time_literal ';'
-        { $$ = (ast_node_t *)NULL; }
+    { $$ = ast_timeunits_declaration_new($5, $2); }
     ;
 
 timeunits_declaration_optional
@@ -592,12 +592,12 @@ module_item
     : port_declaration ';'
         { $$ = (ast_node_t *)NULL; }
     | non_port_module_item
-        { $$ = (ast_node_t *)NULL; }
+        { $$ = $1; }
     ;
 
 module_item_list
     : module_item_list module_item
-        { $$ = (ast_node_t *)NULL; }
+        { if (!$$) $$ = (ast_node_t *)ast_node_list_new(); ast_node_list_append((ast_node_list_t *)$$, $2); }
     |
         { $$ = (ast_node_t *)NULL; }
     ;
@@ -642,12 +642,12 @@ non_port_module_item
     | interface_declaration
         { $$ = (ast_node_t *)NULL; }
     | timeunits_declaration
-        { $$ = (ast_node_t *)NULL; }
+        { $$ = $1; }
     ;
 
 non_port_module_item_list
     : non_port_module_item_list non_port_module_item
-        { $$ = (ast_node_t *)NULL; }
+        { if (!$$) $$ = (ast_node_t *)ast_node_list_new(); ast_node_list_append((ast_node_list_t *)$$, $2); }
     |
         { $$ = (ast_node_t *)NULL; }
     ;
@@ -4220,9 +4220,9 @@ primary_literal
 
 time_literal
     : unsigned_number time_unit
-        { $$ = (ast_node_t *)NULL; }
+        { $$ = ast_time_literal_new($1, $2); }
     | fixed_point_number time_unit
-        { $$ = (ast_node_t *)NULL; }
+        { $$ = ast_time_literal_new($1, $2); }
     ;
 
 time_unit
