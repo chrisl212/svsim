@@ -10,5 +10,7 @@ int main(int argc, char **argv) {
 
     ast_node_print(root, 0, 2);
 
+    ast_node_free(root);
+
     return (rc) ? 1 : SV_OK;
 }

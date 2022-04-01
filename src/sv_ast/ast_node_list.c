@@ -48,7 +48,6 @@ static void _ast_node_list_free(ast_node_t *node) {
     }
 
     _ast_node_list_item_free(list->first);
-    free(list);
 }
 
 static void _ast_node_list_item_print(ast_node_list_item_t *item, int indent, int indent_incr, const char *sep) {
@@ -79,5 +78,6 @@ static void _ast_node_list_item_free(ast_node_list_item_t *item) {
     }
 
     _ast_node_list_item_free(item->next);
-    _ast_node_list_item_free(item);
+    ast_node_free(item->node);
+    free(item);
 }

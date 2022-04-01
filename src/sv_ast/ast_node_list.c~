@@ -53,7 +53,7 @@ static void _ast_node_list_free(ast_node_t *node) {
 
 static void _ast_node_list_item_print(ast_node_list_item_t *item, int indent, int indent_incr, const char *sep) {
     int len, idx;
-    char *indent;
+    char *indent_str;
 
     if (!item) {
         return;
@@ -61,14 +61,14 @@ static void _ast_node_list_item_print(ast_node_list_item_t *item, int indent, in
 
     ast_node_print(item->node, indent, indent_incr);
     if (item->next) {
-        indent = ast_node_gen_indent(indent);
+        indent_str = ast_node_gen_indent(indent);
         for (idx = 0; idx < strlen(sep); idx++) {
             putchar(sep[idx]);
             if (sep[idx] == '\n') {
-                printf("%s", item->node->indent);
+                printf("%s", indent_str);
             }
         }
-        free(indent);
+        free(indent_str);
     }
     _ast_node_list_item_print(item->next, indent, indent_incr, sep);
 }
@@ -79,5 +79,6 @@ static void _ast_node_list_item_free(ast_node_list_item_t *item) {
     }
 
     _ast_node_list_item_free(item->next);
-    _ast_node_list_item_free(item);
+    ast_node_free(item->node);
+    free(item);
 }
